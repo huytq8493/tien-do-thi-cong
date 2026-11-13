@@ -1205,7 +1205,7 @@ function applyOp(d,op){
 }
 function toState(){
   S.config=DATA.config;S.stores=DATA.stores;S.logs=DATA.logs;S.lastSync=DATA.lastSync||null;
-  S.syncEnabled=!!SET.token||(STORE.mode==="sheet"&&STORE.serverSync);S.autoSync=SET.token?Number(SET.autoMin)||0:0;
+  S.syncEnabled=true;S.autoSync=SET.token?Number(SET.autoMin)||0:0;
   S.ready.stores=S.ready.config=S.ready.logs=true;
 }
 function persistLocal(){try{localStorage.setItem(LS_DATA,JSON.stringify(DATA));return true;}catch(e){toast("Không lưu được vào trình duyệt (bộ nhớ đầy?). Hãy dùng file dữ liệu chung.",true);return false;}}
@@ -1424,7 +1424,7 @@ function exportCsv(){
 /* ---------- đồng bộ task: trang gọi thẳng API wshr ---------- */
 function syncBtn(id,label){if(!S.syncEnabled||!S.canWrite)return "";return `<button class="btn" type="button" id="${id}" ${S.syncing?"disabled":""}>${ic("sync")}${S.syncing?"Đang đồng bộ…":label}</button>`;}
 function syncInfo(){
-  if(!SET.token&&!(STORE.mode==="sheet"&&STORE.serverSync)) return "Chưa nhập token API (Cấu hình)";
+  if(!SET.token) return "Chưa nhập token API trên máy này (Cấu hình)";
   const l=S.lastSync;const t=l&&l.at?"Đồng bộ task lúc "+l.at.slice(11,16)+" "+fd(l.at.slice(0,10)):"Chưa đồng bộ task";
   return t+(S.autoSync?` · tự động mỗi ${S.autoSync} phút khi trang mở`:"");
 }
@@ -1515,7 +1515,7 @@ async function fetchTaskRaw(id){
 const CORS_HELP="API wshr.hasaki.vn chỉ cho phép trang work.hasaki.vn gọi trực tiếp. Cách xử lý: nhờ team backend thêm nguồn gọi của trang này vào CORS của API (khi mở file HTML trên máy, nguồn gọi là “null”; nếu đặt trang trên một tên miền nội bộ thì thêm tên miền đó), hoặc dùng bản tien-do-thi-cong.exe.";
 async function testApi(id){
   S.testTid=id;
-  if(STORE.mode==="sheet"&&!SET.token){
+  if(false){
     if(!/^\d{3,12}$/.test(id)){toast("Nhập task_id (chỉ gồm số) để thử.",true);return;}
     S.testResult={head:"đang gọi qua máy chủ Google…",body:""};render();
     try{const r=await sheetPost({action:"test",taskId:id});const a=r.status===200&&r.json?analyzeTask(r.json):null;
@@ -1554,8 +1554,9 @@ async function loadTask(id){
   if(a.ok&&!a.steps.length&&a.parentId){const r2=await fetchTaskRaw(String(a.parentId));if(r2.status===200&&r2.json){const a2=analyzeTask(r2.json);if(a2.ok)a=a2;}}
   return a;
 }
+function askToken(){toast("Mỗi người nhập token wshr của mình 1 lần để đồng bộ task: Cấu hình → Token API → Lưu kết nối.",true);location.hash="cau-hinh";setTimeout(()=>{const t=document.getElementById("setTok");if(t){t.scrollIntoView({block:"center"});t.focus();}},300);}
 async function syncStores(ids,auto){
-  if(STORE.mode==="sheet"&&!SET.token){
+  if(false){
     if(S.syncing||!STORE.serverSync) return;
     if(STORE.queue.length) await flushSheet();
     S.syncing=true;render();
@@ -1565,7 +1566,8 @@ async function syncStores(ids,auto){
     catch(e){toast("Không đồng bộ được: "+e.message,true);}
     S.syncing=false;render();return;
   }
-  if(S.syncing||!SET.token) return;
+  if(S.syncing) return;
+  if(!SET.token){if(!auto)askToken();return;}
   const c=cfg(),pairs=[],want=new Set(ids||[]);
   Object.values(DATA.stores).forEach(st=>{if((want.size&&!want.has(st.id))||st.hold)return;c.workflows.forEach(w=>{const e=(st.wf||{})[w.id]||{};if(e.status==="Không áp dụng")return;const tid=taskIdOf(e.link);if(tid)pairs.push({sid:st.id,w,tid,e});});});
   if(!pairs.length){if(!auto)toast(want.size===1?"Chưa có link task nào trong phần B. Dán link work.hasaki.vn vào ô Link task của từng WF.":"Chưa có link task nào để đồng bộ.",true);return;}
