@@ -227,7 +227,7 @@ a.kpi:hover{border-color:var(--line-2)}
 .cdb.late b{color:var(--late)} .cdb.soon b{color:var(--soon)} .cdb.ok b{color:var(--ok)}
 
 /* milestone stepper */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);position:relative}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);position:relative}
 .steps .s{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;position:relative;min-width:0}
 .steps .s::before{content:"";position:absolute;top:6px;left:-50%;right:50%;height:2px;background:var(--track)}
 .steps .s:first-child::before{display:none}
@@ -715,7 +715,7 @@ function actions(list){
 }
 function stages(st){
   const T=today();
-  const arr=[["handover","Nhận nhà"],["buildStart","Thi công"],["openDate","Khai trương"]].map(([k,l])=>({k,l,d:st[k]||"",done:!!st[k]&&st[k]<=T}));
+  const arr=[["handover","Nhận nhà"],["openDate","Khai trương"]].map(([k,l])=>({k,l,d:st[k]||"",done:!!st[k]&&st[k]<=T}));
   for(let i=arr.length-2;i>=0;i--) if(arr[i+1].done) arr[i].done=true;
   const ci=arr.findIndex(x=>!x.done); arr.forEach((x,i)=>x.cur=i===ci); return arr;
 }
