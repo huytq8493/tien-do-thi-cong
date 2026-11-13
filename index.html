@@ -775,7 +775,7 @@ function viewOverview(){
     late:acts.filter(a=>a.kind==="late").length,soon:acts.filter(a=>a.kind==="soon").length,notask:acts.filter(a=>a.kind==="notask").length,
     blank:all.filter(c=>!c.st.hold).reduce((a,c)=>a+c.wfs.filter(x=>x.w.k==="blank").length,0)};
   let h=`<div class="ph"><div><h1>Tổng quan thi công</h1><p>${longToday()} · ${k.total} mặt bằng · ${esc(syncInfo())}</p></div>
-    <div class="right">${syncBtn("syncAll","Đồng bộ tất cả task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button></div></div>`;
+    <div class="right">${syncBtn("syncAll","Đồng bộ tất cả task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button>${window.TDTC_SHEET?`<a class="btn" href="${esc(window.TDTC_SHEET)}" target="_blank" rel="noopener">${ic("ext")}Mở Google Sheet</a>`:""}</div></div>`;
   if(!S.me||S.askName) h+=`<div class="tip">${ic("bulb")}<div style="flex:1;min-width:200px"><b>Bạn là ai?</b>Tên sẽ ghi vào nhật ký và “cập nhật bởi” để cả team biết ai đã sửa.<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input class="in" id="meIn" style="max-width:260px" placeholder="VD: Nguyễn Văn A" value="${esc(S.me||"")}"><button class="btn primary sm" type="button" id="meSave">Lưu tên</button></div></div></div>`;
   if(!S.tipHidden&&S.canWrite&&S.me) h+=`<div class="tip">${ic("bulb")}<div><b>Cập nhật nhanh trong 3 bước</b>Bấm vào một chi nhánh → bấm trạng thái từng hạng mục / chọn bước WF → ghi một dòng nhật ký. Mọi thay đổi lưu ngay, cả team thấy liền.</div><button class="btn sm" type="button" id="hideTip">Đã hiểu</button></div>`;
   h+=`<div class="kpis">
