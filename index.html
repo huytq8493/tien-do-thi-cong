@@ -1115,7 +1115,7 @@ function viewConfig(){
   let h=`<div class="ph"><div><h1>Cấu hình</h1><p>${ed?"Thay đổi áp dụng cho mọi chi nhánh sau khi bấm Lưu":"Chỉ Editor hoặc chủ trang được sửa cấu hình"}</p></div>
    ${ed?`<div class="right"><button class="btn" type="button" id="cfgReset">Bỏ thay đổi</button><button class="btn primary" type="button" id="cfgSave">Lưu cấu hình</button></div>`:""}</div>
    <div class="cfg-grid">
-   ${STORE.mode==="sheet"?`<div class="panel cfg-card"><h3>Đồng bộ task (chạy trên máy chủ Google)</h3>
+   ${false?`<div class="panel cfg-card"><h3>Đồng bộ task (chạy trên máy chủ Google)</h3>
      <span style="font-size:13.5px">Trạng thái: <b>${STORE.serverSync?esc(syncInfo()):"Chưa cài HSK_TOKEN trong Apps Script"}</b></span>
      <span class="muted" style="font-size:12.5px">Khi dùng Google Sheet, máy chủ Google gọi API wshr nên không bị CORS và token không nằm trên trình duyệt. Token cài ở Apps Script → Cài đặt dự án → Thuộc tính tập lệnh → HSK_TOKEN (token app="wshr", sub khác 0). Chạy hàm caiDatTuDongDongBo một lần để tự đồng bộ mỗi 30 phút.</span>
      ${S.lastSync&&S.lastSync.summary&&S.lastSync.summary.errors&&S.lastSync.summary.errors.length?`<span style="color:var(--late);font-size:12.5px">Lỗi lần trước: ${esc(S.lastSync.summary.errors.slice(0,3).join(" · "))}</span>`:""}
@@ -1127,7 +1127,7 @@ function viewConfig(){
      <div class="field"><label for="setAuto">Tự đồng bộ khi trang đang mở (phút, 0 = tắt)</label><input class="in" type="number" min="0" id="setAuto" value="${esc(SET.autoMin)}" style="max-width:140px"></div>
      <div class="btn-row"><button class="btn primary sm" type="button" id="setSave">Lưu kết nối</button><input class="in" id="testTid" style="width:150px" placeholder="task_id để thử" value="${esc(S.testTid||firstTaskId())}" aria-label="task_id để thử"><button class="btn sm" type="button" id="apiTest">Thử gọi API</button></div>
      ${SET.token?(()=>{const ti=tokenInfo(SET.token);return ti.warn.length?`<span style="color:var(--late);font-size:12.5px">⚠ ${esc(ti.warn.join(" · "))}. Lấy token: mở wshr.hasaki.vn (đã đăng nhập) → F12 → Network → chọn request /api/hr/… → Copy as cURL → lấy phần sau “Bearer ”.</span>`:`<span class="muted" style="font-size:12.5px">Token hợp lệ: app=${esc(ti.app)}${ti.exp?" · hết hạn "+esc(ti.exp.toLocaleString("vi-VN")):""}</span>`;})():""}
-     <span class="muted" style="font-size:12.5px">Token chỉ lưu trên trình duyệt của máy này, không nằm trong file HTML. Trạng thái: <b style="color:var(--ink)">${esc(syncInfo())}</b></span>
+     <span class="muted" style="font-size:12.5px">Token chỉ lưu trên trình duyệt của máy này (không nằm trong file HTML, không lên GitHub hay Google Sheet). Trang gọi API wshr trực tiếp từ máy anh${STORE.mode==="sheet"?" rồi ghi kết quả vào Google Sheet cho cả team":""}. Token wshr thường chỉ sống khoảng 2 ngày — hết hạn thì dán token mới. Trạng thái: <b style="color:var(--ink)">${esc(syncInfo())}</b></span>
      ${S.lastSync&&S.lastSync.summary&&S.lastSync.summary.errors&&S.lastSync.summary.errors.length?`<span style="color:var(--late);font-size:12.5px">Lỗi lần trước: ${esc(S.lastSync.summary.errors.slice(0,3).join(" · "))}</span>`:""}
      ${S.testResult?`<div class="lbl">Kết quả thử (${esc(S.testResult.head)})</div><pre class="raw">${esc(S.testResult.body)}</pre>`:""}
      ${syncBtn("syncAll","Đồng bộ tất cả task")}</div>`}
@@ -1205,7 +1205,7 @@ function applyOp(d,op){
 }
 function toState(){
   S.config=DATA.config;S.stores=DATA.stores;S.logs=DATA.logs;S.lastSync=DATA.lastSync||null;
-  S.syncEnabled=STORE.mode==="sheet"?STORE.serverSync:!!SET.token;S.autoSync=STORE.mode==="sheet"?0:(SET.token?Number(SET.autoMin)||0:0);
+  S.syncEnabled=!!SET.token||(STORE.mode==="sheet"&&STORE.serverSync);S.autoSync=SET.token?Number(SET.autoMin)||0:0;
   S.ready.stores=S.ready.config=S.ready.logs=true;
 }
 function persistLocal(){try{localStorage.setItem(LS_DATA,JSON.stringify(DATA));return true;}catch(e){toast("Không lưu được vào trình duyệt (bộ nhớ đầy?). Hãy dùng file dữ liệu chung.",true);return false;}}
@@ -1424,8 +1424,7 @@ function exportCsv(){
 /* ---------- đồng bộ task: trang gọi thẳng API wshr ---------- */
 function syncBtn(id,label){if(!S.syncEnabled||!S.canWrite)return "";return `<button class="btn" type="button" id="${id}" ${S.syncing?"disabled":""}>${ic("sync")}${S.syncing?"Đang đồng bộ…":label}</button>`;}
 function syncInfo(){
-  if(STORE.mode==="sheet"&&!STORE.serverSync) return "Chưa cài token trên máy chủ Google";
-  if(STORE.mode!=="sheet"&&!SET.token) return "Chưa nhập token API (Cấu hình)";
+  if(!SET.token&&!(STORE.mode==="sheet"&&STORE.serverSync)) return "Chưa nhập token API (Cấu hình)";
   const l=S.lastSync;const t=l&&l.at?"Đồng bộ task lúc "+l.at.slice(11,16)+" "+fd(l.at.slice(0,10)):"Chưa đồng bộ task";
   return t+(S.autoSync?` · tự động mỗi ${S.autoSync} phút khi trang mở`:"");
 }
@@ -1516,7 +1515,7 @@ async function fetchTaskRaw(id){
 const CORS_HELP="API wshr.hasaki.vn chỉ cho phép trang work.hasaki.vn gọi trực tiếp. Cách xử lý: nhờ team backend thêm nguồn gọi của trang này vào CORS của API (khi mở file HTML trên máy, nguồn gọi là “null”; nếu đặt trang trên một tên miền nội bộ thì thêm tên miền đó), hoặc dùng bản tien-do-thi-cong.exe.";
 async function testApi(id){
   S.testTid=id;
-  if(STORE.mode==="sheet"){
+  if(STORE.mode==="sheet"&&!SET.token){
     if(!/^\d{3,12}$/.test(id)){toast("Nhập task_id (chỉ gồm số) để thử.",true);return;}
     S.testResult={head:"đang gọi qua máy chủ Google…",body:""};render();
     try{const r=await sheetPost({action:"test",taskId:id});const a=r.status===200&&r.json?analyzeTask(r.json):null;
@@ -1556,7 +1555,7 @@ async function loadTask(id){
   return a;
 }
 async function syncStores(ids,auto){
-  if(STORE.mode==="sheet"){
+  if(STORE.mode==="sheet"&&!SET.token){
     if(S.syncing||!STORE.serverSync) return;
     if(STORE.queue.length) await flushSheet();
     S.syncing=true;render();
@@ -1637,7 +1636,7 @@ async function boot(){
   render();
   setInterval(()=>{STORE.mode==="sheet"?pollSheet():pollFile();},15000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)(STORE.mode==="sheet"?pollSheet():pollFile());});
-  setInterval(()=>{const m=Number(SET.autoMin)||0;if(STORE.mode==="sheet"||!SET.token||!m||document.hidden||S.syncing)return;const at=DATA.lastSync&&DATA.lastSync.at;
+  setInterval(()=>{const m=Number(SET.autoMin)||0;if(!SET.token||!m||document.hidden||S.syncing)return;const at=DATA.lastSync&&DATA.lastSync.at;
     if(!at||(Date.now()-new Date(at).getTime())/60000>=m)syncStores([],true);},60000);
 }
 boot();
