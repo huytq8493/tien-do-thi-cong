@@ -783,9 +783,9 @@ function calc(st){
   return {st,man,wfs,plan,planOn,mApp:mApp.length,mDone,wApp:wApp.length,wDone:wfs.filter(x=>x.s==="Hoàn thành").length,wAvg:wApp.length?wSum/100/wApp.length:0,prog,late,soon,status,sk,opened,dKT,phase,grp};
 }
 function tpls(){const t=cfg().templates;return Array.isArray(t)&&t.length?t:DEFAULT_TEMPLATES;}
-const BUILD=["Relayout","Xây mới","Sửa chữa"],BIZ=["Shop","Fashion","Electronics","Mom&Baby","Homeappliances"];
+const BUILD=["Relayout","Xây mới","Sửa chữa"],BIZ=["Shop","Fashion","Electronics","Mom&Baby","Homeappliances","Lifestyle","Clinic"];
 function buildOf(st){if(st.buildType!=null&&st.buildType!=="")return st.buildType;const t=String(st.type||"")+" "+String(st.name||"");if(/relayout/i.test(t))return "Relayout";if(/sửa chữa/i.test(t))return "Sửa chữa";if(/xây mới/i.test(t))return "Xây mới";return "";}
-function bizOf(st){if(Array.isArray(st.biz))return st.biz;const t=String(st.type||"")+" "+String(st.name||"");const o=[];if(/shop/i.test(t))o.push("Shop");if(/fashion|\bfsh\b/i.test(t))o.push("Fashion");if(/electronic/i.test(t))o.push("Electronics");if(/mom/i.test(t))o.push("Mom&Baby");if(/home ?appliance/i.test(t))o.push("Homeappliances");return o;}
+function bizOf(st){if(Array.isArray(st.biz))return st.biz;const t=String(st.type||"")+" "+String(st.name||"");const o=[];if(/shop/i.test(t))o.push("Shop");if(/fashion|\bfsh\b/i.test(t))o.push("Fashion");if(/electronic/i.test(t))o.push("Electronics");if(/mom/i.test(t))o.push("Mom&Baby");if(/home ?appliance/i.test(t))o.push("Homeappliances");if(/lifestyle/i.test(t))o.push("Lifestyle");if(/clinic/i.test(t))o.push("Clinic");return o;}
 function typeLabel(st,sep){const b=buildOf(st),z=bizOf(st);if(!b&&!z.length)return st.type||"";return [b,z.join(" / ")].filter(Boolean).join(sep||" – ");}
 function tplOf(st){
   const P=st.plan||{};
