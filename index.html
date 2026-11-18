@@ -407,6 +407,150 @@ tfoot td{font-size:12px;color:var(--muted);background:var(--sunk)!important;bord
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:var(--late);color:#fff}
 @media (max-width:900px){#toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+/* calendar (Cập nhật lịch) */
+.cal-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cal-bar h2{margin:0;font-size:18px;font-weight:700;min-width:150px;text-transform:capitalize}
+.cal-bar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.cal .dow{padding:8px 10px;font-size:12px;font-weight:600;color:var(--muted);background:var(--sunk);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cal .day{min-height:118px;padding:6px 6px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+.cal .day.out{background:var(--sunk)} .cal .day.out .dn{color:var(--line-2)}
+.cal .day.wk{background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+.cal .dn{font-size:12.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between}
+.cal .day.today .dn b{background:var(--late);color:#fff;border-radius:999px;padding:0 7px}
+.ev{display:flex;align-items:center;gap:5px;width:100%;min-width:0;border:1px solid transparent;border-radius:6px;padding:2px 6px;font-size:12px;line-height:1.35;cursor:pointer;text-align:left;font-weight:500}
+.ev span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ev i{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.02em;flex:none;opacity:.85}
+.ev.kt{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
+.ev.ho{background:var(--run-soft);color:var(--run)}
+.ev.ho.plan{background:transparent;border:1px dashed color-mix(in srgb,var(--run) 60%,transparent)}
+.ev.done{background:var(--na-soft);color:var(--muted);border-color:transparent}
+.ev.hold{background:var(--hold-soft);color:var(--hold)}
+.ev.chg::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--soon);flex:none;margin-left:auto}
+.ev:hover{filter:brightness(.97);box-shadow:0 0 0 1px currentColor inset}
+.more{font-size:11.5px;color:var(--muted);background:none;border:0;padding:0 6px;cursor:pointer;text-align:left}
+.cal-legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:10px 2px 0}
+.cal-legend .ev{width:auto;cursor:default;pointer-events:none}
+.agenda{margin-top:18px}
+.ag-day{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ag-day:last-child{border-bottom:0}
+.ag-date b{display:block;font-size:20px;font-weight:700;line-height:1.1}.ag-date span{font-size:12px;color:var(--muted)}
+.ag-date.today b{color:var(--late)}
+.ag-list{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ag-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;cursor:pointer;background:none;border:0;padding:0;text-align:left}
+.ag-it .ev{width:auto;pointer-events:none;margin-top:1px;white-space:nowrap}
+.ag-it .t b{font-weight:600}.ag-it .t div{font-size:12.5px;color:var(--muted)}
+.ag-it:hover .t b{color:var(--accent)}
+@media (max-width:760px){.cal .day{min-height:64px;padding:4px}.cal .ev span,.cal .ev i{display:none}.cal .ev{height:8px;padding:0;border-radius:4px}.cal .more{font-size:10.5px;padding:0}.cal .dow{padding:6px 4px;text-align:center}.ag-day{grid-template-columns:64px minmax(0,1fr);padding:12px}.ag-it{grid-template-columns:1fr;gap:4px}}
+
+.mdl-bg{position:fixed;inset:0;z-index:50;background:rgba(10,20,15,.45);display:grid;place-items:center;padding:16px}
+.mdl{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 60px -20px rgba(0,0,0,.45);width:min(520px,100%);padding:20px;display:flex;flex-direction:column;gap:12px}
+.mdl h3{margin:0;font-size:16px}.mdl .chg{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.mdl .chg b{font-weight:600}.mdl .err{color:var(--late);font-size:12.5px;min-height:1em}.mdl .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.sched-txt{width:100%;min-height:380px;font-size:14px;line-height:1.6;font-family:var(--f),"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji";resize:vertical;overflow:hidden}
+.sched-tbl td.wrap{white-space:normal;min-width:220px}
+.chk-row{display:flex;flex-wrap:wrap;gap:8px}.chk{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;background:var(--surface)}.chk:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}.chk input{accent-color:var(--accent);margin:0}
+.plist td,.plist th{vertical-align:top}.plist td.nm{font-weight:600;white-space:normal;min-width:180px}.plist td.wrap{white-space:normal;min-width:280px;font-size:12.5px;color:var(--ink-2)}
+.cfg-mat{margin:-2px 0 8px;font-size:12.5px;padding:6px 10px;background:var(--sunk)}
+.pc-tabs{padding:0 16px 12px;display:flex}
+.pc-sum{padding:0 16px 12px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.pcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.pc-dow{padding:7px 10px;font-size:12px;font-weight:600;color:var(--muted);background:var(--sunk);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pc-day{min-height:120px;padding:6px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+.pc-day.past{background:color-mix(in srgb,var(--sunk) 55%,var(--surface))}
+.pc-day.today{box-shadow:inset 0 0 0 2px var(--late)}
+.pc-day.kt{background:var(--accent-soft)}
+.pc-dn{display:flex;align-items:baseline;gap:6px;font-size:12px;color:var(--muted)}.pc-dn b{color:var(--ink);font-size:13px}
+.pc-dn em{margin-left:auto;font-style:normal;font-size:11px;font-weight:700;color:var(--accent)}.pc-dn em.td{color:var(--late)}
+.pc-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:2px}
+.pc-mat{display:flex;align-items:flex-start;gap:5px;width:100%;text-align:left;border:1px solid var(--line-2);background:var(--surface);border-radius:7px;padding:3px 6px;font-size:12px;line-height:1.3;cursor:pointer;color:var(--ink-2)}
+.pc-mat i{font-style:normal;font-weight:700;flex:none}.pc-mat span{min-width:0;overflow-wrap:anywhere}
+.pc-mat.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}.pc-mat.soon{background:var(--soon-soft);border-color:transparent;color:var(--soon)}.pc-mat.late{background:var(--late-soft);border-color:transparent;color:var(--late);font-weight:600}
+.pc-mat:hover{box-shadow:0 0 0 1px currentColor inset}
+.pc-it{border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 12%,var(--surface));border-radius:5px;padding:2px 6px;font-size:12px;line-height:1.3;min-width:0}
+.pc-it span{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pc-it small{color:var(--muted);font-size:11px}
+.pc-it.done{opacity:.55}.pc-it.done span::before{content:"✓ "}.pc-it.late{box-shadow:inset 0 0 0 1px var(--late)}.pc-it.tail{border-left-style:dashed;background:transparent}
+@media (max-width:760px){.pcal{grid-template-columns:1fr}.pc-dow{display:none}.pc-day{min-height:0}.pc-day.empty{display:none}}
+.pc-today{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 16px 14px}
+.pc-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);min-width:0}
+.pc-card.warn{border-color:color-mix(in srgb,var(--late) 45%,transparent);background:var(--late-soft)}
+.pc-card h4{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.pc-card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pc-card li{display:flex;flex-direction:column;font-size:13px;min-width:0}.pc-card li span{color:var(--muted);font-size:12px}
+.pc-card p{margin:0;font-size:13px}.pc-card .hint{font-size:11.5px;color:var(--muted);margin-top:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--na)}.dot.run{background:var(--run)}.dot.late{background:var(--late)}.dot.ok{background:var(--ok)}.dot.soon{background:var(--soon)}
+.pc-link{all:unset;cursor:pointer;display:flex;flex-direction:column}.pc-link:hover b{color:var(--accent)}.pc-link span{color:var(--muted);font-size:12px}.pc-link em{font-style:normal;color:var(--late);font-weight:600}
+.pc-mlist{display:flex;flex-wrap:wrap;gap:6px}
+.pc-weeks{display:flex;flex-direction:column;gap:12px;padding:0 16px 8px}
+.pc-wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:auto auto repeat(var(--lanes),30px);row-gap:5px;border:1px solid var(--line);border-radius:12px;overflow:hidden;padding-bottom:8px;position:relative}
+.pc-bg{grid-row:1/-1;border-right:1px solid var(--line);margin-bottom:-8px}.pc-bg:nth-child(7){border-right:0}
+.pc-bg.past{background:color-mix(in srgb,var(--sunk) 60%,transparent)}.pc-bg.kt{background:var(--accent-soft)}.pc-bg.today{background:color-mix(in srgb,var(--late) 7%,transparent)}
+.pc-hd{grid-row:1;padding:7px 8px 4px;display:flex;align-items:baseline;gap:6px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);z-index:1;min-width:0}
+.pc-hd b{color:var(--ink);font-size:13.5px}.pc-hd em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:700;color:var(--accent);white-space:nowrap}.pc-hd em.td{color:var(--late)}
+.pc-hd.today b{background:var(--late);color:#fff;border-radius:6px;padding:0 6px}
+.pc-mrow{grid-row:2;padding:4px 5px 0;display:flex;flex-direction:column;gap:4px;z-index:1;min-width:0;min-height:6px}
+.pc-m{display:flex;align-items:center;gap:5px;max-width:100%;text-align:left;border:1px dashed var(--line-2);background:var(--surface);border-radius:8px;padding:3px 7px;font-size:12px;line-height:1.3;cursor:pointer;color:var(--ink-2);font-weight:500}
+.pc-m i{font-style:normal;flex:none}.pc-m span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-m.ok{border:1px solid transparent;background:var(--ok-soft);color:var(--ok)}.pc-m.soon{border:1px solid var(--soon);background:var(--soon-soft);color:var(--soon)}.pc-m.late{border:1px solid var(--late);background:var(--late-soft);color:var(--late);font-weight:700}
+.pc-m:hover{filter:brightness(.96)}
+.pc-bar{z-index:2;margin:0 3px;border-radius:7px;padding:0 9px;display:flex;align-items:center;gap:8px;min-width:0;font-size:12.5px;cursor:pointer;border:1px solid transparent;text-align:left;font-family:inherit}
+.pc-bar b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.pc-bar span{font-size:11px;opacity:.85;white-space:nowrap;margin-left:auto}
+.pc-bar.plan{background:var(--surface);border-color:var(--line-2);color:var(--ink-2)}
+.pc-bar.run{background:var(--run);color:#fff}
+.pc-bar.late{background:var(--late);color:#fff}
+.pc-bar.ok{background:var(--ok-soft);color:var(--ok)}
+.pc-bar.cl{border-top-left-radius:0;border-bottom-left-radius:0;margin-left:0}.pc-bar.cr{border-top-right-radius:0;border-bottom-right-radius:0;margin-right:0}
+.pc-bar.tail{border:1px dashed var(--line-2);background:transparent;color:var(--muted);font-size:11.5px;cursor:default;justify-content:center}
+.pc-bar:hover:not(.tail){box-shadow:0 2px 8px -2px rgba(0,0,0,.25)}
+.pc-legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 16px 14px;font-size:12px;color:var(--muted)}
+.pc-legend span{display:inline-flex;align-items:center;gap:6px}.pc-legend i{width:18px;height:10px;border-radius:3px;display:inline-block}
+.pc-legend i.run{background:var(--run)}.pc-legend i.late{background:var(--late)}.pc-legend i.ok{background:var(--ok-soft);box-shadow:inset 0 0 0 1px var(--ok)}.pc-legend i.plan{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2)}
+.pc-agenda{display:none}
+.pa-day{padding:10px 16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}.pa-day.today{background:color-mix(in srgb,var(--late) 6%,transparent)}.pa-day.kt{background:var(--accent-soft)}
+.pa-d{display:flex;gap:8px;align-items:baseline}.pa-d em{font-style:normal;font-size:11px;font-weight:700;color:var(--accent)}.pa-d em.td{color:var(--late)}
+.pa-it{all:unset;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--line-2)}.pa-it.run{background:var(--run);color:#fff;border-color:transparent}.pa-it.late{background:var(--late);color:#fff;border-color:transparent}.pa-it.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.pa-on{font-size:12px;color:var(--muted)}
+@media (max-width:900px){.pc-today{grid-template-columns:1fr}}
+@media (max-width:760px){.pc-weeks{display:none}.pc-agenda{display:block}}
+.ov-me{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:13.5px}
+.ov-me .in{max-width:240px;padding:6px 10px}
+.ov-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ov-k{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow);min-width:0}
+.ov-k:hover{border-color:var(--line-2)}.ov-k:focus-visible{outline:2px solid var(--accent)}
+.ov-k .l{font-size:13px;color:var(--muted);font-weight:500}.ov-k b{font-size:30px;font-weight:700;line-height:1.15}.ov-k .s{font-size:12px;color:var(--muted)}
+.ov-k.warn b{color:var(--soon)}.ov-k.bad b{color:var(--late)}.ov-k.bad{border-color:color-mix(in srgb,var(--late) 35%,var(--line))}.ov-k.good b{color:var(--ok)}
+@media (max-width:900px){.ov-kpis{grid-template-columns:1fr 1fr}}
+.ov-list{overflow:hidden}
+.ov-head,.ov-row{display:grid;grid-template-columns:minmax(190px,1.4fr) 104px 104px minmax(130px,.9fr) minmax(140px,1fr) minmax(190px,1.5fr) 130px 18px;gap:14px;align-items:center;padding:12px 16px}
+.ov-head{background:var(--sunk);font-size:12px;font-weight:600;color:var(--muted);padding-top:9px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.ov-row{text-decoration:none;color:inherit;border-bottom:1px solid var(--line);position:relative}
+.ov-row:last-child{border-bottom:0}.ov-row:hover{background:var(--sunk)}
+.ov-row.bad::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--late)}
+.ov-cd{text-align:center;border-radius:10px;padding:6px 4px;background:var(--sunk)}.ov-cd b{display:block;font-size:17px;font-weight:700;line-height:1.15}.ov-cd span{font-size:11px;color:var(--muted)}
+.ov-cd.late{background:var(--late-soft);color:var(--late)}.ov-cd.soon{background:var(--soon-soft);color:var(--soon)}.ov-cd.ok{background:var(--ok-soft);color:var(--ok)}
+.ov-nm{min-width:0;display:flex;flex-direction:column}.ov-nm b{font-weight:600;font-size:14.5px;line-height:1.35}.ov-nm span{font-size:12.5px;color:var(--muted)}
+.ov-kt{display:flex;flex-direction:column;gap:2px;font-size:13px}.ov-kt b{font-weight:700}.ov-kt span{font-size:12px;color:var(--muted)}.ov-kt.late b,.ov-kt.late span{color:var(--late)}.ov-kt.soon b,.ov-kt.soon span{color:var(--soon)}.ov-kt.ok b{color:var(--ok)}
+.ov-ho{display:flex;flex-direction:column;gap:2px;font-size:13px}.ov-ho b{font-weight:600}.ov-ho span{font-size:12px;color:var(--muted)}
+.ov-st,.ov-td,.ov-is,.ov-pg{min-width:0;display:flex;flex-direction:column;gap:3px;font-size:13px}
+.ov-lb{display:none;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.stg{font-weight:600}.stg.run{color:var(--run)}.stg.wait{color:var(--soon)}.stg.ok{color:var(--ok)}.ov-st span{font-size:12px;color:var(--muted)}
+.doing{color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ov-note{font-size:12.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}.ov-note b{font-weight:600}
+.iss{font-size:12.5px;font-weight:600}.iss.late{color:var(--late)}.iss.soon{color:var(--soon)}.iss.ok{color:var(--ok)}.iss.hold{color:var(--hold)}
+.ov-pg .pb{display:flex;align-items:center;gap:8px}.ov-pg .bar{flex:1}
+.ov-go{color:var(--muted);transform:scaleX(-1);display:grid}
+.ov-more{margin-top:22px}.ov-more>summary{cursor:pointer;font-weight:600;font-size:14px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);list-style:none}
+.ov-more>summary::before{content:"▸ ";color:var(--muted)}.ov-more[open]>summary::before{content:"▾ "}.ov-more[open]>summary{margin-bottom:12px}
+@media (max-width:1000px){.ov-head{display:none}.ov-row{grid-template-columns:1fr 1fr;gap:10px 14px;align-items:start}.ov-row>.ov-nm,.ov-row>.ov-st,.ov-row>.ov-td,.ov-row>.ov-is,.ov-row>.ov-pg{grid-column:1/-1}.ov-lb{display:block}.ov-go{display:none}}
+.needs{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:6px}.needs .lbl{font-size:11.5px}
+.mchip{font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--na-soft);color:var(--muted);border:1px solid var(--line)}
+.mchip.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}.mchip.late{background:var(--late-soft);color:var(--late);border-color:transparent}.mchip.soon{background:var(--soon-soft);color:var(--soon);border-color:transparent}
+.lackw{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--late)}.lackw svg.i{width:15px;height:15px}
+.item-main.dl-main{grid-template-columns:28px minmax(0,1fr) 150px}
+.dchk{width:24px;height:24px;border-radius:7px;border:2px solid var(--line-2);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:transparent;padding:0}
+.dchk svg.i{width:14px;height:14px;stroke-width:3}.dchk.on{background:var(--ok);border-color:var(--ok);color:#fff}
+@media (max-width:820px){.item-main.dl-main{grid-template-columns:28px minmax(0,1fr)}.item-main.dl-main .warn{grid-column:2;text-align:left}}
+.mdl-add{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto}.ad-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.ad-2{grid-template-columns:1fr}}
 .raw{max-height:280px;overflow:auto;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12px;white-space:pre-wrap;word-break:break-all;margin:0;font-family:ui-monospace,Menlo,Consolas,monospace}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hero-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:-6px}
@@ -457,7 +601,7 @@ tfoot td{font-size:12px;color:var(--muted);background:var(--sunk)!important;bord
 .cp-wf .mb i{position:absolute;inset:0 auto 0 0;border-radius:4px}
 .cp-wf .pv{text-align:right;font-size:13px;display:flex;gap:5px;justify-content:flex-end;align-items:center}
 @media (max-width:600px){.cp-wf{grid-template-columns:24px minmax(0,1fr) 64px}.cp-wf .mb{display:none}}
-.cp-dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;border-top:1px solid var(--line);padding-top:12px}
+.cp-dates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;border-top:1px solid var(--line);padding-top:12px}
 .cp-dates .in{padding:6px 9px}
 @media (max-width:600px){.cp-dates{grid-template-columns:1fr 1fr}.cp-side{width:100%}.cp-side div{flex:1;min-width:0}}
 .gantt-wrap{overflow-x:auto}
@@ -524,13 +668,13 @@ tfoot td{font-size:12px;color:var(--muted);background:var(--sunk)!important;bord
 
 <script src="config.js"></script>
 <script>
-const DEFAULT_CONFIG = {"manual":[{"group":"Chuẩn bị mặt bằng","hint":"Xác nhận NCC đã nhận MB (tin nhắn/nhóm Zalo HOTOSU)","id":"m1","name":"Push NCC nhận mặt bằng","offset":28},{"group":"Chuẩn bị mặt bằng","hint":"Biên bản bàn giao MB, ảnh hiện trạng","id":"m2","name":"Nhận bàn giao MB","offset":25},{"group":"Chuẩn bị mặt bằng","hint":"Link group Zalo, danh sách thành viên","id":"m3","name":"Tạo group Zalo thi công","offset":24},{"group":"Chuẩn bị mặt bằng","hint":"Ảnh đồng hồ điện, loại 1 pha/3 pha","id":"m4","name":"Kiểm tra hiện trạng đồng hồ điện","offset":22},{"group":"Chuẩn bị mặt bằng","hint":"Hình ảnh bản vẽ trong nhóm HOTOSU","id":"m5","name":"Push NCC xây dựng lấy bản vẽ thiết kế","offset":23},{"group":"Vật tư & đội BT","hint":"Link branch-opening trên Inside","id":"m6","name":"Cập nhật vật tư trên hệ thống Inside","offset":19},{"group":"Vật tư & đội BT","hint":"Mã đơn ODS / link task","id":"m7","name":"Đẩy Task ODS","offset":18},{"group":"Vật tư & đội BT","hint":"Lịch thi công, nhân sự đội BT","id":"m8","name":"Sắp xếp lịch thi công đội BT","offset":15},{"group":"Vật tư & đội BT","hint":"Số đơn công tác","id":"m9","name":"Tạo đơn công tác BT","offset":14}],"workflows":[{"id":"w1","name":"WF thi công chi nhánh mới","steps":[{"n":"B1. Khảo sát mặt bằng (*)","p":0},{"n":"B1.1. Nhận bản vẽ Hotosu & xử lý bản vẽ","p":0},{"n":"B2. Hành chánh mua hàng và cấp phát tại chi nhánh khai trương","p":33},{"n":"B2.1. BTKT nhận vật tư/thiết bị thi công(*)","p":33},{"n":"B2.2. IT Helpdesk nhận vật tư/thiết bị thi công (*)","p":33},{"n":"B3. Chuyển vật tư/thiết bị tồn về kho (*)","p":67}]},{"id":"w2","name":"WF thi công xây dựng","steps":[{"n":"B1. Dự toán chi phí xây dựng","p":0},{"n":"B2. Phê duyệt dự toán chi phí xây dựng","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu xây dựng","p":25},{"n":"B4. Ký quyết toán chi phí xây dựng","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí xây dựng","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w3","name":"WF thi công thạch cao","steps":[{"n":"B1. Dự toán chi phí thi công thạch cao","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công thạch cao","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công thạch cao","p":25},{"n":"B4. Ký quyết toán chi phí thi công thạch cao","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công thạch cao","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w4","name":"WF thi công cửa cuốn","steps":[{"n":"B1. Dự toán chi phí thi công cửa cuốn","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công cửa cuốn","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công cửa cuốn","p":25},{"n":"B4. Ký quyết toán chi phí thi công cửa cuốn","p":38},{"n":"B5. VHBT quyết toán chi phí thi công cửa cuốn","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w5","name":"WF thi công kính","steps":[{"n":"B1. Dự toán chi phí thi công kính","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công kính","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công kính & quầy/tủ/kệ","p":25},{"n":"B4. Ký quyết toán chi phí thi công kính","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công kính","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w6","name":"WF thi công logo","steps":[{"n":"B1. Dự toán chi phí thi công logo","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công logo","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công logo","p":25},{"n":"B4. Ký quyết toán chi phí thi công logo","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công logo","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w7","name":"WF thi công bảng hiệu","steps":[{"n":"B1. Dự toán chi phí thi công bảng hiệu","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công bảng hiệu","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công bảng hiệu","p":25},{"n":"B4. Ký quyết toán chi phí thi công bảng hiệu","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công bảng hiệu","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w8","name":"WF lắp đặt đồng hồ điện","steps":[{"n":"B1. Khảo sát yêu cầu lắp đặt","p":0},{"n":"B1.1. Trao đổi thông tin sử dụng điện/nước","p":0},{"n":"B1.2. Cấp đồng hồ phụ","p":0},{"n":"B1.3. Chốt chỉ số điện/nước","p":0},{"n":"B1.4. Thanh toán chi phí điện/nước dùng tạm","p":0},{"n":"B2. [PL] Chuẩn bị hồ sơ nộp Điện lực","p":9},{"n":"B3. Xác nhận kết quả nhận hồ sơ","p":18},{"n":"B4. Nộp hồ sơ Điện lực","p":27},{"n":"B4(*). QLCH nộp hồ sơ sang tên đồng hồ điện","p":27},{"n":"B4.0. Pháp lý bổ sung/điều chỉnh hồ sơ","p":27},{"n":"B4.1. Theo dõi tiến độ nộp hồ sơ sang tên","p":27},{"n":"B4.2. [HC] Cập nhật thông tin mã KH trên HR","p":27},{"n":"B5. Điện lực khảo sát","p":36},{"n":"B6. Xác nhận phương án thực hiện","p":45},{"n":"B7. Xác nhận chi phí","p":55},{"n":"B8. [HC] Thực hiện chi trả chi phí lắp đặt/nâng cấp","p":64},{"n":"B8.1. Cung cấp hợp đồng","p":64},{"n":"B8.1.1. Ký hợp đồng điện tử","p":64},{"n":"B8.1.2. Ký hợp đồng giấy","p":64},{"n":"B8.2. Cung cấp chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":64},{"n":"B8.2.1. Cập nhật chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":64},{"n":"B9. [BT] Giám sát & nghiệm thu lắp đặt/nâng cấp đồng hồ điện","p":73},{"n":"B9.1. Đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2. [HC] Thực hiện chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2.1. Cung cấp chứng từ chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2.2. Cập nhật chứng từ chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B10. Bảo trì đấu tạm/nâng công suất CB đồng hồ điện","p":82},{"n":"B10.1. [HC] Chi trả chi phí đấu tạm đồng hồ điện","p":82},{"n":"B10.2. Cung cấp chứng từ chi trả chi phí đấu tạm ĐHĐ","p":82},{"n":"B10.3. Cập nhật chứng từ chi trả chi phí đấu tạm ĐHĐ","p":82},{"n":"B11. [VHBT] Xác nhận tiến độ thực hiện","p":91},{"n":"B11.1. [PL] Chuẩn bị lại hồ sơ","p":91},{"n":"B11.2. Chi nhánh nộp lại hồ sơ Điện lực","p":91},{"n":"B11.3. Điện lực khảo sát","p":91},{"n":"B11.3.1. Xác nhận chi phí lắp đặt/nâng cấp","p":91},{"n":"B11.3.2. [HC] Chi trả chi phí lắp đặt/nâng cấp","p":91},{"n":"B11.3.3. Cung cấp chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":91},{"n":"B11.3.4. Cập nhật chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":91},{"n":"B11.3.5. Cung cấp hợp đồng","p":91},{"n":"B11.3.6. Ký hợp đồng điện tử","p":91},{"n":"B11.3.7. Ký hợp đồng giấy","p":91},{"n":"B11.4. Chi nhánh giám sát & nghiệm thu lắp đặt/nâng cấp","p":91}]}]};
-const DEFAULT_TEMPLATES=[{"id":"shop","name":"Shop","match":"","items":[{"id":"i1","name":"Xây dựng Công Phú - hoàn thiện/sơn nước","start":-12,"days":7,"tail":""},{"id":"i2","name":"MEP/bảo trì điện","start":-12,"days":11,"tail":""},{"id":"i3","name":"MEP/bảo trì điện lạnh","start":-12,"days":12,"tail":""},{"id":"i4","name":"MEP/IT helpdesk","start":-6,"days":6,"tail":"Trực Khai Trương"},{"id":"i5","name":"Cửa cuốn","start":-12,"days":1,"tail":""},{"id":"i6","name":"Thạch cao","start":-10,"days":3,"tail":""},{"id":"i7","name":"Bảng hiệu","start":-10,"days":6,"tail":""},{"id":"i8","name":"Logo","start":-6,"days":1,"tail":""},{"id":"i9","name":"Quầy tủ kệ","start":-6,"days":5,"tail":""},{"id":"i10","name":"Cửa/vách nhôm kính","start":-4,"days":2,"tail":""}],"materials":[{"id":"v1","name":"Vật tư điện (cáp điện, ruột gà, tủ điện, CB, công tắc, ổ cắm...)","offset":-13},{"id":"v2","name":"Vật tư điện lạnh (ống đồng, si, xốp cách nhiệt, ống nước...)","offset":-13},{"id":"v3","name":"Máy lạnh","offset":-13},{"id":"v4","name":"Cáp mạng","offset":-13},{"id":"v5","name":"Vật tư điện (đèn chiếu sáng, cáp điện 4x16mm2)","offset":-8},{"id":"v6","name":"Thiết bị mạng (tủ mạng, switch, router, wifi, camera, đầu ghi, loa, amply)","offset":-7},{"id":"v7","name":"Thiết bị PCCC","offset":-5},{"id":"v8","name":"Mâm kệ","offset":-5},{"id":"v9","name":"Thiết bị tin học (máy check giá, máy tính kho, laptop, máy in bill, máy in nhiệt, ipad, két tiền cashier, cổng từ (bao gồm bộ thiết bị RFID))","offset":-4}]},{"id":"shopfsh","name":"Shop + Fashion","match":"fashion","items":[{"id":"i1","name":"Xây dựng Công Phú - hoàn thiện/sơn nước","start":-14,"days":9,"tail":""},{"id":"i2","name":"MEP/bảo trì điện","start":-14,"days":13,"tail":""},{"id":"i3","name":"MEP/bảo trì điện lạnh","start":-14,"days":14,"tail":""},{"id":"i4","name":"MEP/IT helpdesk","start":-7,"days":7,"tail":"Trực Khai Trương"},{"id":"i5","name":"Cửa cuốn","start":-14,"days":1,"tail":""},{"id":"i6","name":"Thạch cao","start":-12,"days":4,"tail":""},{"id":"i7","name":"Bảng hiệu","start":-10,"days":6,"tail":""},{"id":"i8","name":"Logo","start":-6,"days":1,"tail":""},{"id":"i9","name":"Quầy tủ kệ","start":-6,"days":5,"tail":""},{"id":"i10","name":"Cửa/vách nhôm kính","start":-4,"days":2,"tail":""}],"materials":[{"id":"v1","name":"Vật tư điện (cáp điện, ruột gà, tủ điện, CB, công tắc, ổ cắm...)","offset":-15},{"id":"v2","name":"Vật tư điện lạnh (ống đồng, si, xốp cách nhiệt, ống nước...)","offset":-15},{"id":"v3","name":"Máy lạnh","offset":-15},{"id":"v4","name":"Cáp mạng","offset":-15},{"id":"v5","name":"Vật tư điện (đèn chiếu sáng, cáp điện 4x16mm2)","offset":-8},{"id":"v6","name":"Thiết bị mạng (tủ mạng, switch, router, wifi, camera, đầu ghi, loa, amply)","offset":-8},{"id":"v7","name":"Thiết bị PCCC","offset":-5},{"id":"v8","name":"Mâm kệ","offset":-5},{"id":"v9","name":"Thiết bị tin học (máy check giá, máy tính kho, laptop, máy in bill, máy in nhiệt, ipad, két tiền cashier, cổng từ (bao gồm bộ thiết bị RFID))","offset":-4}]}];
+const DEFAULT_CONFIG = {"manual":[{"group":"Chuẩn bị mặt bằng","hint":"Link group Zalo, danh sách thành viên","id":"m3","name":"Tạo group Zalo thi công","offset":24},{"group":"Vật tư & đội BT","hint":"Lịch thi công, nhân sự đội BT","id":"m8","name":"Sắp xếp lịch thi công đội BT","offset":15},{"group":"Vật tư & đội BT","hint":"Số đơn công tác","id":"m9","name":"Tạo đơn công tác BT","offset":14}],"workflows":[{"id":"w1","name":"WF thi công chi nhánh mới","steps":[{"n":"B1. Khảo sát mặt bằng (*)","p":0},{"n":"B1.1. Nhận bản vẽ Hotosu & xử lý bản vẽ","p":0},{"n":"B2. Hành chánh mua hàng và cấp phát tại chi nhánh khai trương","p":33},{"n":"B2.1. BTKT nhận vật tư/thiết bị thi công(*)","p":33},{"n":"B2.2. IT Helpdesk nhận vật tư/thiết bị thi công (*)","p":33},{"n":"B3. Chuyển vật tư/thiết bị tồn về kho (*)","p":67}]},{"id":"w2","name":"WF thi công xây dựng","steps":[{"n":"B1. Dự toán chi phí xây dựng","p":0},{"n":"B2. Phê duyệt dự toán chi phí xây dựng","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu xây dựng","p":25},{"n":"B4. Ký quyết toán chi phí xây dựng","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí xây dựng","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w3","name":"WF thi công thạch cao","steps":[{"n":"B1. Dự toán chi phí thi công thạch cao","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công thạch cao","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công thạch cao","p":25},{"n":"B4. Ký quyết toán chi phí thi công thạch cao","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công thạch cao","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w4","name":"WF thi công cửa cuốn","steps":[{"n":"B1. Dự toán chi phí thi công cửa cuốn","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công cửa cuốn","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công cửa cuốn","p":25},{"n":"B4. Ký quyết toán chi phí thi công cửa cuốn","p":38},{"n":"B5. VHBT quyết toán chi phí thi công cửa cuốn","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w5","name":"WF thi công kính","steps":[{"n":"B1. Dự toán chi phí thi công kính","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công kính","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công kính & quầy/tủ/kệ","p":25},{"n":"B4. Ký quyết toán chi phí thi công kính","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công kính","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w6","name":"WF thi công logo","steps":[{"n":"B1. Dự toán chi phí thi công logo","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công logo","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công logo","p":25},{"n":"B4. Ký quyết toán chi phí thi công logo","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công logo","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w7","name":"WF thi công bảng hiệu","steps":[{"n":"B1. Dự toán chi phí thi công bảng hiệu","p":0},{"n":"B2. Phê duyệt dự toán chi phí thi công bảng hiệu","p":12},{"n":"B3. Báo cáo kết quả giám sát & nghiệm thu nhà thầu thi công bảng hiệu","p":25},{"n":"B4. Ký quyết toán chi phí thi công bảng hiệu","p":38},{"n":"B5. Hành chánh tiếp nhận quyết toán chi phí thi công bảng hiệu","p":50},{"n":"B6. Verify PO","p":62},{"n":"B.7 Approved PO","p":75},{"n":"B.8 Nhận PO","p":88}]},{"id":"w8","name":"WF lắp đặt đồng hồ điện","steps":[{"n":"B1. Khảo sát yêu cầu lắp đặt","p":0},{"n":"B1.1. Trao đổi thông tin sử dụng điện/nước","p":0},{"n":"B1.2. Cấp đồng hồ phụ","p":0},{"n":"B1.3. Chốt chỉ số điện/nước","p":0},{"n":"B1.4. Thanh toán chi phí điện/nước dùng tạm","p":0},{"n":"B2. [PL] Chuẩn bị hồ sơ nộp Điện lực","p":9},{"n":"B3. Xác nhận kết quả nhận hồ sơ","p":18},{"n":"B4. Nộp hồ sơ Điện lực","p":27},{"n":"B4(*). QLCH nộp hồ sơ sang tên đồng hồ điện","p":27},{"n":"B4.0. Pháp lý bổ sung/điều chỉnh hồ sơ","p":27},{"n":"B4.1. Theo dõi tiến độ nộp hồ sơ sang tên","p":27},{"n":"B4.2. [HC] Cập nhật thông tin mã KH trên HR","p":27},{"n":"B5. Điện lực khảo sát","p":36},{"n":"B6. Xác nhận phương án thực hiện","p":45},{"n":"B7. Xác nhận chi phí","p":55},{"n":"B8. [HC] Thực hiện chi trả chi phí lắp đặt/nâng cấp","p":64},{"n":"B8.1. Cung cấp hợp đồng","p":64},{"n":"B8.1.1. Ký hợp đồng điện tử","p":64},{"n":"B8.1.2. Ký hợp đồng giấy","p":64},{"n":"B8.2. Cung cấp chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":64},{"n":"B8.2.1. Cập nhật chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":64},{"n":"B9. [BT] Giám sát & nghiệm thu lắp đặt/nâng cấp đồng hồ điện","p":73},{"n":"B9.1. Đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2. [HC] Thực hiện chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2.1. Cung cấp chứng từ chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B9.2.2. Cập nhật chứng từ chi trả chi phí đấu nối nguồn vào tủ điện chi nhánh","p":73},{"n":"B10. Bảo trì đấu tạm/nâng công suất CB đồng hồ điện","p":82},{"n":"B10.1. [HC] Chi trả chi phí đấu tạm đồng hồ điện","p":82},{"n":"B10.2. Cung cấp chứng từ chi trả chi phí đấu tạm ĐHĐ","p":82},{"n":"B10.3. Cập nhật chứng từ chi trả chi phí đấu tạm ĐHĐ","p":82},{"n":"B11. [VHBT] Xác nhận tiến độ thực hiện","p":91},{"n":"B11.1. [PL] Chuẩn bị lại hồ sơ","p":91},{"n":"B11.2. Chi nhánh nộp lại hồ sơ Điện lực","p":91},{"n":"B11.3. Điện lực khảo sát","p":91},{"n":"B11.3.1. Xác nhận chi phí lắp đặt/nâng cấp","p":91},{"n":"B11.3.2. [HC] Chi trả chi phí lắp đặt/nâng cấp","p":91},{"n":"B11.3.3. Cung cấp chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":91},{"n":"B11.3.4. Cập nhật chứng từ chi trả chi phí lắp đặt/nâng cấp ĐHĐ","p":91},{"n":"B11.3.5. Cung cấp hợp đồng","p":91},{"n":"B11.3.6. Ký hợp đồng điện tử","p":91},{"n":"B11.3.7. Ký hợp đồng giấy","p":91},{"n":"B11.4. Chi nhánh giám sát & nghiệm thu lắp đặt/nâng cấp","p":91}]}]};
+const DEFAULT_TEMPLATES=[{"id":"shop","name":"Shop","match":"","items":[{"id":"i1","name":"Xây dựng Công Phú - hoàn thiện/sơn nước","start":-12,"days":7,"tail":"","mat":"Xi măng, cát, gạch, đá hoa cương, keo dán gạch, bột trét, sơn lót, sơn phủ, chống thấm"},{"id":"i2","name":"MEP/bảo trì điện","start":-12,"days":9,"tail":"","needs":["v1","v5","v7","v8"]},{"id":"i3","name":"MEP/bảo trì điện lạnh","start":-12,"days":9,"tail":"","needs":["v2","v3"]},{"id":"i4","name":"MEP/IT helpdesk","start":-6,"days":6,"tail":"Trực Khai Trương","needs":["v4","v6","v9"]},{"id":"i5","name":"Cửa cuốn","start":-12,"days":1,"tail":"","mat":"Bộ cửa cuốn (nan, ray, trục, hộp che), mô tơ, bộ điều khiển, khoá, bulông nở"},{"id":"i6","name":"Thạch cao","start":-10,"days":3,"tail":"","mat":"Khung xương, tấm thạch cao, vít, băng keo, bột xử lý mối nối"},{"id":"i7","name":"Bảng hiệu","start":-10,"days":6,"tail":"","mat":"Khung sắt hộp, mặt alu/mica, chữ nổi, đèn LED, nguồn LED, dây điện, vít nở"},{"id":"i8","name":"Logo","start":-6,"days":1,"tail":"","mat":"Logo mica/alu, đèn LED, nguồn LED, dây điện, vít nở"},{"id":"i9","name":"Quầy tủ kệ","start":-6,"days":5,"tail":"","mat":"Quầy thu ngân, tủ, kệ trưng bày, phụ kiện lắp đặt (vít, ke góc, chân tăng chỉnh)"},{"id":"i10","name":"Cửa/vách nhôm kính","start":-4,"days":2,"tail":"","mat":"Khung nhôm, kính cường lực, bản lề sàn, tay nắm, khoá, keo silicon"}],"materials":[{"id":"v1","name":"Vật tư điện (cáp điện, ruột gà, tủ điện, CB, công tắc, ổ cắm...)","offset":-13},{"id":"v2","name":"Vật tư điện lạnh (ống đồng, si, xốp cách nhiệt, ống nước...)","offset":-13},{"id":"v3","name":"Máy lạnh","offset":-13},{"id":"v4","name":"Cáp mạng","offset":-13},{"id":"v5","name":"Vật tư điện (đèn chiếu sáng, cáp điện 4x16mm2)","offset":-8},{"id":"v6","name":"Thiết bị mạng (tủ mạng, switch, router, wifi, camera, đầu ghi, loa, amply)","offset":-7},{"id":"v7","name":"Thiết bị PCCC","offset":-5},{"id":"v8","name":"Mâm kệ","offset":-5},{"id":"v9","name":"Thiết bị tin học (máy check giá, máy tính kho, laptop, máy in bill, máy in nhiệt, ipad, két tiền cashier, cổng từ (bao gồm bộ thiết bị RFID))","offset":-4}],"daily":[{"id":"d12","off":-12,"text":"Luồn dây điện vào ruột gà, ống simili, ống đồng, ống nước","needs":["v1","v2"]},{"id":"d11","off":-11,"text":"Treo ống đồng, ống nước, treo dàn lạnh, treo nguồn điện","needs":["v1","v2","v3"]},{"id":"d10","off":-10,"text":"Kết nối ống đồng, ống nước, treo nguồn điện","needs":["v1","v2"]},{"id":"d9","off":-9,"text":"Luồn và treo dây cáp mạng, kết nối dàn lạnh, chuyển dàn nóng lên mái","needs":["v4","v3"]},{"id":"d8","off":-8,"text":"Khoét lỗ đèn, kéo nguồn đèn, kéo nguồn tủ điện chính","needs":["v5"]},{"id":"d7","off":-7,"text":"Lắp tủ điện, lắp thiết bị kho, kéo nguồn khu vực bảo vệ, bảng hiệu","needs":["v1"]},{"id":"d6","off":-6,"text":"Lắp đèn, kết nối dàn nóng, kéo nguồn chờ counter","needs":["v5","v3"]},{"id":"d5","off":-5,"text":"Kéo nguồn và lắp thiết bị PCCC","needs":["v7"]},{"id":"d4","off":-4,"text":"Lắp mâm kệ kho, đấu điện quầy cash, lắp đèn sân","needs":["v8"]},{"id":"d3","off":-3,"text":"Chạy test và hoàn thiện máy lạnh, PCCC","needs":[]},{"id":"d2","off":-2,"text":"Lắp kệ toilet, máy lọc nước, tượng Chúa, rèm che nắng, kiểm đếm vật tư thừa","needs":[]},{"id":"d1","off":-1,"text":"Hướng dẫn, bàn giao cửa hàng cho QLKV, QLCN","needs":[]}]},{"id":"shopfsh","name":"Shop + Fashion","match":"fashion","items":[{"id":"i1","name":"Xây dựng Công Phú - hoàn thiện/sơn nước","start":-14,"days":9,"tail":"","mat":"Xi măng, cát, gạch, đá hoa cương, keo dán gạch, bột trét, sơn lót, sơn phủ, chống thấm"},{"id":"i2","name":"MEP/bảo trì điện","start":-14,"days":9,"tail":"","needs":["v1","v5","v7","v8"]},{"id":"i3","name":"MEP/bảo trì điện lạnh","start":-14,"days":9,"tail":"","needs":["v2","v3"]},{"id":"i4","name":"MEP/IT helpdesk","start":-7,"days":7,"tail":"Trực Khai Trương","needs":["v4","v6","v9"]},{"id":"i5","name":"Cửa cuốn","start":-14,"days":1,"tail":"","mat":"Bộ cửa cuốn (nan, ray, trục, hộp che), mô tơ, bộ điều khiển, khoá, bulông nở"},{"id":"i6","name":"Thạch cao","start":-12,"days":4,"tail":"","mat":"Khung xương, tấm thạch cao, vít, băng keo, bột xử lý mối nối"},{"id":"i7","name":"Bảng hiệu","start":-10,"days":6,"tail":"","mat":"Khung sắt hộp, mặt alu/mica, chữ nổi, đèn LED, nguồn LED, dây điện, vít nở"},{"id":"i8","name":"Logo","start":-6,"days":1,"tail":"","mat":"Logo mica/alu, đèn LED, nguồn LED, dây điện, vít nở"},{"id":"i9","name":"Quầy tủ kệ","start":-6,"days":5,"tail":"","mat":"Quầy thu ngân, tủ, kệ trưng bày, phụ kiện lắp đặt (vít, ke góc, chân tăng chỉnh)"},{"id":"i10","name":"Cửa/vách nhôm kính","start":-4,"days":2,"tail":"","mat":"Khung nhôm, kính cường lực, bản lề sàn, tay nắm, khoá, keo silicon"}],"materials":[{"id":"v1","name":"Vật tư điện (cáp điện, ruột gà, tủ điện, CB, công tắc, ổ cắm...)","offset":-15},{"id":"v2","name":"Vật tư điện lạnh (ống đồng, si, xốp cách nhiệt, ống nước...)","offset":-15},{"id":"v3","name":"Máy lạnh","offset":-15},{"id":"v4","name":"Cáp mạng","offset":-15},{"id":"v5","name":"Vật tư điện (đèn chiếu sáng, cáp điện 4x16mm2)","offset":-8},{"id":"v6","name":"Thiết bị mạng (tủ mạng, switch, router, wifi, camera, đầu ghi, loa, amply)","offset":-8},{"id":"v7","name":"Thiết bị PCCC","offset":-5},{"id":"v8","name":"Mâm kệ","offset":-5},{"id":"v9","name":"Thiết bị tin học (máy check giá, máy tính kho, laptop, máy in bill, máy in nhiệt, ipad, két tiền cashier, cổng từ (bao gồm bộ thiết bị RFID))","offset":-4}],"daily":[{"id":"d14","off":-14,"text":"Luồn dây điện vào ruột gà, ống simili, ống đồng, ống nước","needs":["v1","v2"]},{"id":"d13","off":-13,"text":"Treo ống đồng, ống nước, treo dàn lạnh","needs":["v2","v3"]},{"id":"d12","off":-12,"text":"Kết nối ống đồng, ống nước, treo nguồn điện về quầy kệ","needs":["v1","v2"]},{"id":"d11","off":-11,"text":"Luồn và treo dây cáp mạng, treo nguồn điện kho","needs":["v4","v1"]},{"id":"d10","off":-10,"text":"Kết nối ống đồng, ống nước, treo nguồn điện chữ, hộp đèn","needs":["v1","v2"]},{"id":"d9","off":-9,"text":"Kết nối dàn lạnh, chuyển dàn nóng lên mái, kéo nguồn khu Fashion","needs":["v3","v1"]},{"id":"d8","off":-8,"text":"Khoét lỗ đèn, kéo nguồn đèn, kéo nguồn tủ điện chính","needs":["v5"]},{"id":"d7","off":-7,"text":"Lắp tủ điện, lắp thiết bị kho, kéo nguồn khu vực bảo vệ, bảng hiệu","needs":["v1"]},{"id":"d6","off":-6,"text":"Lắp đèn, kết nối dàn nóng, kéo nguồn chờ counter","needs":["v5","v3"]},{"id":"d5","off":-5,"text":"Kéo nguồn và lắp thiết bị PCCC, lắp ổ cắm khu Fashion","needs":["v7"]},{"id":"d4","off":-4,"text":"Lắp mâm kệ kho, đấu điện quầy cash, lắp đèn sân","needs":["v8"]},{"id":"d3","off":-3,"text":"Chạy test và hoàn thiện máy lạnh, PCCC","needs":[]},{"id":"d2","off":-2,"text":"Lắp kệ toilet, máy lọc nước, tượng Chúa, rèm che nắng, kiểm đếm vật tư thừa","needs":[]},{"id":"d1","off":-1,"text":"Hướng dẫn, bàn giao cửa hàng cho QLKV, QLCN","needs":[]}]}];
 const PLAN_COLORS=["#2F7DD1","#E0861B","#14A37F","#8B5CF6","#D9485F","#0EA5B7","#B7791F","#4F46E5","#16A34A","#C2410C","#64748B","#DB2777","#0891B2","#65A30D","#9333EA"];
 const ISTAT=["Chưa bắt đầu","Đang thi công","Đã xong"],VSTAT=["Chưa cấp","Đã cấp"];
 const MSTAT=["Chưa làm","Đang làm","Đã xong","Không A/D"];
 const WSTAT=["","Chưa tạo task","Đang thực hiện","Tạm dừng / vướng","Hoàn thành","Không áp dụng"];
-const LOGCAT=["Chung","Chuẩn bị mặt bằng","Vật tư & đội BT","Nghiệm thu","Vướng mắc","Khác"];
+const LOGCAT=["Chung","Đổi lịch","Chuẩn bị mặt bằng","Vật tư & đội BT","Nghiệm thu","Vướng mắc","Khác"];
 const ICON={
  grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/>',
  list:'<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.5 1.5 2.5-3M3.5 12l1.5 1.5 2.5-3M3.5 18l1.5 1.5 2.5-3"/>',
@@ -630,24 +774,32 @@ function calc(st){
   const dKT=st.openDate?diff(st.openDate,T):null;
   let phase;
   if(opened) phase="Đã khai trương · còn tồn "+Math.round((1-prog)*100)+"%";
-  else if(st.buildStart&&st.buildStart<=T){
-    phase="Đang thi công · ngày "+(diff(T,st.buildStart)+1)+(st.openDate&&st.openDate>st.buildStart?"/"+diff(st.openDate,st.buildStart):"");
-  } else if(st.buildStart) phase="Chưa thi công · còn "+diff(st.buildStart,T)+" ngày";
-  else if(st.handover) phase=(st.handover<=T?"Đã nhận nhà ":"Nhận nhà ")+fd(st.handover)+" · chưa có ngày thi công";
+  else if(st.handover&&st.handover<=T){
+    phase="Đang thi công · ngày "+(diff(T,st.handover)+1)+(st.openDate&&st.openDate>st.handover?"/"+diff(st.openDate,st.handover):"");
+  } else if(st.handover) phase="Chờ nhận nhà "+fd(st.handover)+" · còn "+diff(st.handover,T)+" ngày";
   else phase="Chưa có ngày nhận nhà";
   const grp={};
   man.forEach(x=>{const g=x.it.group;grp[g]=grp[g]||{done:0,app:0,late:0,run:0};if(x.app){grp[g].app++;if(x.done)grp[g].done++;}if(x.w.k==="late")grp[g].late++;if(x.s==="Đang làm")grp[g].run++;});
   return {st,man,wfs,plan,planOn,mApp:mApp.length,mDone,wApp:wApp.length,wDone:wfs.filter(x=>x.s==="Hoàn thành").length,wAvg:wApp.length?wSum/100/wApp.length:0,prog,late,soon,status,sk,opened,dKT,phase,grp};
 }
 function tpls(){const t=cfg().templates;return Array.isArray(t)&&t.length?t:DEFAULT_TEMPLATES;}
+const BUILD=["Relayout","Xây mới","Sửa chữa"],BIZ=["Shop","Fashion","Electronics","Mom&Baby","Homeappliances"];
+function buildOf(st){if(st.buildType!=null&&st.buildType!=="")return st.buildType;const t=String(st.type||"")+" "+String(st.name||"");if(/relayout/i.test(t))return "Relayout";if(/sửa chữa/i.test(t))return "Sửa chữa";if(/xây mới/i.test(t))return "Xây mới";return "";}
+function bizOf(st){if(Array.isArray(st.biz))return st.biz;const t=String(st.type||"")+" "+String(st.name||"");const o=[];if(/shop/i.test(t))o.push("Shop");if(/fashion|\bfsh\b/i.test(t))o.push("Fashion");if(/electronic/i.test(t))o.push("Electronics");if(/mom/i.test(t))o.push("Mom&Baby");if(/home ?appliance/i.test(t))o.push("Homeappliances");return o;}
+function typeLabel(st,sep){const b=buildOf(st),z=bizOf(st);if(!b&&!z.length)return st.type||"";return [b,z.join(" / ")].filter(Boolean).join(sep||" – ");}
 function tplOf(st){
   const P=st.plan||{};
   if(P.tpl==="none") return null;
   if(P.tpl){const t=tpls().find(x=>x.id===P.tpl);if(t)return t;}
-  const ty=String(st.type||"").toLowerCase();
+  const ty=(String(st.type||"")+" "+bizOf(st).join(" + ")).toLowerCase();
   if(/thanh lý/.test(ty)) return null;
   return tpls().find(x=>x.match&&ty.includes(String(x.match).toLowerCase()))||tpls().find(x=>!x.match)||tpls()[0]||null;
 }
+function splitMat(s){return String(s||"").split(/[,;\n]+/).map(v=>v.trim()).filter(Boolean);}
+function planListText(st,P){return P.items.map((x,i)=>`${i+1}. ${x.d.name} – dự kiến thực hiện ${x.ps?(x.nd>1?"từ ngày "+fdy(x.ps)+" đến "+fdy(x.pe):"ngày "+fdy(x.ps)):"(chưa có ngày)"}, thời gian hoàn thành ${x.nd} ngày, vật tư gồm ${x.matList.length?x.matList.join(", "):"(chưa khai báo)"}.`).join("\n");}
+function shortMat(n){return String(n).replace(/\s*\(.*\)\s*$/,"").trim()||n;}
+function matChip(m){return `<span class="mchip ${m.done?"ok":m.w.k}" title="${esc(m.d.name)} · ${esc(m.w.t)}">${m.done?"✓ ":""}${esc(shortMat(m.d.name))}</span>`;}
+function wdName(d){return ["CN","T2","T3","T4","T5","T6","T7"][new Date(toT(d)).getUTCDay()];}
 function calcPlan(st){
   const T=today(),tpl=tplOf(st),P=st.plan||{};
   if(!tpl) return null;
@@ -685,10 +837,23 @@ function calcPlan(st){
     else w={k:"todo",t:"Chưa cấp"};
     return {d,i,e,s,pd,w,done:s==="Đã cấp"};
   });
+  // Vật tư cần trước khi làm: hạng mục / việc trong ngày sắp làm hoặc đang làm mà vật tư liên quan chưa cấp.
+  const mById={};mats.forEach(m=>mById[m.d.id]=m);
+  const lack=(ids,when)=>(ids||[]).map(id=>mById[id]).filter(m=>m&&!m.done&&m.pd&&(!when||m.pd<=when));
+  items.forEach(x=>{x.needs=(x.d.needs||[]).map(id=>mById[id]).filter(Boolean);
+    const own=x.e.mat!=null&&x.e.mat!==""?x.e.mat:null;
+    x.matList=own!=null?splitMat(own):[...x.needs.map(m=>m.d.name),...splitMat(x.d.mat)];x.matOwn=own!=null;
+    const soon=!x.done&&x.ps&&(x.s==="Đang thi công"||diff(x.ps,T)<=2);
+    x.lack=soon?lack(x.d.needs,addDays(T,2)):[];});
+  const daily=(tpl.daily||[]).map((d,i)=>{const e=((P.daily||{})[d.id])||{};const dd=kt?addDays(kt,Number(d.off)||0):"";
+    const done=!!e.done;const needs=(d.needs||[]).map(id=>mById[id]).filter(Boolean);
+    const lk=!done&&dd&&diff(dd,T)<=1?needs.filter(m=>!m.done):[];
+    let w;if(done)w={k:"ok",t:"Đã làm "+fd(e.done)};else if(!dd)w={k:"todo",t:"Chưa có ngày KT"};else if(diff(T,dd)>0)w={k:"late",t:"Quá "+diff(T,dd)+" ngày"};else if(dd===T)w={k:"soon",t:"Hôm nay"};else w={k:"todo",t:"Ngày "+fd(dd)};
+    return {d,i,e,dd,done,needs,lack:lk,w};});
   const W=items.reduce((a,x)=>a+x.nd,0)||1;
   const actPct=Math.round(items.reduce((a,x)=>a+x.pct*x.nd,0)/W);
   const planPct=kt?Math.round(items.reduce((a,x)=>a+x.planPct*x.nd,0)/W):null;
-  return {tpl,items,mats,actPct,planPct,touched:items.some(x=>x.s||x.e.pct)||mats.some(x=>x.s),iDone:items.filter(x=>x.done).length,mDone:mats.filter(x=>x.done).length,
+  return {tpl,items,mats,daily,lackN:items.filter(x=>x.lack.length).length+daily.filter(x=>x.lack.length).length,dDone:daily.filter(x=>x.done).length,actPct,planPct,touched:items.some(x=>x.s||x.e.pct)||mats.some(x=>x.s),iDone:items.filter(x=>x.done).length,mDone:mats.filter(x=>x.done).length,
     late:items.filter(x=>x.w.k==="late").length+mats.filter(x=>x.w.k==="late").length,
     soon:items.filter(x=>x.w.k==="soon").length+mats.filter(x=>x.w.k==="soon").length};
 }
@@ -741,20 +906,22 @@ function render(){
   else if(S.view==="cn") h+=viewStore();
   else if(S.view==="viec-can-xu-ly") h+=viewActions();
   else if(S.view==="lich") h+=viewTimeline();
+  else if(S.view==="cap-nhat-lich") h+=viewSchedule();
   else if(S.view==="cau-hinh") h+=viewConfig();
   else h+=viewOverview();
   app.innerHTML=h;
   if(keep){const el=document.getElementById(keep.id);if(el){if("value" in el&&el.type!=="date"&&el.tagName!=="SELECT")el.value=keep.v;el.focus({preventScroll:true});try{if(keep.a!=null)el.setSelectionRange(keep.a,keep.b);}catch(e){}}}
   fillNames();
+  fitSched();
   const canAdd=S.canWrite&&S.ready.stores&&!S.failed;
   document.getElementById("addStore").hidden=!canAdd; document.getElementById("addStore2").hidden=!canAdd;
 }
 function renderNav(){
   const all=S.ready.stores?allCalc():[]; const late=S.ready.stores?actions(all).filter(a=>a.kind==="late").length:0;
   const cur=S.view==="cn"?"tong-quan":S.view;
-  const t=[["tong-quan","Tổng quan","grid",all.filter(c=>c.sk==="run").length,false],["viec-can-xu-ly","Việc cần xử lý","list",late,true],["lich","Lịch tiến độ","cal",0,false],["cau-hinh","Cấu hình","cog",0,false]];
+  const t=[["tong-quan","Tổng quan","grid",all.filter(c=>c.sk==="run").length,false],["lich","Lịch tiến độ","chart",0,false],["cap-nhat-lich","Lịch khai trương","cal",0,false],["cau-hinh","Cấu hình","cog",0,false]];
   document.getElementById("nav").innerHTML=t.map(([k,l,i,n,hot])=>`<a href="#${k}" ${cur===k?'aria-current="page"':""}>${ic(i)}${l}${n?`<span class="cnt ${hot?"hot":""}">${n}</span>`:""}</a>`).join("");
-  document.getElementById("tabbar").innerHTML=t.map(([k,l,i,n,hot])=>`<a href="#${k}" ${cur===k?'aria-current="page"':""}>${ic(i)}<span>${l.replace("Việc cần xử lý","Cần xử lý").replace("Lịch tiến độ","Lịch")}</span>${hot&&n?`<span class="dot">${n}</span>`:""}</a>`).join("");
+  document.getElementById("tabbar").innerHTML=t.map(([k,l,i,n,hot])=>`<a href="#${k}" ${cur===k?'aria-current="page"':""}>${ic(i)}<span>${l.replace("Việc cần xử lý","Cần xử lý").replace("Lịch tiến độ","Lịch").replace("Lịch khai trương","Khai trương")}</span>${hot&&n?`<span class="dot">${n}</span>`:""}</a>`).join("");
 }
 function pill(k,t,cls){return `<span class="pill ${k} ${cls||""}">${esc(t)}</span>`;}
 function dots(c){
@@ -766,57 +933,67 @@ function stepper(st,big){
   return `<div class="steps ${big?"big":""}">${stages(st).map(x=>`<div class="s ${x.done?"done":""} ${x.cur?"cur":""}"><span class="n"></span><span class="k">${x.l}</span>${big?"":`<span class="d ${x.d?"":"none"}">${x.d?fd(x.d):"—"}</span>`}${big?`<input class="in" type="date" id="f-${x.k}" data-k="${x.k}" value="${esc(x.d)}" ${S.canWrite?"":"readonly"} aria-label="Ngày ${x.l.toLowerCase()}">`:""}</div>`).join("")}</div>`;
 }
 
+function ovRow(c){
+  const st=c.st,T=today(),cd=countdown(c),P=c.plan;
+  const recv=!!(st.handover&&st.handover<=T);
+  const doing=recv&&P&&st.openDate?P.items.filter(x=>!x.done&&x.ps&&x.ps<=T&&T<=x.pe).map(x=>x.d.name):[];
+  const iss=[];
+  if(st.hold) iss.push(["hold","Tạm hoãn"]);
+  else{
+    if(P&&c.planOn){const ml=P.mats.filter(m=>m.w.k==="late").length,il=P.items.filter(x=>x.w.k==="late").length;
+      if(ml) iss.push(["late",ml+" vật tư trễ cấp"]);if(il) iss.push(["late",il+" hạng mục trễ"]);}
+    if(c.late) iss.push(["late",c.late+" việc WF/hồ sơ trễ"]);
+    if(!iss.length&&c.soon) iss.push(["soon",c.soon+" việc sắp đến hạn"]);
+  }
+  const usePlan=P&&st.openDate&&!c.opened,p=usePlan?P.actPct:Math.round(c.prog*100);
+  const stage=c.opened?"Đã khai trương":!st.handover?"Chưa nhận nhà":st.handover>T?"Chờ nhận nhà":"Đang thi công";
+  const sub=!c.opened&&st.handover&&st.handover<=T&&st.openDate?"ngày thứ "+(diff(T,st.handover)+1)+"/"+diff(st.openDate,st.handover):st.handover&&st.handover>T?"còn "+diff(st.handover,T)+" ngày":"";
+  return `<a class="ov-row ${iss.some(x=>x[0]==="late")?"bad":""}" href="#cn-${esc(st.id)}">
+    <div class="ov-nm"><b>${esc(st.name||"(Chưa đặt tên)")}</b><span>${esc(typeLabel(st)||"Chưa chọn loại hình")}</span></div>
+    <div class="ov-kt ${cd.k}"><span class="ov-lb">Khai trương</span>${st.openDate?`<b>${fdy(st.openDate)}</b><span>${st.hold?"tạm hoãn":c.opened?"đã khai trương":c.dKT===0?"hôm nay":"còn "+c.dKT+" ngày"}</span>`:`<span class="muted">Chưa có ngày</span>`}</div>
+    <div class="ov-ho"><span class="ov-lb">Nhận nhà</span>${st.handover?`<b>${fdy(st.handover)}</b><span>${st.handover<=T?"đã nhận":"dự kiến"}</span>`:`<span class="muted">Chưa có ngày</span>`}</div>
+    <div class="ov-st"><span class="ov-lb">Giai đoạn</span><b class="stg ${c.opened?"ok":st.handover&&st.handover<=T?"run":"wait"}">${esc(stage)}</b>${sub?`<span>${esc(sub)}</span>`:""}</div>
+    <div class="ov-td"><span class="ov-lb">Hôm nay đang làm</span>${doing.length?`<span class="doing">${esc(doing.join(", "))}</span>`:!recv&&!c.opened?`<span class="muted">Chưa thi công (chưa nhận nhà)</span>`:`<span class="muted">—</span>`}</div>
+    <div class="ov-is"><span class="ov-lb">Ghi chú</span>${(()=>{const lg=latestLog(st.id),n=st.note||(st.sched&&st.sched.reason)||"";return n?`<span class="ov-note">${esc(n)}</span>`:lg?`<span class="ov-note"><b>${fd(lg.date)}:</b> ${esc(lg.text)}</span>`:`<span class="muted">—</span>`;})()}</div>
+    <div class="ov-pg"><span class="ov-lb">${usePlan?"Thi công":"Tiến độ"}</span><div class="pb"><div class="bar"><i style="width:${p}%"></i></div><b>${p}%</b></div></div>
+    <span class="ov-go">${ic("back")}</span></a>`;
+}
 function viewOverview(){
-  const all=allCalc();
+  const all=allCalc(),T=today();
   const act=all.filter(c=>c.sk==="run");
   const acts=actions(all);
-  const k={total:all.length,run:act.length,near:act.filter(c=>c.dKT!==null&&c.dKT>=0&&c.dKT<=14).length,
-    avgRun:act.length?act.reduce((a,c)=>a+c.prog,0)/act.length:0,avg:all.length?all.reduce((a,c)=>a+c.prog,0)/all.length:0,
-    late:acts.filter(a=>a.kind==="late").length,soon:acts.filter(a=>a.kind==="soon").length,notask:acts.filter(a=>a.kind==="notask").length,
-    blank:all.filter(c=>!c.st.hold).reduce((a,c)=>a+c.wfs.filter(x=>x.w.k==="blank").length,0)};
-  let h=`<div class="ph"><div><h1>Tổng quan thi công</h1><p>${longToday()} · ${k.total} mặt bằng · ${esc(syncInfo())}</p></div>
-    <div class="right">${syncBtn("syncAll","Đồng bộ tất cả task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button>${window.TDTC_SHEET?`<a class="btn" href="${esc(window.TDTC_SHEET)}" target="_blank" rel="noopener">${ic("ext")}Mở Google Sheet</a>`:""}</div></div>`;
-  if(!S.me||S.askName) h+=`<div class="tip">${ic("bulb")}<div style="flex:1;min-width:200px"><b>Bạn là ai?</b>Tên sẽ ghi vào nhật ký và “cập nhật bởi” để cả team biết ai đã sửa.<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input class="in" id="meIn" style="max-width:260px" placeholder="VD: Nguyễn Văn A" value="${esc(S.me||"")}"><button class="btn primary sm" type="button" id="meSave">Lưu tên</button></div></div></div>`;
-  if(!S.tipHidden&&S.canWrite&&S.me) h+=`<div class="tip">${ic("bulb")}<div><b>Cập nhật nhanh trong 3 bước</b>Bấm vào một chi nhánh → bấm trạng thái từng hạng mục / chọn bước WF → ghi một dòng nhật ký. Mọi thay đổi lưu ngay, cả team thấy liền.</div><button class="btn sm" type="button" id="hideTip">Đã hiểu</button></div>`;
-  h+=`<div class="kpis">
-    <div class="panel kpi"><span class="ic g">${ic("store")}</span><div class="t"><div class="l">Đang triển khai</div><div class="v">${k.run}<small>/ ${k.total}</small></div><div class="s">mặt bằng chưa khai trương</div></div></div>
-    <div class="panel kpi"><span class="ic y">${ic("flag")}</span><div class="t"><div class="l">Khai trương ≤ 14 ngày</div><div class="v">${k.near}</div><div class="s">cần đẩy nhanh</div></div></div>
-    <div class="panel kpi">${ring(k.avgRun,48,5,pct(k.avgRun))}<div class="t"><div class="l">Tiến độ TB đang triển khai</div><div class="v">${pct(k.avgRun)}</div><div class="s">tất cả mặt bằng: ${pct(k.avg)}</div></div></div>
-    <a class="panel kpi ${k.late?"alert":""}" href="#viec-can-xu-ly" data-act-filter="late"><span class="ic r">${ic("alert")}</span><div class="t"><div class="l">Việc trễ hạn</div><div class="v">${k.late}</div><div class="s">${k.soon} sắp đến hạn · ${k.notask} WF chưa tạo task</div></div></a>
+  const near=act.filter(c=>c.dKT!==null&&c.dKT>=0&&c.dKT<=14).length;
+  const late=acts.filter(a=>a.kind==="late").length;
+  const matLate=act.reduce((a,c)=>a+(c.plan&&c.planOn?c.plan.mats.filter(m=>m.w.k==="late").length:0),0);
+  const doingN=act.filter(c=>c.st.handover&&c.st.handover<=T).length;
+  let h=`<div class="ph"><div><h1>Tổng quan</h1><p>${longToday()} · bấm vào một căn để xem lịch và cập nhật</p></div>
+    <div class="right">${syncBtn("syncAll","Đồng bộ task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button>${window.TDTC_SHEET?`<a class="btn" href="${esc(window.TDTC_SHEET)}" target="_blank" rel="noopener">${ic("ext")}Google Sheet</a>`:""}</div></div>`;
+  if(!S.me||S.askName) h+=`<div class="ov-me">${ic("bulb")}<span>Nhập tên của bạn để ghi “ai đã cập nhật”:</span><input class="in" id="meIn" placeholder="VD: Nguyễn Văn A" value="${esc(S.me||"")}"><button class="btn primary sm" type="button" id="meSave">Lưu tên</button></div>`;
+  h+=`<div class="ov-kpis">
+    <button type="button" class="ov-k" data-filter="dang"><span class="l">Đang triển khai</span><b>${act.length}</b><span class="s">căn · ${doingN} căn đã nhận nhà</span></button>
+    <a class="ov-k ${near?"warn":""}" href="#cap-nhat-lich"><span class="l">Khai trương trong 14 ngày</span><b>${near}</b><span class="s">căn · xem lịch khai trương →</span></a>
+    <div class="ov-k ${late?"bad":"good"}" style="cursor:default"><span class="l">Việc trễ hạn</span><b>${late}</b><span class="s">${late?"hạng mục, vật tư, WF quá hạn":"không có việc trễ"}</span></div>
+    <div class="ov-k ${matLate?"bad":"good"}" style="cursor:default"><span class="l">Vật tư trễ cấp</span><b>${matLate}</b><span class="s">${matLate?"loại vật tư chưa cấp đúng hạn":"vật tư cấp đúng hạn"}</span></div>
   </div>`;
-  // duo
-  const up=sortStores(act).slice(0,6);
-  const top=acts.slice(0,6);
-  h+=`<div class="duo">
-    <section class="panel"><div class="panel-h"><h3>Sắp khai trương</h3><div class="right"><a href="#lich">Xem lịch →</a></div></div>
-      ${up.length?`<ul class="list up">${up.map(c=>{const cd=countdown(c);return `<li data-go="${esc(c.st.id)}"><div class="cd ${cd.k}"><b>${c.dKT===0?"0":c.dKT}</b><span>ngày nữa</span></div>
-        <div style="min-width:0"><div class="nm">${esc(c.st.name)}</div><div class="sm">${esc(c.phase)} · KT ${fdy(c.st.openDate)}</div></div>
-        <div class="pb"><div class="bar"><i style="width:${Math.round(c.prog*100)}%"></i></div>${pct(c.prog)}</div></li>`;}).join("")}</ul>`:`<div class="empty">Không có chi nhánh nào đang chờ khai trương.</div>`}
-    </section>
-    <section class="panel"><div class="panel-h"><h3>Cần xử lý ngay</h3><div class="right"><a href="#viec-can-xu-ly">Tất cả ${acts.length} việc →</a></div></div>
-      <div class="chips-row">${pill("late",k.late+" trễ hạn")}${pill("soon",k.soon+" sắp đến hạn")}${pill("notask",k.notask+" WF chưa tạo task")}${pill("blank",k.blank+" WF chưa cập nhật")}</div>
-      ${top.length?`<ul class="list todo">${top.map(a=>`<li data-go="${esc(a.c.st.id)}"><span class="sev ${a.kind}"></span><div style="min-width:0"><div class="nm">${esc(a.what)}</div><div class="sm">${esc(a.c.st.name)}${a.pic?" · "+esc(a.pic):""}</div></div><div class="due ${a.kind}">${esc(a.w.t)}</div></li>`).join("")}</ul>`:`<div class="empty"><b>Không có việc tồn đọng</b>Mọi hạng mục đang đúng hạn.</div>`}
-    </section></div>`;
-  // cards
   const F=[["dang","Đang triển khai",c=>c.sk==="run"],["chua","Chưa có lịch",c=>c.sk==="blank"],["kt","Đã khai trương",c=>c.sk==="ok"],["hoan","Tạm hoãn",c=>c.sk==="hold"],["all","Tất cả",()=>true]];
   const fx=F.find(f=>f[0]===S.filter)||F[0];
   const q=S.q.trim().toLowerCase();
-  const list=sortStores(all.filter(fx[2]).filter(c=>!q||(c.st.name+" "+(c.st.type||"")+" "+(c.st.pic||"")+" "+(c.st.code||"")).toLowerCase().includes(q)));
-  h+=`<section class="sec"><div class="sec-h"><h2>Chi nhánh</h2>
-    <div class="seg-f" role="group" aria-label="Lọc chi nhánh">${F.map(f=>`<button type="button" data-filter="${f[0]}" aria-pressed="${S.filter===f[0]}">${f[1]}<span class="c">${all.filter(f[2]).length}</span></button>`).join("")}</div>
-    <div class="right">${S.canWrite?`<button class="btn primary" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh</button>`:""}<label class="search">${ic("search")}<span class="sr">Tìm chi nhánh</span><input class="in" id="q" type="search" placeholder="Tìm chi nhánh, PIC…" value="${esc(S.q)}"></label></div></div>`;
-  if(!all.length) h+=`<div class="panel empty"><b>Chưa có chi nhánh nào</b>Bấm “Thêm chi nhánh” để tạo mặt bằng đầu tiên.</div>`;
-  else if(!list.length) h+=`<div class="panel empty"><b>Không có chi nhánh trong nhóm này</b>Chọn nhóm khác hoặc xoá từ khoá tìm kiếm.</div>`;
-  else h+=`<div class="cards">${list.map(card).join("")}</div>`;
+  const list=sortStores(all.filter(fx[2]).filter(c=>!q||(c.st.name+" "+typeLabel(c.st)+" "+(c.st.pic||"")+" "+(c.st.code||"")).toLowerCase().includes(q)));
+  h+=`<section class="sec" style="margin-top:22px"><div class="sec-h"><h2>Danh sách căn</h2>
+    <div class="seg-f" role="group" aria-label="Lọc chi nhánh">${F.map(f=>`<button type="button" data-filter="${f[0]}" aria-pressed="${fx[0]===f[0]}">${f[1]}<span class="c">${all.filter(f[2]).length}</span></button>`).join("")}</div>
+    <div class="right"><label class="search">${ic("search")}<span class="sr">Tìm chi nhánh</span><input class="in" id="q" type="search" placeholder="Tìm tên căn…" value="${esc(S.q)}"></label>${S.canWrite?`<button class="btn primary" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh</button>`:""}</div></div>`;
+  if(!all.length) h+=`<div class="panel empty"><b>Chưa có chi nhánh nào</b>Bấm “Thêm chi nhánh” để khai báo căn đầu tiên.</div>`;
+  else if(!list.length) h+=`<div class="panel empty"><b>Không có căn nào trong nhóm này</b>Chọn nhóm khác hoặc xoá từ khoá tìm kiếm.</div>`;
+  else h+=`<div class="panel ov-list"><div class="ov-head"><span>Căn</span><span>Khai trương</span><span>Nhận nhà</span><span>Giai đoạn</span><span>Hôm nay đang làm</span><span>Ghi chú</span><span>Tiến độ</span><span></span></div>${list.map(ovRow).join("")}</div>`;
   h+=`</section>`;
-  h+=matrix(sortStores(all.filter(c=>c.sk!=="hold")));
+  h+=`<details class="ov-more"><summary>Bảng chi tiết hạng mục &amp; workflow từng căn (dành cho quản lý)</summary>${matrix(sortStores(all.filter(c=>c.sk!=="hold")))}</details>`;
   return h;
 }
 function card(c){
   const cd=countdown(c), lg=latestLog(c.st.id);
   const note=c.st.note?`<b>Hiện trạng:</b> ${esc(c.st.note)}`:lg?`<b>${fd(lg.date)}:</b> ${esc(lg.text)}`:"Chưa có ghi chú hiện trạng";
   return `<a class="panel card ${c.late?"is-late":""}" href="#cn-${esc(c.st.id)}">
-    <div class="c-top"><div class="t"><h3>${esc(c.st.name||"(Chưa đặt tên)")}</h3><div class="meta">${esc(c.st.type||"—")}${c.st.pic?" · "+esc(c.st.pic):""}</div></div>
+    <div class="c-top"><div class="t"><h3>${esc(c.st.name||"(Chưa đặt tên)")}</h3><div class="meta">${esc(typeLabel(c.st)||"—")}${c.st.pic?" · "+esc(c.st.pic):""}</div></div>
       <div class="cdb ${cd.k}"><b>${cd.d}</b><span>${esc(cd.l)}</span></div></div>
     <div class="c-mid">${ring(c.prog,54,6,pct(c.prog))}<div class="info"><div class="c-pills">${pill(c.sk,c.status)}${c.late?pill("late",c.late+" trễ"):""}${c.soon?pill("soon",c.soon+" sắp hạn"):""}</div><div class="phase">${esc(c.phase)}</div></div></div>
     ${stepper(c.st,false)}
@@ -904,7 +1081,7 @@ function inp(id,key,val,type,extra){
 }
 function buildPanel(st,c){
   const dis=S.canWrite?"":"readonly";
-  const dates=`<div class="cp-dates">${[["handover","Nhận nhà"],["buildStart","Bắt đầu thi công"],["openDate","Khai trương"]].map(([k,l])=>`<div class="field"><label for="f-${k}">${l}</label><input class="in" type="date" id="f-${k}" data-k="${k}" value="${esc(st[k]||"")}" ${dis}></div>`).join("")}</div>`;
+  const dates=`<div class="cp-dates">${[["handover","Nhận nhà"],["openDate","Khai trương"]].map(([k,l])=>`<div class="field"><label for="f-${k}">${l}</label><input class="in" type="date" id="f-${k}" data-k="${k}" value="${esc(st[k]||"")}" ${dis}></div>`).join("")}</div>`;
   // % thi công cửa hàng = trung bình % các WF đang áp dụng; % mỗi WF lấy theo bước hiện tại (từ task nếu đã đồng bộ).
   const app=c.wfs.filter(x=>x.app);
   const pctAll=app.length?Math.round(app.reduce((a,x)=>a+x.p,0)/app.length):0;
@@ -930,16 +1107,73 @@ function buildPanel(st,c){
   <div class="cp-bar"><i class="${k}" style="width:${pctAll}%"></i></div>
   <div class="cp-wfs">${rows}</div>
   <div class="cp-foot"><span class="muted" style="font-size:12px">% mỗi WF = mức % của bước hiện tại (bảng % ở tab Cấu hình → danh mục bước WF); nhãn TASK = lấy từ các bước trên hệ thống task khi đồng bộ. % cửa hàng = trung bình các WF áp dụng (WF “Không áp dụng” không tính).</span></div>
-  ${dates}</section>`;
+  </section>`;
+}
+function planCalendar(st,P){
+  const T=today(),kt=st.openDate,WD=["T2","T3","T4","T5","T6","T7","CN"];
+  const dowM=d=>(new Date(toT(d)).getUTCDay()+6)%7;
+  const ds=[kt];P.items.forEach(x=>{if(x.ps)ds.push(x.ps);});P.mats.forEach(x=>{if(x.pd)ds.push(x.pd);});ds.sort();
+  const last=ds[ds.length-1]>kt?ds[ds.length-1]:kt;
+  const a=addDays(ds[0],-dowM(ds[0])),b=addDays(last,6-dowM(last)),nW=(diff(b,a)+1)/7;
+  const users={};P.items.forEach(x=>x.needs.forEach(m=>{(users[m.d.id]=users[m.d.id]||[]).push(x.d.name);}));
+  const iSt=x=>x.done?"ok":x.w.k==="late"?"late":(x.s==="Đang thi công"||(x.ps<=T&&T<=x.pe))?"run":"plan";
+  const mSt=m=>m.done?"ok":m.w.k==="late"?"late":m.w.k==="soon"?"soon":"plan";
+  const mBtn=(m,cls)=>`<button type="button" class="${cls} ${mSt(m)}" data-vstat="${m.d.id}" data-v="${m.done?"Chưa cấp":"Đã cấp"}" title="${esc(m.d.name)}${users[m.d.id]?"\nDùng cho: "+esc(users[m.d.id].join(", ")):""}\n${m.done?"Đã cấp"+(m.e.date?" ngày "+fd(m.e.date):"")+" — bấm để bỏ đánh dấu":"Cần cấp ngày "+fd(m.pd)+" — bấm khi đã cấp"}"><i>${m.done?"✓":"📦"}</i><span>${esc(shortMat(m.d.name))}</span></button>`;
+  const iTitle=x=>`${x.d.name}\n${fd(x.ps)} → ${fd(x.pe)} · ${x.nd} ngày · ${x.w.t}${x.matList.length?"\nVật tư: "+x.matList.join(", "):""}\nBấm để cập nhật`;
+  // ---- hôm nay / sắp tới ----
+  const doing=P.items.filter(x=>!x.done&&x.ps&&x.ps<=T&&T<=x.pe),lateI=P.items.filter(x=>!x.done&&x.w.k==="late"&&!(x.ps<=T&&T<=x.pe));
+  const needM=P.mats.filter(m=>!m.done&&m.pd&&m.pd<=T);
+  const T3=addDays(T,3),nextI=P.items.filter(x=>!x.done&&x.ps>T&&x.ps<=T3),nextM=P.mats.filter(m=>!m.done&&m.pd>T&&m.pd<=T3);
+  const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:`<p class="muted">Không có</p>`;
+  let h=`<div class="pc-today">
+    <div class="pc-card"><h4><span class="dot run"></span>Hôm nay đang làm</h4>${li(doing.concat(lateI),x=>`<li><button type="button" class="pc-link" data-pitem="${x.d.id}"><b>${esc(x.d.name)}</b><span>${x.w.k==="late"?`<em class="late">${esc(x.w.t)}</em>`:"ngày "+(diff(T,x.ps)+1)+"/"+x.nd}</span></button></li>`)}</div>
+    <div class="pc-card ${needM.length?"warn":""}"><h4><span class="dot ${needM.length?"late":"ok"}"></span>Vật tư cần có ngay</h4>${needM.length?`<div class="pc-mlist">${needM.map(m=>mBtn(m,"pc-m")).join("")}</div><p class="hint">Bấm vào vật tư khi đã cấp</p>`:`<p class="muted">Đã đủ vật tư tới hôm nay ✓</p>`}</div>
+    <div class="pc-card"><h4><span class="dot soon"></span>3 ngày tới</h4>${li([...nextM.map(m=>({d:m.pd,t:"📦 Cấp "+shortMat(m.d.name)})),...nextI.map(x=>({d:x.ps,t:"▶ Bắt đầu "+x.d.name}))].sort((p,q)=>p.d.localeCompare(q.d)),r=>`<li><b>${WD[dowM(r.d)]} ${fd(r.d)}</b><span>${esc(r.t)}</span></li>`)}</div></div>`;
+  // ---- lịch theo tuần: vật tư ở trên, hạng mục là thanh kéo dài ----
+  h+=`<div class="pc-weeks">`;
+  for(let w=0;w<nW;w++){const ws=addDays(a,w*7),we=addDays(ws,6);
+    const days=[...Array(7)].map((_,i)=>addDays(ws,i));
+    const segs=P.items.filter(x=>x.ps&&x.ps<=we&&x.pe>=ws).map(x=>({x,s:x.ps<ws?ws:x.ps,e:x.pe>we?we:x.pe,cutL:x.ps<ws,cutR:x.pe>we}))
+      .concat(P.items.filter(x=>x.d.tail&&!x.e.pStart&&x.pe&&addDays(x.pe,1)>=ws&&addDays(x.pe,1)<=we).map(x=>({x,s:addDays(x.pe,1),e:addDays(x.pe,1),tail:true})));
+    segs.sort((p,q)=>p.s.localeCompare(q.s)||diff(q.e,q.s)-diff(p.e,p.s));
+    const lanes=[];segs.forEach(g=>{let l=lanes.findIndex(end=>end<g.s);if(l<0){l=lanes.length;lanes.push(g.e);}else lanes[l]=g.e;g.l=l;});
+    const nL=Math.max(lanes.length,1);
+    h+=`<div class="pc-wk" style="--lanes:${nL}">`;
+    days.forEach((d,i)=>{h+=`<div class="pc-bg ${d===T?"today":""} ${d===kt?"kt":""} ${d<T?"past":""}" style="grid-column:${i+1}"></div>`;});
+    days.forEach((d,i)=>{h+=`<div class="pc-hd ${d===T?"today":""} ${d===kt?"kt":""}" style="grid-column:${i+1}"><span>${WD[i]}</span><b>${fd(d)}</b>${d===kt?"<em>Khai trương</em>":d===T?"<em class=td>Hôm nay</em>":""}</div>`;});
+    days.forEach((d,i)=>{const ms=P.mats.filter(m=>m.pd===d);h+=`<div class="pc-mrow" style="grid-column:${i+1}">${ms.map(m=>mBtn(m,"pc-m")).join("")}</div>`;});
+    segs.forEach(g=>{const c1=diff(g.s,ws)+1,c2=diff(g.e,ws)+2,x=g.x;
+      h+=g.tail?`<div class="pc-bar tail" style="grid-column:${c1}/${c2};grid-row:${g.l+3}" title="${esc(x.d.name)}">${esc(x.d.tail)}</div>`
+        :`<button type="button" class="pc-bar ${iSt(x)} ${g.cutL?"cl":""} ${g.cutR?"cr":""}" style="grid-column:${c1}/${c2};grid-row:${g.l+3}" data-pitem="${x.d.id}" title="${esc(iTitle(x))}"><b>${x.done?"✓ ":""}${esc(x.d.name)}</b><span>${g.cutL?"tiếp · ":""}${x.nd} ngày${x.pct&&!x.done?" · "+x.pct+"%":""}</span></button>`;});
+    h+=`</div>`;}
+  h+=`</div>`;
+  // ---- điện thoại: danh sách theo ngày ----
+  h+=`<div class="pc-agenda">`;
+  for(let d=a;d<=b;d=addDays(d,1)){const ms=P.mats.filter(m=>m.pd===d),st0=P.items.filter(x=>x.ps===d),en=P.items.filter(x=>x.pe===d&&x.nd>1),on=P.items.filter(x=>x.ps<d&&d<x.pe);
+    if(!ms.length&&!st0.length&&!en.length&&d!==kt&&d!==T)continue;
+    h+=`<div class="pa-day ${d===T?"today":""} ${d===kt?"kt":""}"><div class="pa-d"><b>${WD[dowM(d)]} ${fd(d)}</b>${d===kt?"<em>Khai trương</em>":d===T?"<em class=td>Hôm nay</em>":""}</div>
+      ${ms.length?`<div class="pc-mlist">${ms.map(m=>mBtn(m,"pc-m")).join("")}</div>`:""}
+      ${st0.map(x=>`<button type="button" class="pa-it ${iSt(x)}" data-pitem="${x.d.id}">▶ Bắt đầu <b>${esc(x.d.name)}</b> · ${x.nd} ngày</button>`).join("")}
+      ${en.map(x=>`<button type="button" class="pa-it ${iSt(x)}" data-pitem="${x.d.id}">■ Kết thúc <b>${esc(x.d.name)}</b></button>`).join("")}
+      ${on.length?`<div class="pa-on">Đang làm: ${esc(on.map(x=>x.d.name).join(", "))}</div>`:""}</div>`;}
+  h+=`</div>`;
+  h+=`<div class="pc-legend"><span><i class="run"></i>Đang làm</span><span><i class="plan"></i>Chưa tới ngày</span><span><i class="late"></i>Trễ</span><span><i class="ok"></i>Đã xong / đã cấp</span><span>📦 Vật tư cần cấp — bấm khi đã cấp</span><span>Bấm vào thanh hạng mục để cập nhật</span></div>`;
+  return h;
 }
 function planSection(st,c){
   const P=c.plan,dis=S.canWrite?"":"disabled";
   const sel=(st.plan||{}).tpl||"";
   const tplSel=`<label class="lbl" for="pl-tpl">Mẫu tiến độ</label><select class="in" id="pl-tpl" data-k="plan.tpl" ${dis}><option value="" ${!sel?"selected":""}>Tự chọn theo loại hình${!sel&&P?" ("+esc(P.tpl.name)+")":""}</option>${tpls().map(t=>`<option value="${esc(t.id)}" ${sel===t.id?"selected":""}>${esc(t.name)}</option>`).join("")}<option value="none" ${sel==="none"?"selected":""}>Không áp dụng</option></select>`;
   let h=`<section class="sec anchor" id="sec-c"><div class="sec-h"><h2>C. Tiến độ thi công &amp; cấp vật tư</h2><span class="sub">Kế hoạch theo mẫu, tính lùi từ ngày khai trương</span></div><div class="panel items">`;
-  h+=`<div class="plan-head">${tplSel}${P?`<div class="plan-sum">${pill(P.iDone===P.items.length?"ok":"run",`Thi công ${P.iDone}/${P.items.length}`)}${pill(P.mDone===P.mats.length?"ok":"run",`Vật tư ${P.mDone}/${P.mats.length}`)}${P.late?pill("late",P.late+" trễ"):""}${P.soon?pill("soon",P.soon+" sắp tới"):""}</div>`:""}</div>`;
+  h+=`<div class="plan-head">${tplSel}${P?`<div class="plan-sum">${pill(P.iDone===P.items.length?"ok":"run",`Thi công ${P.iDone}/${P.items.length}`)}${pill(P.mDone===P.mats.length?"ok":"run",`Vật tư ${P.mDone}/${P.mats.length}`)}${P.late?pill("late",P.late+" trễ"):""}${P.soon?pill("soon",P.soon+" sắp tới"):""}${P.lackN?pill("late",P.lackN+" việc thiếu vật tư"):""}</div>`:""}</div>`;
   if(!P) return h+`<div class="empty" style="padding:22px">Chi nhánh này không áp dụng mẫu tiến độ. Chọn mẫu ở trên để bật.</div></div></section>`;
   if(!st.openDate) return h+`<div class="empty" style="padding:22px">Nhập <b style="display:inline">ngày khai trương</b> ở phần mốc thi công để tool tự tính lịch thi công và lịch cấp vật tư.</div></div></section>`;
+  const ptab=S.planTab||"cal";
+  h+=`<div class="pc-tabs"><div class="seg-f" role="group" aria-label="Cách xem"><button type="button" data-ptab="cal" aria-pressed="${ptab==="cal"}">Lịch thi công &amp; cấp vật tư</button><button type="button" data-ptab="det" aria-pressed="${ptab==="det"}">Cập nhật chi tiết</button></div></div>`;
+  if(ptab==="cal") return h+planCalendar(st,P)+`</div></section>`;
+  // ---- bảng kê hạng mục: tên, ngày, thời gian, vật tư ----
+  h+=`<div class="grp"><span>Danh sách hạng mục thi công</span><span><button class="btn sm" type="button" id="planCopy" data-txt="${esc(planListText(st,P))}">${ic("check")}Sao chép danh sách</button></span></div>
+    <div class="tbl"><table class="plist"><thead><tr><th>#</th><th>Hạng mục thi công</th><th>Ngày thi công</th><th>Thời gian</th><th>Vật tư cần sử dụng</th></tr></thead><tbody>${P.items.map((x,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(x.d.name)}</td><td>${x.ps?(x.nd>1?fdy(x.ps)+" → "+fdy(x.pe):fdy(x.ps)):"—"}${x.e.pStart||x.e.pDays?' <span class="off">đã chỉnh</span>':""}</td><td>${x.nd} ngày</td><td class="wrap">${x.matList.length?esc(x.matList.join(", ")):'<span class="muted">Chưa khai báo — bấm mũi tên ở hạng mục bên dưới để nhập</span>'}</td></tr>`).join("")}</tbody></table></div>`;
   // ---- Gantt ----
   const T=today(),kt=st.openDate;
   const ds=[kt];P.items.forEach(x=>{if(x.ps)ds.push(x.ps);if(x.e.start)ds.push(x.e.start);});P.mats.forEach(x=>{if(x.pd)ds.push(x.pd);if(x.e.date)ds.push(x.e.date);});
@@ -975,7 +1209,7 @@ function planSection(st,c){
   P.items.forEach(x=>{
     const id=x.d.id,open=S.open.has("p"+id),e=x.e;
     h+=`<div class="item"><div class="item-main pl-main">${stIcon(x.w.k==="todo"?"":x.w.k)}
-      <div class="item-name"><b>${esc(x.d.name)}</b><div class="sub"><span class="off" style="border-color:${x.color};color:${x.color}">KT${x.d.start}</span><span><b style="color:var(--ink)">${x.pct}%${x.est?"*":""}</b> · KH hôm nay ${x.planPct}%</span><span>Kế hoạch ${x.ps?fd(x.ps)+" → "+fd(x.pe)+" · "+x.nd+" ngày":"—"}</span>${e.start?`<span>Thực tế ${fd(e.start)}${e.done?" → "+fd(e.done):" → nay"}</span>`:""}${e.pic?`<span>${esc(e.pic)}</span>`:""}</div></div>
+      <div class="item-name"><b>${esc(x.d.name)}</b><div class="sub"><span class="off" style="border-color:${x.color};color:${x.color}">KT${x.d.start}</span><span><b style="color:var(--ink)">${x.pct}%${x.est?"*":""}</b> · KH hôm nay ${x.planPct}%</span><span>Kế hoạch ${x.ps?fd(x.ps)+" → "+fd(x.pe)+" · "+x.nd+" ngày":"—"}</span>${e.start?`<span>Thực tế ${fd(e.start)}${e.done?" → "+fd(e.done):" → nay"}</span>`:""}${e.pic?`<span>${esc(e.pic)}</span>`:""}</div>${x.needs.length?`<div class="needs"><span class="lbl">Cần vật tư:</span>${x.needs.map(m=>matChip(m)).join("")}</div>`:""}${x.lack.length?`<div class="lackw">${ic("alert")}Chưa có vật tư để làm: ${esc(x.lack.map(m=>shortMat(m.d.name)).join(", "))}</div>`:""}</div>
       <div class="seg" role="group" aria-label="Trạng thái ${esc(x.d.name)}">${ISTAT.map(v=>`<button type="button" data-pstat="${id}" data-v="${v}" aria-pressed="${(x.s||"Chưa bắt đầu")===v}" ${dis}>${v}</button>`).join("")}</div>
       <div class="warn">${pill(x.w.k,x.w.t)}</div>
       <button class="exp" type="button" data-toggle="p${id}" aria-expanded="${open}" aria-label="Chi tiết">${ic("chev")}</button></div>
@@ -987,8 +1221,18 @@ function planSection(st,c){
         <div class="field"><label for="p-${id}-pct">% hoàn thành thực tế</label>${inp(`p-${id}-pct`,`plan.items.${id}.pct`,e.pct??"","number",`min="0" max="100" placeholder="${x.est?"ước tính "+x.pct:x.pct}"`)}</div>
         <div class="field"><label for="p-${id}-pic">Đội / NCC thực hiện</label>${inp(`p-${id}-pic`,`plan.items.${id}.pic`,e.pic)}</div>
         <div class="field wide" style="grid-column:span 3"><label for="p-${id}-note">Ghi chú / vướng mắc</label>${inp(`p-${id}-note`,`plan.items.${id}.note`,e.note)}</div>
+        <div class="field wide" style="grid-column:1/-1"><label for="p-${id}-mat">Vật tư cần sử dụng cho căn này (cách nhau bởi dấu phẩy · để trống = theo mẫu)</label>${inp(`p-${id}-mat`,`plan.items.${id}.mat`,e.mat||"","text",`placeholder="${esc([...x.needs.map(m=>m.d.name),...splitMat(x.d.mat)].join(", "))}"`)}</div>
       </div>`:""}</div>`;
   });
+  // ---- công việc hằng ngày đội bảo trì ----
+  if(P.daily.length){
+    h+=`<div class="grp"><span>Công việc từng ngày của đội bảo trì (điện, điện lạnh)</span><span>${P.dDone}/${P.daily.length} ngày đã làm</span></div>`;
+    P.daily.forEach(x=>{
+      h+=`<div class="item"><div class="item-main dl-main"><button type="button" class="dchk ${x.done?"on":""}" data-dstat="${x.d.id}" aria-pressed="${x.done}" ${dis} aria-label="Đánh dấu đã làm">${ic("check")}</button>
+        <div class="item-name"><b>${esc(x.d.text)}</b><div class="sub"><span class="off">KT${x.d.off}</span><span>${x.dd?wdName(x.dd)+" "+fd(x.dd):"—"}</span></div>${x.needs.length?`<div class="needs"><span class="lbl">Cần có:</span>${x.needs.map(m=>matChip(m)).join("")}</div>`:""}${x.lack.length?`<div class="lackw">${ic("alert")}Chưa có vật tư: ${esc(x.lack.map(m=>shortMat(m.d.name)).join(", "))}</div>`:""}</div>
+        <div class="warn">${pill(x.w.k,x.w.t)}</div></div></div>`;
+    });
+  }
   // ---- cập nhật vật tư ----
   h+=`<div class="grp"><span>Vật tư / thiết bị cần cấp</span><span>${P.mDone}/${P.mats.length} đã cấp</span></div>`;
   P.mats.forEach(x=>{
@@ -1009,6 +1253,18 @@ function planSection(st,c){
   return h+`</div></section>`;
 }
 function stIcon(k){return `<span class="st-ic ${k}">${k==="ok"?ic("check"):""}</span>`;}
+function infoSection(st,dis){
+  return `<section class="anchor" id="sec-info" style="margin-top:14px"><div class="sec-h"><h2>Thông tin mặt bằng</h2></div><div class="panel info-grid">
+      <div class="field"><label for="f-build">Loại hình thi công</label><select class="in" id="f-build" data-k="buildType" ${dis}><option value="">— Chọn —</option>${BUILD.map(b=>`<option ${buildOf(st)===b?"selected":""}>${b}</option>`).join("")}</select></div>
+      <div class="field"><label for="f-handover">Ngày nhận nhà</label><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}></div>
+      <div class="field"><label for="f-openDate">Ngày khai trương</label><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}></div>
+      <div class="field wide"><span class="lbl">Hình thức kinh doanh (chọn nhiều)</span><div class="chk-row">${BIZ.map(b=>`<label class="chk"><input type="checkbox" data-biz="${b}" ${bizOf(st).includes(b)?"checked":""} ${S.canWrite?"":"disabled"}>${b}</label>`).join("")}</div></div>
+      <div class="field"><label for="f-code">Mã / số thứ tự</label>${inp("f-code","code",st.code)}</div>
+      <div class="field"><label for="f-hold">Tình trạng</label><select class="in" id="f-hold" data-k="hold" ${dis}><option value="">Theo lịch (tự tính)</option><option value="1" ${st.hold?"selected":""}>Tạm hoãn</option></select></div>
+      <div class="field wide"><label for="f-scope">Hạng mục cần thi công</label>${inp("f-scope","scope",st.scope,"text",'placeholder="Xây dựng, Thạch cao, Cửa cuốn, Kính, Logo, Bảng hiệu, Đồng hồ điện"')}</div>
+      <datalist id="types"><option>Shop</option><option>Shop + Fashion</option><option>Shop + Electronics</option><option>Shop + Fashion + Electronics</option><option>Relayout</option><option>Thanh lý mặt bằng</option></datalist>
+    </div></section>`;
+}
 function viewStore(){
   const st=S.stores[S.storeId];
   if(!st) return `<a class="back" href="#tong-quan">${ic("back")}Tổng quan</a><div class="panel empty"><b>Không tìm thấy chi nhánh</b>Chi nhánh có thể đã bị xoá. Quay lại tổng quan để chọn chi nhánh khác.</div>`;
@@ -1019,7 +1275,7 @@ function viewStore(){
   h+=`<section class="panel hero"><div style="min-width:0">
       <div class="eyebrow">${c.st.code?`<span class="off">#${esc(c.st.code)}</span>`:""}${pill(c.sk,c.status)}<span>${esc(c.phase)}</span></div>
       <input class="title-in" id="f-name" data-k="name" value="${esc(st.name)}" ${S.canWrite?"":"readonly"} aria-label="Tên chi nhánh" placeholder="Nhập tên chi nhánh">
-      <div class="muted" style="font-size:13px">${esc(st.type||"Chưa chọn loại hình")}${st.pic?" · PIC tổng: "+esc(st.pic):""}${st.updatedAt?` · cập nhật ${fd(st.updatedAt.slice(0,10))} ${st.updatedAt.slice(11,16)}${st.updatedBy?" bởi "+esc(st.updatedBy):""}`:""}</div>
+      <div class="muted" style="font-size:13px">${esc(typeLabel(st)||"Chưa chọn loại hình")}${st.updatedAt?` · cập nhật ${fd(st.updatedAt.slice(0,10))} ${st.updatedAt.slice(11,16)}${st.updatedBy?" bởi "+esc(st.updatedBy):""}`:""}</div>
     </div>
     <div class="hero-stats"><div class="cdb ${cd.k}"><b>${cd.d}</b><span>${esc(cd.l)}</span></div>${ring(c.prog,84,8,pct(c.prog),"lg")}</div>
     ${S.isAdmin?`<div class="hero-actions">${S.confirmDel?`<span class="confirm">Xoá vĩnh viễn “${esc(st.name||"chi nhánh này")}” và toàn bộ nhật ký? <button class="btn sm danger" type="button" id="delYes">${ic("trash")}Xoá</button><button class="btn sm" type="button" id="delNo">Huỷ</button></span>`:`<button class="btn sm" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh khác</button><button class="btn sm danger" type="button" id="delStore">${ic("trash")}Xoá chi nhánh</button>`}</div>`:""}
@@ -1029,13 +1285,14 @@ function viewStore(){
       <div><div class="v" style="color:${c.late?"var(--late)":"inherit"}">${c.late}</div><div class="l">Việc trễ hạn</div></div>
       <div><div class="v">${c.wDone}<span class="muted" style="font-weight:500">/${c.wApp}</span></div><div class="l">WF hoàn thành</div></div>
     </div></section>
+  ${infoSection(st,dis)}
   ${buildPanel(st,c)}
   <section class="panel note-box"><label class="lbl" for="f-note">Hiện trạng / Vướng mắc / Next step</label>${inp("f-note","note",st.note,"area",'placeholder="VD: Đang chờ chủ nhà chốt bản vẽ · Next step: …"')}</section>
   <nav class="subnav" aria-label="Phần trong trang">
     <button type="button" data-jump="sec-a">Hạng mục A<span class="c">${c.mDone}/${c.mApp}</span></button>
     <button type="button" data-jump="sec-b">Workflow B<span class="c">${pct(c.wAvg)}</span></button>
     <button type="button" data-jump="sec-log">Nhật ký<span class="c">${logs.length}</span></button>
-    ${c.plan?`<button type="button" data-jump="sec-c">Thi công &amp; vật tư<span class="c">${c.plan.iDone}/${c.plan.items.length} · ${c.plan.mDone}/${c.plan.mats.length}</span></button>`:""}<button type="button" data-jump="sec-info">Thông tin</button></nav>`;
+    ${c.plan?`<button type="button" data-jump="sec-c">Thi công &amp; vật tư<span class="c">${c.plan.iDone}/${c.plan.items.length} · ${c.plan.mDone}/${c.plan.mats.length}</span></button>`:""}</nav>`;
 
   const groups=[...new Set(c.man.map(x=>x.it.group))];
   h+=`<section class="sec anchor" id="sec-a"><div class="sec-h"><h2>A. Hạng mục thủ công</h2><span class="sub">Hạn = ngày khai trương − N ngày (KT−N)</span></div><div class="panel items">`;
@@ -1096,15 +1353,6 @@ function viewStore(){
     :`<div class="empty" style="padding:22px">Chưa có nhật ký cho chi nhánh này.</div>`;
   h+=`</div></section>`;
 
-  h+=`<section class="sec anchor" id="sec-info"><div class="sec-h"><h2>Thông tin mặt bằng</h2></div><div class="panel info-grid">
-      <div class="field"><label for="f-type">Loại hình</label>${inp("f-type","type",st.type,"text",'list="types" placeholder="Shop, Relayout…"')}</div>
-      <div class="field"><label for="f-pic">PIC tổng (VHBT)</label>${inp("f-pic","pic",st.pic)}</div>
-      <div class="field"><label for="f-code">Mã / số thứ tự</label>${inp("f-code","code",st.code)}</div>
-      <div class="field"><label for="f-hold">Tình trạng</label><select class="in" id="f-hold" data-k="hold" ${dis}><option value="">Theo lịch (tự tính)</option><option value="1" ${st.hold?"selected":""}>Tạm hoãn</option></select></div>
-      <div class="field wide"><label for="f-scope">Hạng mục cần thi công</label>${inp("f-scope","scope",st.scope,"text",'placeholder="Xây dựng, Thạch cao, Cửa cuốn, Kính, Logo, Bảng hiệu, Đồng hồ điện"')}</div>
-      <datalist id="types"><option>Shop</option><option>Shop + Fashion</option><option>Shop + Electronics</option><option>Shop + Fashion + Electronics</option><option>Relayout</option><option>Thanh lý mặt bằng</option></datalist>
-    </div>`;
-  h+=`</section>`;
   return h;
 }
 
@@ -1150,7 +1398,7 @@ function viewConfig(){
    ${d.templates.map((t,ti)=>`<div class="panel cfg-card" style="grid-column:1/-1"><h3>Mẫu tiến độ thi công &amp; vật tư — ${esc(t.name)}</h3>
      <p class="muted" style="margin:0;font-size:13px">KT−N = số ngày trước khai trương. Áp dụng cho chi nhánh có loại hình ${t.match?`chứa “${esc(t.match)}”`:"còn lại (mặc định)"}; mỗi chi nhánh có thể đổi mẫu ở phần C.</p>
      <div class="cfg-row4 hdr"><span>Hạng mục thi công</span><span>Bắt đầu KT−</span><span>Số ngày</span><span>Ghi chú cuối</span><span></span></div>
-     ${t.items.map((x,i)=>`<div class="cfg-row4"><input class="in" id="tp-${ti}-i${i}-n" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="name" value="${esc(x.name)}" ${ro} aria-label="Hạng mục"><input class="in" type="number" min="0" id="tp-${ti}-i${i}-s" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="start" value="${-x.start}" ${ro} aria-label="Bắt đầu trước KT"><input class="in" type="number" min="1" id="tp-${ti}-i${i}-d" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="days" value="${x.days}" ${ro} aria-label="Số ngày"><input class="in" id="tp-${ti}-i${i}-t" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="tail" value="${esc(x.tail||"")}" ${ro} aria-label="Ghi chú cuối">${ed?`<button class="x" type="button" data-tpdel="${ti}|items|${i}" aria-label="Bỏ">${ic("x")}</button>`:"<span></span>"}</div>`).join("")}
+     ${t.items.map((x,i)=>`<div class="cfg-row4"><input class="in" id="tp-${ti}-i${i}-n" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="name" value="${esc(x.name)}" ${ro} aria-label="Hạng mục"><input class="in" type="number" min="0" id="tp-${ti}-i${i}-s" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="start" value="${-x.start}" ${ro} aria-label="Bắt đầu trước KT"><input class="in" type="number" min="1" id="tp-${ti}-i${i}-d" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="days" value="${x.days}" ${ro} aria-label="Số ngày"><input class="in" id="tp-${ti}-i${i}-t" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="tail" value="${esc(x.tail||"")}" ${ro} aria-label="Ghi chú cuối">${ed?`<button class="x" type="button" data-tpdel="${ti}|items|${i}" aria-label="Bỏ">${ic("x")}</button>`:"<span></span>"}</div><input class="in cfg-mat" id="tp-${ti}-i${i}-m" data-tp="${ti}" data-tl="items" data-ti="${i}" data-f="mat" value="${esc(x.mat||"")}" ${ro} placeholder="Vật tư sử dụng cho “${esc(x.name)}” (cách nhau bởi dấu phẩy)${(x.needs||[]).length?" — đã tự gồm vật tư cấp liên quan":""}" aria-label="Vật tư sử dụng">`).join("")}
      ${ed?`<div><button class="btn sm" type="button" data-tpadd="${ti}|items">${ic("plus")}Thêm hạng mục thi công</button></div>`:""}
      <div class="cfg-row3 hdr" style="margin-top:8px"><span>Vật tư / thiết bị</span><span>Cấp KT−</span><span></span></div>
      ${t.materials.map((x,i)=>`<div class="cfg-row3"><input class="in" id="tp-${ti}-m${i}-n" data-tp="${ti}" data-tl="materials" data-ti="${i}" data-f="name" value="${esc(x.name)}" ${ro} aria-label="Vật tư"><input class="in" type="number" min="0" id="tp-${ti}-m${i}-o" data-tp="${ti}" data-tl="materials" data-ti="${i}" data-f="offset" value="${-x.offset}" ${ro} aria-label="Cấp trước KT">${ed?`<button class="x" type="button" data-tpdel="${ti}|materials|${i}" aria-label="Bỏ">${ic("x")}</button>`:"<span></span>"}</div>`).join("")}
@@ -1321,8 +1569,11 @@ async function importJson(file){
 /* ---------- events ---------- */
 app.addEventListener("change",e=>{
   const el=e.target;
+  if(el.dataset.biz!=null&&S.view==="cn"){const id=S.storeId,st=S.stores[id];const biz=[...app.querySelectorAll("[data-biz]")].filter(x=>x.checked).map(x=>x.dataset.biz);saveStore(id,{biz,buildType:buildOf(st),type:typeLabel({buildType:buildOf(st),biz}," – ")});return;}
   if(el.dataset.k&&S.view==="cn"){
     const id=S.storeId,k=el.dataset.k;let v=el.value;
+    if(k==="buildType"){const st=S.stores[id];saveStore(id,{buildType:v,biz:bizOf(st),type:typeLabel({buildType:v,biz:bizOf(st)}," – ")});return;}
+    if((k==="handover"||k==="openDate")&&S.stores[id]){const old=S.stores[id][k]||"";if(old&&old!==v){el.value=old;askReason(id,k,old,v);return;}}
     if(k==="hold") v=!!v;
     if(/\.pDays$/.test(k)) v=v?Math.max(1,parseInt(v,10)||1):"";
     if(/^plan\.items\.\w+\.pct$/.test(k)){const pid=k.split(".")[2];const ex=(((S.stores[id].plan||{}).items||{})[pid])||{};
@@ -1348,7 +1599,9 @@ app.addEventListener("change",e=>{
   if(el.dataset.cm!=null){const m=S.cfgDraft.manual[+el.dataset.cm];m[el.dataset.f]=el.dataset.f==="offset"?Number(el.value)||0:el.value;return;}
   if(el.dataset.cw!=null){const w=S.cfgDraft.workflows[+el.dataset.cw];w.steps=el.value.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.lastIndexOf("|");return i>0?{n:l.slice(0,i).trim(),p:Math.max(0,Math.min(100,Number(l.slice(i+1))||0))}:{n:l,p:0};});return;}
 });
-app.addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;render();}});
+app.addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;render();}if(e.target.id==="schedTxt"){S.schedEdit=e.target.value;fitSched();}});
+function fitSched(){const t=document.getElementById("schedTxt");if(!t)return;t.style.height="auto";t.style.height=(t.scrollHeight+4)+"px";}
+window.addEventListener("resize",fitSched);
 app.addEventListener("click",e=>{
   const t=e.target.closest("button,[data-go]");if(!t) return;
   if(t.dataset.filter){S.filter=t.dataset.filter;render();return;}
@@ -1362,6 +1615,11 @@ app.addEventListener("click",e=>{
   if(t.dataset.pstat){const id=t.dataset.pstat,v=t.dataset.v,st=S.stores[S.storeId],e0=(((st.plan||{}).items||{})[id])||{};
     const p={status:v==="Chưa bắt đầu"?"":v};if(v==="Đang thi công"&&!e0.start)p.start=today();if(v==="Đã xong"){if(!e0.start)p.start=today();if(!e0.done)p.done=today();p.pct=100;}if(v==="Chưa bắt đầu"){p.done="";p.pct="";}if(v==="Đang thi công"&&Number(e0.pct)>=100)p.pct="";
     saveStore(S.storeId,{plan:{items:{[id]:p}}});return;}
+  if(t.id==="planCopy"){const v=t.dataset.txt||"";(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast("Đã sao chép danh sách hạng mục"),()=>{const ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("Đã sao chép danh sách hạng mục");});return;}
+  if(t.dataset.pitem){const id=t.dataset.pitem;S.planTab="det";S.open.add("p"+id);render();setTimeout(()=>{const el=document.querySelector(`[data-toggle="p${id}"]`);if(el)el.closest(".item").scrollIntoView({block:"center",behavior:"smooth"});},50);return;}
+  if(t.dataset.ptab){S.planTab=t.dataset.ptab;render();return;}
+  if(t.dataset.dstat){const id=t.dataset.dstat,st=S.stores[S.storeId],e0=(((st.plan||{}).daily||{})[id])||{};
+    saveStore(S.storeId,{plan:{daily:{[id]:{done:e0.done?"":today()}}}});return;}
   if(t.dataset.vstat){const id=t.dataset.vstat,v=t.dataset.v,st=S.stores[S.storeId],e0=(((st.plan||{}).mats||{})[id])||{};
     const p={status:v==="Chưa cấp"?"":v};if(v==="Đã cấp"&&!e0.date)p.date=today();if(v==="Chưa cấp")p.date="";
     saveStore(S.storeId,{plan:{mats:{[id]:p}}});return;}
@@ -1369,6 +1627,10 @@ app.addEventListener("click",e=>{
   if(t.id==="meSave"){const v=(document.getElementById("meIn").value||"").trim();if(!v)return;S.me=v;S.askName=false;try{localStorage.setItem("tdtc-me",v);}catch(e){}render();renderMe();return;}
   if(t.id==="hideTip"){S.tipHidden=true;try{localStorage.setItem("tdtc-tip","1");}catch(e){}render();return;}
   if(t.id==="exportCsv"){exportCsv();return;}
+  if(t.id==="schedCopy"){const ta=document.getElementById("schedTxt");const v=ta?ta.value:"";(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast("Đã sao chép nội dung cập nhật lịch"),()=>{ta.select();document.execCommand("copy");toast("Đã sao chép nội dung cập nhật lịch");});return;}
+  if(t.id==="schedReset"){S.schedEdit=null;render();return;}
+  if(t.dataset.stab){S.schedTab=t.dataset.stab;render();return;}
+  if(t.dataset.calm!=null){const n=Number(t.dataset.calm);if(!n)S.calM=today().slice(0,7);else{const [y,m]=(S.calM||today().slice(0,7)).split("-").map(Number);const d=new Date(Date.UTC(y,m-1+n,1));S.calM=d.getUTCFullYear()+"-"+p2(d.getUTCMonth()+1);}render();return;}
   if(t.id==="syncOne"||t.id==="syncTop"){syncStores([S.storeId]);return;}
   if(t.id==="syncAll"){syncStores([]);return;}
   if(t.id==="delStore"){S.confirmDel=true;render();window.scrollTo({top:0});return;}
@@ -1401,12 +1663,35 @@ app.addEventListener("submit",e=>{
   commit({t:"log",log});
 });
 function addStore(){
-  const codes=Object.values(DATA.stores).map(x=>parseInt(x.code,10)).filter(n=>!isNaN(n));
-  const store={id:uid("s"),code:p2((codes.length?Math.max(...codes):0)+1),name:"",type:"",pic:S.me||"",openDate:"",handover:"",buildStart:"",scope:"",note:"",hold:false,manual:{},wf:{},createdAt:now(),updatedAt:now(),updatedBy:S.me||""};
-  commit({t:"create",store},true);
-  location.hash="cn-"+store.id;
-  setTimeout(()=>{const el=document.getElementById("f-name");if(el)el.focus();},80);
-  toast("Đã thêm chi nhánh mới — nhập tên và các mốc ngày");
+  if(document.querySelector(".mdl-bg"))return;
+  const bg=document.createElement("div");bg.className="mdl-bg";
+  bg.innerHTML=`<form class="mdl mdl-add" role="dialog" aria-modal="true" aria-labelledby="addT" novalidate><h3 id="addT">Khai báo chi nhánh mới</h3>
+    <div class="field"><label for="ad-name">Tên chi nhánh <span style="color:var(--late)">*</span></label><input class="in" id="ad-name" placeholder="VD: 470 Đường 30/4 - P. Chánh Nghĩa - TP. TDM" autocomplete="off"></div>
+    <div class="field"><span class="lbl">Loại hình thi công <span style="color:var(--late)">*</span></span><div class="chk-row">${BUILD.map(b=>`<label class="chk"><input type="radio" name="ad-build" value="${b}">${b}</label>`).join("")}</div></div>
+    <div class="field"><span class="lbl">Hình thức kinh doanh <span style="color:var(--late)">*</span> (chọn nhiều)</span><div class="chk-row">${BIZ.map(b=>`<label class="chk"><input type="checkbox" name="ad-biz" value="${b}">${b}</label>`).join("")}</div></div>
+    <div class="ad-2"><div class="field"><label for="ad-ho">Ngày dự kiến nhận nhà</label><input class="in" type="date" id="ad-ho"></div>
+      <div class="field"><label for="ad-kt">Ngày khai trương</label><input class="in" type="date" id="ad-kt"></div></div>
+    <div class="field"><label for="ad-note">Ghi chú (vướng mắc ảnh hưởng tiến độ)</label><textarea class="in" id="ad-note" rows="2" placeholder="VD: Vướng hợp đồng thuê nhà cũ"></textarea></div>
+    <div class="err" id="ad-err"></div>
+    <div class="row"><button class="btn" type="button" id="ad-no">Huỷ</button><button class="btn primary" type="submit">Tạo chi nhánh</button></div></form>`;
+  document.body.appendChild(bg);
+  const f=bg.querySelector("form"),q=s=>bg.querySelector(s);setTimeout(()=>q("#ad-name").focus(),30);
+  const close=()=>{bg.remove();document.removeEventListener("keydown",onKey,true);};
+  const onKey=e=>{if(e.key==="Escape"){e.preventDefault();close();}};
+  document.addEventListener("keydown",onKey,true);
+  q("#ad-no").onclick=close;bg.addEventListener("click",e=>{if(e.target===bg)close();});
+  f.addEventListener("change",()=>{q("#ad-err").textContent="";});
+  f.addEventListener("submit",e=>{e.preventDefault();
+    const name=q("#ad-name").value.trim(),bt=(f.querySelector("[name=ad-build]:checked")||{}).value||"",biz=[...f.querySelectorAll("[name=ad-biz]:checked")].map(x=>x.value);
+    const ho=q("#ad-ho").value,kt=q("#ad-kt").value,note=q("#ad-note").value.trim();
+    const miss=[!name&&"tên chi nhánh",!bt&&"loại hình thi công",!biz.length&&"hình thức kinh doanh"].filter(Boolean);
+    if(miss.length){q("#ad-err").textContent="Còn thiếu: "+miss.join(", ")+".";return;}
+    if(ho&&kt&&kt<ho){q("#ad-err").textContent="Ngày khai trương đang sớm hơn ngày nhận nhà.";return;}
+    const codes=Object.values(DATA.stores).map(x=>parseInt(x.code,10)).filter(n=>!isNaN(n));
+    const store={id:uid("s"),code:p2((codes.length?Math.max(...codes):0)+1),name,buildType:bt,biz,type:typeLabel({buildType:bt,biz}," – "),pic:S.me||"",openDate:kt,handover:ho,buildStart:"",scope:"",note,hold:false,manual:{},wf:{},createdAt:now(),updatedAt:now(),updatedBy:S.me||""};
+    commit({t:"create",store},true);close();
+    location.hash="cn-"+store.id;
+    toast("Đã tạo chi nhánh "+name);});
 }
 document.getElementById("addStore").addEventListener("click",addStore);
 document.getElementById("addStore2").addEventListener("click",addStore);
@@ -1415,8 +1700,8 @@ function deleteStore(id){
   S.confirmDel=false;commit({t:"del",id},true);location.hash="tong-quan";toast("Đã xoá "+name);
 }
 function exportCsv(){
-  const c=cfg(),rows=[["Mã","Chi nhánh","Loại hình","PIC tổng","Nhận nhà","Bắt đầu TC","Khai trương","Còn (ngày)","Trạng thái","Hiện trạng thi công","Tiến độ tổng","Trễ hạn","Thủ công xong","WF hoàn thành","Thi công (mẫu)","Vật tư đã cấp",...c.workflows.map(w=>w.name),"Hiện trạng / vướng mắc","Nhật ký gần nhất"]];
-  sortStores(allCalc()).forEach(x=>{const lg=latestLog(x.st.id);rows.push([x.st.code,x.st.name,x.st.type,x.st.pic,fdy(x.st.handover),fdy(x.st.buildStart),fdy(x.st.openDate),x.dKT??"",x.status,x.phase,pct(x.prog),x.late,x.mDone+"/"+x.mApp,x.wDone+"/"+x.wApp,x.plan?x.plan.iDone+"/"+x.plan.items.length:"",x.plan?x.plan.mDone+"/"+x.plan.mats.length:"",...x.wfs.map(w=>w.w.k==="blank"?"Chưa cập nhật":(w.code?w.code+" · ":"")+w.w.t),x.st.note,lg?fd(lg.date)+" – "+lg.text:""]);});
+  const c=cfg(),rows=[["Mã","Chi nhánh","Loại hình","Nhận nhà","Khai trương","Còn (ngày)","Trạng thái","Hiện trạng thi công","Tiến độ tổng","Trễ hạn","Thủ công xong","WF hoàn thành","Thi công (mẫu)","Vật tư đã cấp",...c.workflows.map(w=>w.name),"Hiện trạng / vướng mắc","Nhật ký gần nhất"]];
+  sortStores(allCalc()).forEach(x=>{const lg=latestLog(x.st.id);rows.push([x.st.code,x.st.name,typeLabel(x.st),fdy(x.st.handover),fdy(x.st.openDate),x.dKT??"",x.status,x.phase,pct(x.prog),x.late,x.mDone+"/"+x.mApp,x.wDone+"/"+x.wApp,x.plan?x.plan.iDone+"/"+x.plan.items.length:"",x.plan?x.plan.mDone+"/"+x.plan.mats.length:"",...x.wfs.map(w=>w.w.k==="blank"?"Chưa cập nhật":(w.code?w.code+" · ":"")+w.w.t),x.st.note,lg?fd(lg.date)+" – "+lg.text:""]);});
   const csv="﻿"+rows.map(r=>r.map(v=>{v=String(v??"");return /[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(",")).join("\r\n");
   download("tien-do-thi-cong-"+today()+".csv",csv,"text/csv;charset=utf-8");
 }
@@ -1597,12 +1882,102 @@ async function syncStores(ids,auto){
   if(!auto||sum.failed) toast(`Đã đồng bộ ${sum.ok}/${sum.tasks} task · ${sum.changed} WF thay đổi % / bước`+(sum.unmatched?` · ${sum.unmatched} bước chưa có trong danh mục (% tính theo số bước xong)`:"")+(sum.failed?` · ${sum.failed} task lỗi`:""),sum.ok===0);
 }
 
+/* ---------- lịch tháng: nhận nhà / khai trương ---------- */
+const WDS=["T2","T3","T4","T5","T6","T7","CN"];
+function calEvents(){
+  const T=today(),ev=[];
+  allCalc().forEach(c=>{const st=c.st,chg=!!(st.sched&&st.sched.at&&diff(T,String(st.sched.at).slice(0,10))<=7);
+    const base={c,chg};
+    if(st.handover) ev.push({...base,d:st.handover,k:"ho",cls:st.hold?"hold":st.handover>T?"ho plan":(c.opened?"done":"ho")});
+    if(st.openDate) ev.push({...base,d:st.openDate,k:"kt",cls:st.hold?"hold":c.opened?"done":"kt"});});
+  return ev.sort((a,b)=>(a.k===b.k?0:a.k==="kt"?-1:1)||String(a.c.st.name).localeCompare(String(b.c.st.name),"vi"));
+}
+function evTitle(e){const st=e.c.st;return [st.name,typeLabel(st),(e.k==="kt"?"Khai trương ":"Nhận nhà ")+fdy(e.d)+(e.k==="ho"&&e.d>today()?" (dự kiến)":""),st.openDate&&e.k==="ho"?"KT "+fd(st.openDate):"",st.hold?"Tạm hoãn":"",st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"")].filter(Boolean).join("\n");}
+function evChip(e){return `<button type="button" class="ev ${e.cls}${e.chg?" chg":""}" data-go="${esc(e.c.st.id)}" title="${esc(evTitle(e))}"><i>${e.k==="kt"?"KT":"NN"}</i><span>${esc(e.c.st.name||"(chưa đặt tên)")}</span></button>`;}
+function viewCalendar(){
+  const T=today();const m=S.calM||T.slice(0,7);const [y,mo]=m.split("-").map(Number);
+  const first=new Date(Date.UTC(y,mo-1,1)),startDow=(first.getUTCDay()+6)%7;
+  const start=addDays(m+"-01",-startDow),dim=new Date(Date.UTC(y,mo,0)).getUTCDate();
+  const weeks=Math.ceil((startDow+dim)/7);
+  const evs=calEvents(),byDay={};evs.forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e);});
+  const title=["Tháng 1","Tháng 2","Tháng 3","Tháng 4","Tháng 5","Tháng 6","Tháng 7","Tháng 8","Tháng 9","Tháng 10","Tháng 11","Tháng 12"][mo-1]+" "+y;
+  const inMonth=evs.filter(e=>e.d.slice(0,7)===m);
+  let h=`<div class="cal-bar"><button class="btn icon" type="button" data-calm="-1" aria-label="Tháng trước">${ic("back")}</button><h2>${title}</h2><button class="btn icon" type="button" data-calm="1" aria-label="Tháng sau" style="transform:scaleX(-1)">${ic("back")}</button>
+    <div class="right"><span class="muted" style="font-size:13px">${inMonth.filter(e=>e.k==="kt").length} khai trương · ${inMonth.filter(e=>e.k==="ho").length} nhận nhà</span><button class="btn sm" type="button" data-calm="0">Hôm nay</button></div></div>`;
+  h+=`<div class="cal">${WDS.map(d=>`<div class="dow">${d}</div>`).join("")}`;
+  for(let i=0;i<weeks*7;i++){const d=addDays(start,i),list=byDay[d]||[],key="cal-"+d,open=S.open.has(key),shown=open?list:list.slice(0,3);
+    h+=`<div class="day ${d.slice(0,7)!==m?"out":""} ${d===T?"today":""} ${i%7>=5?"wk":""}"><div class="dn"><b>${Number(d.slice(8))}</b></div>${shown.map(evChip).join("")}${list.length>3?`<button class="more" type="button" data-toggle="${key}">${open?"Thu gọn":"+"+(list.length-3)+" nữa"}</button>`:""}</div>`;}
+  h+=`</div><div class="cal-legend"><span class="ev kt"><i>KT</i>Khai trương</span><span class="ev ho"><i>NN</i>Đã nhận nhà</span><span class="ev ho plan"><i>NN</i>Nhận nhà dự kiến</span><span class="ev done"><i>KT</i>Đã qua</span><span class="ev hold"><i>KT</i>Tạm hoãn</span><span class="ev kt chg"><i>KT</i>Đổi lịch trong 7 ngày</span></div>`;
+  const days=[...new Set(inMonth.map(e=>e.d))].sort();
+  h+=`<div class="sec agenda"><div class="sec-h"><h2>Chi tiết trong tháng</h2><span class="sub">bấm vào căn để mở trang chi tiết</span></div>`;
+  h+=days.length?`<div class="panel">${days.map(d=>{const w=WDS[(new Date(toT(d)).getUTCDay()+6)%7];return `<div class="ag-day"><div class="ag-date ${d===T?"today":""}"><b>${fd(d)}</b><span>${w==="CN"?"Chủ nhật":"Thứ "+(Number(w.slice(1)))}${d===T?" · hôm nay":""}</span></div><div class="ag-list">${byDay[d].filter(e=>e.d.slice(0,7)===m).map(e=>{const st=e.c.st,info=st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"");
+      return `<button type="button" class="ag-it" data-go="${esc(st.id)}"><span class="ev ${e.cls}${e.chg?" chg":""}"><i>${e.k==="kt"?"KT":"NN"}</i><span>${e.k==="kt"?"Khai trương":(e.d>T?"Nhận nhà (dự kiến)":"Nhận nhà")}</span></span><div class="t"><b>${esc(st.name||"(chưa đặt tên)")}</b><div>${esc([typeLabel(st),e.k==="kt"?(st.handover?(st.handover<=T?"đã nhận nhà "+fd(st.handover):"dự kiến nhận nhà "+fd(st.handover)):"chưa có ngày nhận nhà"):(st.openDate?"khai trương "+fd(st.openDate):"chưa có ngày khai trương"),st.hold?"tạm hoãn":""].filter(Boolean).join(" · "))}</div>${info?`<div>${esc(info)}</div>`:""}</div></button>`;}).join("")}</div></div>`;}).join("")}</div>`
+    :`<div class="panel empty"><b>Tháng này chưa có lịch nhận nhà / khai trương</b>Chuyển sang tháng khác bằng nút mũi tên.</div>`;
+  return h+`</div>`;
+}
+
+/* ---------- đổi ngày nhận nhà / khai trương: bắt buộc nhập lý do ---------- */
+const DLBL={handover:"Nhận nhà",openDate:"Khai trương"};
+function askReason(id,k,old,v){
+  const st=S.stores[id];if(!st)return;
+  const bg=document.createElement("div");bg.className="mdl-bg";
+  bg.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlT"><h3 id="mdlT">Lý do đổi ngày ${esc(DLBL[k].toLowerCase())}</h3>
+    <div class="chg"><b>${esc(st.name||"Chi nhánh")}</b><br>${esc(DLBL[k])}: <b>${old?fdy(old):"—"}</b> → <b>${v?fdy(v):"(bỏ trống)"}</b></div>
+    <div class="field"><label for="mdlR">Nguyên nhân chỉnh sửa (bắt buộc)</label><textarea class="in" id="mdlR" rows="3" placeholder="VD: Chủ nhà dự kiến bàn giao mặt bằng tuần 3 do bên thuê cũ chưa dọn đi"></textarea></div>
+    <div class="err" id="mdlE"></div>
+    <div class="row"><button class="btn" type="button" id="mdlNo">Huỷ, giữ ngày cũ</button><button class="btn primary" type="button" id="mdlOk">Lưu thay đổi</button></div></div>`;
+  document.body.appendChild(bg);
+  const ta=bg.querySelector("#mdlR");setTimeout(()=>ta.focus(),30);
+  const close=()=>{bg.remove();document.removeEventListener("keydown",onKey,true);};
+  const ok=()=>{const r=ta.value.trim();if(r.length<3){bg.querySelector("#mdlE").textContent="Nhập nguyên nhân chỉnh sửa (ít nhất vài chữ) rồi bấm Lưu.";ta.focus();return;}
+    const at=now(),by=S.me||"";
+    const sched={at,by,reason:r,field:k,from:old,to:v};
+    saveStore(id,{[k]:v,sched});
+    commit({t:"log",log:{id:uid("l"),storeId:id,date:today(),cat:"Đổi lịch",text:`${DLBL[k]}: ${old?fdy(old):"—"} → ${v?fdy(v):"(bỏ trống)"}. Lý do: ${r}`,link:"",by,ts:at}});
+    close();toast("Đã đổi ngày "+DLBL[k].toLowerCase()+" và ghi lý do");};
+  const onKey=e=>{if(e.key==="Escape"){e.preventDefault();close();}else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();ok();}};
+  document.addEventListener("keydown",onKey,true);
+  bg.querySelector("#mdlNo").onclick=close;bg.querySelector("#mdlOk").onclick=ok;
+  bg.addEventListener("click",e=>{if(e.target===bg)close();});
+}
+/* ---------- tổng hợp cập nhật lịch khai trương ---------- */
+function schedText(){
+  const T=today(),all=allCalc().filter(c=>!c.opened&&!c.st.hold);
+  const grp={};all.forEach(c=>{const k=c.st.openDate||"";(grp[k]=grp[k]||[]).push(c);});
+  const keys=Object.keys(grp).sort((a,b)=>(a||"9999").localeCompare(b||"9999"));
+  const line=c=>{const st=c.st,b=buildOf(st),z=bizOf(st);
+    const parts=[st.name||"(chưa đặt tên)",b||(z.length?"":st.type||""),z.join(" / ")];
+    const info=(st.sched&&st.sched.reason)||String(st.note||"").split(" · ")[0];
+    parts.push(info);
+    parts.push(st.handover?(st.handover<=T?"Đã nhận nhà: ":"Dự kiến nhận nhà: ")+fdy(st.handover):"Chưa có ngày nhận nhà");
+    return "- "+parts.filter(Boolean).join(" – ")+".";};
+  let out="Cập nhật lịch khai trương/hoàn công:\n";
+  keys.forEach(k=>{out+="\n🗓 "+(k?"Ngày khai trương "+fdy(k):"Chưa có ngày khai trương")+":\n"+grp[k].sort((a,b)=>String(a.st.name).localeCompare(String(b.st.name),"vi")).map(line).join("\n")+"\n";});
+  const hold=allCalc().filter(c=>c.st.hold);
+  if(hold.length) out+="\n⏸ Tạm hoãn:\n"+hold.map(c=>"- "+(c.st.name||"")+((c.st.sched&&c.st.sched.reason)?": "+c.st.sched.reason:"")).join("\n")+"\n";
+  return out.trim();
+}
+function viewSchedule(){
+  const txt=schedText();
+  const rows=allCalc().filter(c=>c.st.sched&&c.st.sched.at).sort((a,b)=>String(b.st.sched.at).localeCompare(String(a.st.sched.at)));
+  const tab=S.schedTab||"cal";
+  let h=`<div class="ph"><div><h1>Lịch khai trương</h1><p>Lịch nhận nhà và khai trương của các căn, kèm lý do đổi lịch gần nhất. Tab “Nội dung gửi Zalo” tạo sẵn tin nhắn cập nhật.</p></div>
+    <div class="right"><div class="seg-f" role="group" aria-label="Chế độ xem"><button type="button" data-stab="cal" aria-pressed="${tab==="cal"}">Lịch tháng</button><button type="button" data-stab="txt" aria-pressed="${tab==="txt"}">Nội dung gửi Zalo</button></div>
+    ${tab==="txt"?`<button class="btn" type="button" id="schedReset">Làm mới</button><button class="btn primary" type="button" id="schedCopy">${ic("check")}Sao chép</button>`:""}</div></div>`;
+  if(tab==="cal") h+=viewCalendar();
+  else h+=`<div class="panel" style="padding:14px"><textarea class="in sched-txt" id="schedTxt" aria-label="Nội dung cập nhật lịch">${esc(S.schedEdit!=null?S.schedEdit:txt)}</textarea></div>`;
+  h+=`<div class="sec"><div class="sec-h"><h2>Lần đổi lịch gần nhất của từng căn</h2><span class="sub">${rows.length} chi nhánh · lịch sử đầy đủ nằm trong Nhật ký mục “Đổi lịch”</span></div>`;
+  h+=rows.length?`<div class="panel tbl"><table class="sched-tbl"><thead><tr><th>Chi nhánh</th><th>Đổi lúc</th><th>Thay đổi</th><th>Nguyên nhân</th><th>Người đổi</th></tr></thead><tbody>${rows.map(c=>{const s=c.st.sched;return `<tr><td class="name"><a href="#cn-${esc(c.st.id)}">${esc(c.st.name||"—")}</a></td><td>${esc(fd(String(s.at).slice(0,10))+" "+String(s.at).slice(11,16))}</td><td>${esc((DLBL[s.field]||s.field||"")+": "+(s.from?fd(s.from):"—")+" → "+(s.to?fd(s.to):"—"))}</td><td class="wrap">${esc(s.reason||"")}</td><td>${esc(s.by||"")}</td></tr>`;}).join("")}</tbody></table></div>`
+    :`<div class="panel empty"><b>Chưa có lần đổi lịch nào</b>Khi ai đó đổi ngày nhận nhà hoặc khai trương, trang sẽ hỏi lý do và ghi vào đây.</div>`;
+  return h+`</div>`;
+}
+
 /* ---------- routing ---------- */
 function route(){
   const h=location.hash.replace("#","");
   S.confirmDel=false;
   if(h.startsWith("cn-")){S.view="cn";S.storeId=h.slice(3);}
-  else if(["viec-can-xu-ly","lich","cau-hinh"].includes(h)) S.view=h;
+  else if(["lich","cap-nhat-lich","cau-hinh"].includes(h)) S.view=h;
   else S.view="tong-quan";
   if(S.view!=="cau-hinh") S.cfgDraft=null;
   render();window.scrollTo(0,0);
