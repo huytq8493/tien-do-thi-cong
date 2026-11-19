@@ -952,6 +952,89 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .din{position:relative;display:flex;align-items:center}.din .in{width:100%}
 .din-x{position:absolute;right:38px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:8px;border:0;background:var(--sunk);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .din-x:hover{background:var(--late-soft);color:var(--late)}.din-x svg.i{width:14px;height:14px}
+.ol{padding:0!important;overflow:hidden;margin-bottom:16px}
+.ol-gh{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ol-gh b{font-size:15.5px;font-weight:700}.ol-gh .muted{font-size:12.5px}
+.ol-gh .ol-n{min-width:24px;height:22px;padding:0 7px;border-radius:999px;background:var(--sunk);font-size:12px;font-weight:700;display:grid;place-items:center}
+.ol-g-run{border-top:3px solid var(--run)!important}.ol-g-soon{border-top:3px solid #E8A33D!important}.ol-g-late{border-top:3px solid var(--late)!important}.ol-g-hold{border-top:3px solid var(--hold)!important}.ol-g-hold .ol-row{opacity:.8}
+.ol-head,.ol-row{display:grid;grid-template-columns:minmax(220px,2.1fr) 120px 140px 150px 150px minmax(200px,2.2fr);gap:16px;align-items:center;padding:0 20px}
+.ol-head{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--sunk);padding-top:9px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.ol-row{padding-top:13px;padding-bottom:13px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background .15s}
+.ol-row:last-child{border-bottom:0}
+.ol-row:hover{background:#F8FAFB}.ol-row:hover .ol-nm b{color:var(--accent)}
+.ol-nm{min-width:0}.ol-nm b{display:block;font-weight:650;font-size:14.5px;line-height:1.35}.ol-nm span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.ol-d b{display:block;font-weight:600;font-size:13.5px}.ol-d b.na{color:#98A2B3;font-weight:500}.ol-d small{display:block;font-size:11.5px;color:var(--muted)}
+.ol-d em{display:inline-block;font-style:normal;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:3px}
+.ol-d em.u-late{background:var(--late-soft);color:var(--late)}.ol-d em.u-soon{background:var(--soon-soft);color:var(--soon)}.ol-d em.u-ok{background:var(--ok-soft);color:var(--ok)}.ol-d em.u-far{background:var(--run-soft);color:var(--run)}
+.ol-pg{display:flex;align-items:center;gap:8px}.ol-pg .oc-bar{height:7px}.ol-pg b{font-size:13px;font-weight:700;min-width:34px;text-align:right}
+.ol-note{font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px;min-width:0}
+.ol-note{overflow:hidden}.ol-tx{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ol-late{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;font-size:11.5px;font-weight:700;color:var(--late);background:var(--late-soft);padding:1px 8px;border-radius:999px}.ol-late svg.i{width:12px;height:12px}
+.ol-empty{padding:16px 20px;color:var(--muted);font-size:13px}
+@media (max-width:1100px){.ol-head{display:none}
+  .ol-row{grid-template-columns:1fr 1fr 1fr;gap:10px 14px;padding:14px 16px}
+  .ol-nm,.ol-note{grid-column:1/-1}.ol-pg{grid-column:1/-1}
+  .ol-d::before,.ol-pg::before{content:attr(data-l);display:block;font-size:11px;color:var(--muted);margin-bottom:1px}
+  .ol-pg{flex-wrap:wrap}.ol-pg::before{width:100%}}
+.dot.hold{background:var(--hold)}
+.hero2{display:block!important;padding:22px 24px!important}
+.h2-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 28px;align-items:start}
+.h2-side{display:flex;flex-direction:column;align-items:flex-end;gap:12px}.h2-side .hero-actions{margin:0}
+.h2-g{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;font-weight:600}
+.h2-ms{display:grid;grid-template-columns:repeat(3,1fr);margin:20px 0 0;position:relative}
+.hm{position:relative;display:flex;flex-direction:column;gap:2px;padding:0 12px 0 0}
+.hm i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.22);color:#C9D1DE;margin-bottom:8px;position:relative;z-index:1}
+.hm i svg.i{width:15px;height:15px}
+.hm::after{content:"";position:absolute;left:34px;right:6px;top:14px;height:2px;background:rgba(255,255,255,.14)}
+.hm:last-child::after{display:none}
+.hm-done i{background:#4ADE9F;border-color:#4ADE9F;color:#0B1220}.hm-done::after{background:#4ADE9F}
+.hm-now i,.hm-next:first-of-type i{border-color:#fff;color:#fff}
+.hm-now i{background:#fff;color:#0B1220}
+.hm-l{font-size:12px;color:#A3ADBF;font-weight:600;text-transform:uppercase;letter-spacing:.05em}.hm-l em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:500;color:#FFD68A}
+.hm b{font-size:19px;font-weight:700;color:#fff;letter-spacing:-.01em}.hm-na b{color:#6B7689}
+.hm small{font-size:12px;color:#A3ADBF}.hm-done small{color:#7EEBBC}.hm-now small{color:#fff;font-weight:600}
+.h2-info{display:grid;grid-template-columns:1fr 1.3fr 1.1fr;gap:12px;margin:20px 0 22px}
+.h2-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px 14px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.h2-lb{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#A3ADBF;display:flex;justify-content:space-between}
+.h2-ed{color:#7EEBBC;text-transform:none;letter-spacing:0;font-weight:600}
+.h2-box p{margin:0;font-size:14px;line-height:1.5;color:#fff}.h2-box p b{font-weight:700}
+.h2-box .muted{color:#7C879A!important}
+.h2-box small{font-size:12px;color:#C9D1DE;border-top:1px dashed rgba(255,255,255,.12);padding-top:6px;margin-top:4px}
+.h2-cl{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#DDE3EC!important}
+.h2-late,.h2-ok{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;margin-top:4px}
+.h2-late{background:rgba(255,110,100,.18);color:#FFA39B}.h2-ok{background:rgba(74,222,159,.15);color:#7EEBBC}
+.h2-late svg.i,.h2-ok svg.i{width:13px;height:13px}
+.hero2 .hero-mini{margin:0 -24px -22px!important}
+@media (max-width:900px){.h2-top{grid-template-columns:1fr}.h2-side{align-items:flex-start}.h2-info{grid-template-columns:1fr}.hm b{font-size:16px}.hero2{padding:16px!important}.hero2 .hero-mini{margin:0 -16px -16px!important}}
+.hero-mini .v.bad{color:#FF8A80!important}
+.hero3{display:block!important;padding:16px 20px!important;position:relative}
+.h3-top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between}
+.h3-t{min-width:0;flex:1}.h3-t .eyebrow{font-size:12px;gap:8px}.h3-ty{color:#A3ADBF}
+.hero3 .title-in{font-size:22px!important;margin:4px 0 0;padding:2px 0}
+.h3-kpi{display:flex;gap:6px;flex:none}
+.h3-kpi>div{background:rgba(255,255,255,.07);border-radius:10px;padding:6px 12px;text-align:center;min-width:72px}
+.h3-kpi b{display:block;font-size:18px;font-weight:700;color:#fff;line-height:1.2}.h3-kpi b.bad{color:#FF8A80}.h3-kpi b.cd-late{color:#FF8A80}.h3-kpi b.cd-soon{color:#FFD68A}
+.h3-kpi span{font-size:11px;color:#A3ADBF}
+.h3-ms{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:12px 0 10px}
+.hm2{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:12.5px;color:#A3ADBF}
+.hm2 b{color:#fff;font-weight:650}.hm2 em{font-style:normal;color:#FFD68A;font-weight:600}
+.hm2 svg.i{width:13px;height:13px;color:#4ADE9F}
+.hm2.hm-done{border-color:rgba(74,222,159,.35)}.hm2.hm-na b{color:#6B7689;font-weight:500}
+.hm2-ar{color:#4B5568;font-size:16px}
+.h3-rows{display:flex;flex-direction:column;gap:4px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px}
+.h3-rows>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;font-size:13.5px;line-height:1.45}
+.h3-rows span{color:#A3ADBF;font-size:12.5px;padding-top:1px}
+.h3-rows p{margin:0;color:#E6EAF2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.h3-rows .muted{color:#7C879A!important;font-style:normal}
+.h3-act{margin:10px 0 0!important;justify-content:flex-end}
+@media (max-width:760px){.h3-top{flex-direction:column}.h3-kpi>div{min-width:0;flex:1}.h3-kpi{width:100%}.h3-rows>div{grid-template-columns:70px 1fr}}
+.ev.s-da{background:#F2F4F7;color:#98A2B3;border:1px solid transparent}
+.ev.s-dang{background:var(--run);color:#fff;border:1px solid var(--run)}
+.ev.s-se{background:#fff;color:var(--accent);border:1px solid var(--accent-line)}
+.ev.s-vuong{background:var(--late-soft);color:var(--late);border:1px solid #F4B4AD;font-weight:600}
+.ev.s-dang.chg::after{background:#FFD68A}
+.cal-cnt{display:flex;gap:6px;flex-wrap:wrap}.cal-cnt .ev{width:auto;cursor:default;font-weight:600}.cal-cnt .ev.s-da span{text-decoration:none}
+.cal-legend .ev{width:auto;cursor:default}.cal-legend .ev.s-da{text-decoration:none}.cal-legend .ev span,.cal-legend .ev.s-da{text-decoration:none}
 /* ===== end executive */
 
 </style>
@@ -1229,7 +1312,7 @@ function render(){
 function renderNav(){
   const all=S.ready.stores?allCalc():[]; const late=S.ready.stores?actions(all).filter(a=>a.kind==="late").length:0;
   const cur=S.view==="cn"?"tong-quan":S.view;
-  const t=[["tong-quan","Tổng quan","grid",all.filter(c=>c.sk==="run").length,false],["lich","Lịch tiến độ","chart",0,false],["cap-nhat-lich","Lịch khai trương","cal",0,false],["cau-hinh","Cấu hình","cog",0,false]];
+  const t=[["tong-quan","Tổng quan","grid",all.filter(c=>c.sk==="run").length,false],["cap-nhat-lich","Lịch khai trương","cal",0,false],["lich","Lịch tiến độ","chart",0,false],["cau-hinh","Cấu hình","cog",0,false]];
   document.getElementById("nav").innerHTML=t.map(([k,l,i,n,hot])=>`<a href="#${k}" ${cur===k?'aria-current="page"':""}>${ic(i)}${l}${n?`<span class="cnt ${hot?"hot":""}">${n}</span>`:""}</a>`).join("");
   document.getElementById("tabbar").innerHTML=t.map(([k,l,i,n,hot])=>`<a href="#${k}" ${cur===k?'aria-current="page"':""}>${ic(i)}<span>${l.replace("Việc cần xử lý","Cần xử lý").replace("Lịch tiến độ","Lịch").replace("Lịch khai trương","Khai trương")}</span>${hot&&n?`<span class="dot">${n}</span>`:""}</a>`).join("");
 }
@@ -1265,6 +1348,34 @@ function ovRow(c){
     ${lateN?`<div class="oc-warn">${ic("alert")}${lateN} việc trễ hạn</div>`:`<div class="oc-okk">${ic("check")}Đúng tiến độ</div>`}
   </a>`;
 }
+const TRACK=[["thicong","Đang thi công","run","Đã nhận nhà, đang triển khai thi công"],["hopdong","Đang làm hợp đồng","soon","Đàm phán, ký hợp đồng thuê, chờ bàn giao mặt bằng"]];
+const isHoan=st=>!!st.hold||st.track==="thutuc";
+function trackOf(st){if(st.track&&TRACK.some(t=>t[0]===st.track))return st.track;return st.handover&&st.handover<=today()?"thicong":"hopdong";}
+function buildStartOf(c){const P=c.plan,st=c.st;if(st.buildStart)return{d:st.buildStart,real:st.buildStart<=today(),set:true};if(P&&P.items&&P.items.length){const xd=P.items.find(x=>/xây dựng/i.test(x.d.name))||P.items.filter(x=>x.ps).sort((a,b)=>a.ps.localeCompare(b.ps))[0];if(xd){if(xd.e&&xd.e.start)return{d:xd.e.start,real:true};if(xd.ps)return{d:xd.ps,real:false};}}return null;}
+function ovLine(c){
+  const st=c.st,T=today(),P=c.plan;
+  const usePlan=P&&st.openDate&&!c.opened,p=usePlan?P.actPct:Math.round(c.prog*100);
+  const lg=latestLog(st.id),note=st.note||(st.sched&&st.sched.reason)||(lg?fd(lg.date)+": "+lg.text:"");
+  const lateN=(P&&c.planOn?P.mats.filter(m=>m.w.k==="late").length+P.items.filter(x=>x.w.k==="late").length:0)+c.late;
+  const cd=countdown(c),urg=c.opened?"ok":cd.k||"far";
+  const bs=buildStartOf(c),recv=!!(st.handover&&st.handover<=T);
+  const dt=(v,sub)=>v?`<b>${fdy(v)}</b>${sub?`<small>${sub}</small>`:""}`:`<b class="na">Chưa có</b>`;
+  return `<a class="ol-row" href="#cn-${esc(st.id)}">
+    <div class="ol-nm"><b>${esc(st.name||"(Chưa đặt tên — bấm để sửa/xoá)")}</b><span>${[buildOf(st),bizOf(st).join(" / ")].filter(Boolean).map(esc).join(" · ")}</span></div>
+    <div class="ol-d" data-l="Nhận nhà">${dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>
+    <div class="ol-d" data-l="Khởi công XD">${bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>
+    <div class="ol-d" data-l="Khai trương">${st.openDate?`<b>${fdy(st.openDate)}</b><em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>
+    <div class="ol-pg" data-l="Tiến độ"><div class="oc-bar"><i style="width:${Math.max(p,2)}%"></i></div><b>${p}%</b></div>
+    <div class="ol-note">${note?`<span class="ol-tx">${esc(note)}</span>`:'<span class="muted">—</span>'}</div>
+  </a>`;
+}
+function ovList(list,grouped){
+  const head=`<div class="ol-head"><span>Chi nhánh</span><span>Nhận nhà</span><span>Khởi công XD</span><span>Khai trương</span><span>Tiến độ</span><span>Ghi chú / vướng mắc</span></div>`;
+  if(!grouped) return `<div class="panel ol">${head}${list.map(ovLine).join("")}</div>`;
+  return TRACK.concat([["hoan","Tạm hoãn","hold","Vướng pháp lý, giấy phép, chủ nhà… hoặc dừng triển khai"]]).map(t=>{const L=list.filter(c=>t[0]==="hoan"?isHoan(c.st):!isHoan(c.st)&&trackOf(c.st)===t[0]);
+    return `<div class="panel ol ol-g-${t[2]}"><div class="ol-gh"><span class="dot ${t[2]}"></span><b>${t[1]}</b><span class="ol-n">${L.length}</span><span class="muted">${t[3]}</span></div>
+      ${L.length?head+L.map(ovLine).join(""):`<div class="ol-empty">Không có căn nào</div>`}</div>`;}).join("");
+}
 function viewOverview(){
   const all=allCalc(),T=today();
   const act=all.filter(c=>c.sk==="run");
@@ -1282,7 +1393,7 @@ function viewOverview(){
     <div class="ov-k ${late?"bad":"good"}" style="cursor:default"><span class="l">Việc trễ hạn</span><b>${late}</b><span class="s">${late?"hạng mục, vật tư, WF quá hạn":"không có việc trễ"}</span></div>
     <div class="ov-k ${matLate?"bad":"good"}" style="cursor:default"><span class="l">Vật tư trễ cấp</span><b>${matLate}</b><span class="s">${matLate?"loại vật tư chưa cấp đúng hạn":"vật tư cấp đúng hạn"}</span></div>
   </div>`;
-  const F=[["dang","Đang triển khai",c=>c.sk==="run"],["chua","Chưa có lịch",c=>c.sk==="blank"],["kt","Đã khai trương",c=>c.sk==="ok"],["hoan","Tạm hoãn",c=>c.sk==="hold"],["all","Tất cả",()=>true]];
+  const F=[["dang","Đang theo dõi",c=>!c.opened],["kt","Đã khai trương",c=>c.opened&&!c.st.hold],["hoan","Tạm hoãn",c=>!c.opened&&isHoan(c.st)],["all","Tất cả",()=>true]];
   const fx=F.find(f=>f[0]===S.filter)||F[0];
   const q=S.q.trim().toLowerCase();
   const list=sortStores(all.filter(fx[2]).filter(c=>!q||(c.st.name+" "+typeLabel(c.st)+" "+(c.st.pic||"")+" "+(c.st.code||"")).toLowerCase().includes(q)));
@@ -1291,7 +1402,7 @@ function viewOverview(){
     <div class="right"><label class="search">${ic("search")}<span class="sr">Tìm chi nhánh</span><input class="in" id="q" type="search" placeholder="Tìm tên căn…" value="${esc(S.q)}"></label>${S.canWrite?`<button class="btn primary" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh</button>`:""}</div></div>`;
   if(!all.length) h+=`<div class="panel empty"><b>Chưa có chi nhánh nào</b>Bấm “Thêm chi nhánh” để khai báo căn đầu tiên.</div>`;
   else if(!list.length) h+=`<div class="panel empty"><b>Không có căn nào trong nhóm này</b>Chọn nhóm khác hoặc xoá từ khoá tìm kiếm.</div>`;
-  else h+=`<div class="ov-cards">${list.map(ovRow).join("")}</div>`;
+  else h+=ovList(list,fx[0]==="dang");
   h+=`</section>`;
   h+=`<details class="ov-more"><summary>Bảng chi tiết hạng mục &amp; workflow từng căn (dành cho quản lý)</summary>${matrix(sortStores(all.filter(c=>c.sk!=="hold")))}</details>`;
   return h;
@@ -1355,12 +1466,12 @@ function viewActions(){
 }
 
 function viewTimeline(){
-  const all=sortStores(allCalc().filter(c=>!c.st.hold)), T=today();
+  const all=sortStores(allCalc().filter(c=>!c.opened&&!isHoan(c.st)&&trackOf(c.st)==="thicong")), T=today();
   const dated=all.filter(c=>c.st.openDate||c.st.handover||c.st.buildStart);
   const undated=all.filter(c=>!dated.includes(c));
-  let h=`<div class="ph"><div><h1>Lịch tiến độ</h1><p>Nhận nhà → thi công → khai trương của từng chi nhánh</p></div>
+  let h=`<div class="ph"><div><h1>Lịch tiến độ</h1><p>Các căn đang thi công (${all.length} căn) · nhận nhà → thi công → khai trương</p></div>
     <div class="right legend"><span><i style="background:repeating-linear-gradient(-45deg,var(--sunk) 0 3px,var(--line-2) 3px 6px)"></i>Chuẩn bị mặt bằng</span><span><i style="background:var(--run)"></i>Thi công (đậm = đã qua)</span><span><i style="background:var(--accent);transform:rotate(45deg)"></i>Khai trương</span><span><i style="background:var(--late);width:3px"></i>Hôm nay</span></div></div>`;
-  if(!dated.length) return h+`<div class="panel empty"><b>Chưa có chi nhánh nào có ngày</b>Nhập ngày nhận nhà, thi công hoặc khai trương trong trang chi nhánh để thấy lịch.</div>`;
+  if(!dated.length) return h+`<div class="panel empty"><b>Chưa có căn nào đang thi công</b>Nhập ngày nhận nhà, thi công hoặc khai trương trong trang chi nhánh để thấy lịch.</div>`;
   const ds=[T];dated.forEach(c=>["handover","buildStart","openDate"].forEach(k=>c.st[k]&&ds.push(c.st[k])));
   ds.sort();const a=addDays(ds[0],-3),b=addDays(ds[ds.length-1],5);
   const span=diff(b,a)||1, X=s=>diff(s,a)/span*100;
@@ -1564,10 +1675,11 @@ function infoSection(st,dis){
   return `<section class="anchor" id="sec-info" style="margin-top:14px"><div class="sec-h"><h2>Thông tin mặt bằng</h2></div><div class="panel info-grid">
       <div class="field"><label for="f-build">Loại hình thi công</label><select class="in" id="f-build" data-k="buildType" ${dis}><option value="">— Chọn —</option>${BUILD.map(b=>`<option ${buildOf(st)===b?"selected":""}>${b}</option>`).join("")}</select></div>
       <div class="field"><label for="f-handover">Ngày nhận nhà</label><div class="din"><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}>${st.handover&&!dis?`<button type="button" class="din-x" data-clr="handover" title="Xoá ngày nhận nhà" aria-label="Xoá ngày nhận nhà">${ic("x")}</button>`:""}</div></div>
+      <div class="field"><label for="f-buildStart">Ngày khởi công</label><div class="din"><input class="in" type="date" id="f-buildStart" data-k="buildStart" value="${esc(st.buildStart||"")}" ${dis}>${st.buildStart&&!dis?`<button type="button" class="din-x" data-clr="buildStart" title="Xoá ngày khởi công" aria-label="Xoá ngày khởi công">${ic("x")}</button>`:""}</div></div>
       <div class="field"><label for="f-openDate">Ngày khai trương</label><div class="din"><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}>${st.openDate&&!dis?`<button type="button" class="din-x" data-clr="openDate" title="Xoá ngày khai trương" aria-label="Xoá ngày khai trương">${ic("x")}</button>`:""}</div></div>
       <div class="field wide"><span class="lbl">Hình thức kinh doanh (chọn nhiều)</span><div class="chk-row">${BIZ.map(b=>`<label class="chk"><input type="checkbox" data-biz="${b}" ${bizOf(st).includes(b)?"checked":""} ${S.canWrite&&b!=="Shop"?"":"disabled"}>${b}${b==="Shop"?" <small>(mặc định)</small>":""}</label>`).join("")}</div></div>
       <div class="field"><label for="f-code">Mã / số thứ tự</label>${inp("f-code","code",st.code)}</div>
-      <div class="field"><label for="f-hold">Tình trạng</label><select class="in" id="f-hold" data-k="hold" ${dis}><option value="">Theo lịch (tự tính)</option><option value="1" ${st.hold?"selected":""}>Tạm hoãn</option></select></div>
+      <div class="field"><label for="f-track">Nhóm theo dõi / giai đoạn</label><select class="in" id="f-track" data-k="track" ${dis}><option value="" ${!st.track&&!isHoan(st)?"selected":""}>Tự động (${esc((TRACK.find(t=>t[0]===trackOf({...st,track:""}))||[])[1])})</option>${TRACK.map(t=>`<option value="${t[0]}" ${!isHoan(st)&&st.track===t[0]?"selected":""}>${t[1]}</option>`).join("")}<option value="hoan" ${isHoan(st)?"selected":""}>Tạm hoãn</option></select></div>
       <div class="field wide"><label for="f-scope">Hạng mục cần thi công</label>${inp("f-scope","scope",st.scope,"text",'placeholder="Xây dựng, Thạch cao, Cửa cuốn, Kính, Logo, Bảng hiệu, Đồng hồ điện"')}</div>
       <datalist id="types"><option>Shop</option><option>Shop + Fashion</option><option>Shop + Electronics</option><option>Shop + Fashion + Electronics</option><option>Relayout</option><option>Thanh lý mặt bằng</option></datalist>
     </div></section>`;
@@ -1579,19 +1691,29 @@ function viewStore(){
   const logs=S.logs.filter(l=>l.storeId===st.id).sort((a,b)=>String(b.date+(b.ts||"")).localeCompare(a.date+(a.ts||"")));
   let h=`<a class="back" href="#tong-quan">${ic("back")}Tổng quan</a>`;
   if(!S.canWrite) h+=`<div class="ro-note">Bạn đang xem ở chế độ chỉ đọc. Nhờ chủ trang cấp quyền Contributor để cập nhật tiến độ.</div>`;
-  h+=`<section class="panel hero"><div style="min-width:0">
-      <div class="eyebrow">${c.st.code?`<span class="off">#${esc(c.st.code)}</span>`:""}${pill(c.sk,c.status)}<span>${esc(c.phase)}</span></div>
-      <input class="title-in" id="f-name" data-k="name" value="${esc(st.name)}" ${S.canWrite?"":"readonly"} aria-label="Tên chi nhánh" placeholder="Nhập tên chi nhánh">
-      <div class="muted" style="font-size:13px">${esc(typeLabel(st)||"Chưa chọn loại hình")}${st.updatedAt?` · cập nhật ${fd(st.updatedAt.slice(0,10))} ${st.updatedAt.slice(11,16)}`:""}</div>
+  const T=today(),P=c.plan,bs=buildStartOf(c),lg=latestLog(st.id);
+  const grpL=isHoan(st)?["hold","Tạm hoãn"]:c.opened?["ok","Đã khai trương"]:(t=>[t[2],t[1]])(TRACK.find(t=>t[0]===trackOf(st))||TRACK[0]);
+  const doingI=P&&st.openDate&&!c.opened?P.items.filter(x=>!x.done&&x.ps&&x.ps<=T&&T<=x.pe).map(x=>x.d.name):[];
+  const nextI=P&&st.openDate&&!c.opened?P.items.filter(x=>!x.done&&x.ps&&x.ps>T).sort((a,b)=>a.ps.localeCompare(b.ps))[0]:null;
+  const lateN=(P&&c.planOn?P.mats.filter(m=>m.w.k==="late").length+P.items.filter(x=>x.w.k==="late").length:0)+c.late;
+  const ms=[["Nhận nhà",st.handover,""],["Khởi công",bs&&bs.d,bs&&!st.buildStart?"dự kiến":""],["Khai trương",st.openDate,""]];
+  const msH=ms.map(([l,d,tag],i)=>{const k=!d?"na":d<T?"done":d===T?"now":"next";
+    const sub=!d?"":d<T?"":d===T?"hôm nay":"còn "+diff(d,T)+" ngày";
+    return `<span class="hm2 hm-${k}">${k==="done"?ic("check"):""}<span>${l}${tag?" ("+tag+")":""}</span><b>${d?fdy(d):"Chưa có"}</b>${sub?`<em>${sub}</em>`:""}</span>`;}).join('<span class="hm2-ar">›</span>');
+  const nowTxt=c.opened?"Đã khai trương":isHoan(st)?"Đang tạm hoãn":doingI.length?"Hôm nay làm: "+doingI.join(", "):st.handover&&st.handover<=T?(nextI?"Tiếp theo: "+nextI.d.name+" ("+fd(nextI.ps)+")":"Đang thi công"):st.handover?"Chờ nhận nhà":"Chưa có ngày nhận nhà";
+  const noteTxt=st.note||(st.sched&&st.sched.reason)||"";
+  h+=`<section class="panel hero hero3">
+    <div class="h3-top">
+      <div class="h3-t"><div class="eyebrow">${c.st.code?`<span class="off">#${esc(c.st.code)}</span>`:""}<span class="h2-g"><span class="dot ${grpL[0]}"></span>${esc(grpL[1])}</span><span class="h3-ty">${esc(typeLabel(st)||"")}</span></div>
+        <input class="title-in" id="f-name" data-k="name" value="${esc(st.name)}" ${S.canWrite?"":"readonly"} aria-label="Tên chi nhánh" placeholder="Nhập tên chi nhánh"></div>
+      <div class="h3-kpi"><div><b class="cd-${cd.k}">${cd.d}</b><span>khai trương</span></div><div><b>${pct(c.prog)}</b><span>tiến độ</span></div>${lateN&&!c.opened?`<div><b class="bad">${lateN}</b><span>việc trễ</span></div>`:""}</div>
     </div>
-    <div class="hero-stats"><div class="cdb ${cd.k}"><b>${cd.d}</b><span>${esc(cd.l)}</span></div>${ring(c.prog,84,8,pct(c.prog),"lg")}</div>
-    ${S.isAdmin?`<div class="hero-actions">${S.confirmDel?`<span class="confirm">Xoá vĩnh viễn “${esc(st.name||"chi nhánh này")}” và toàn bộ nhật ký? <button class="btn sm danger" type="button" id="delYes">${ic("trash")}Xoá</button><button class="btn sm" type="button" id="delNo">Huỷ</button></span>`:`<button class="btn sm" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh khác</button><button class="btn sm danger" type="button" id="delStore">${ic("trash")}Xoá chi nhánh</button>`}</div>`:""}
-    <div class="hero-mini">
-      <div><div class="v">${c.mDone}<span class="muted" style="font-weight:500">/${c.mApp}</span></div><div class="l">Thủ công xong (A)</div></div>
-      <div><div class="v">${pct(c.wAvg)}</div><div class="l">Workflow trung bình (B)</div></div>
-      <div><div class="v" style="color:${c.late?"var(--late)":"inherit"}">${c.late}</div><div class="l">Việc trễ hạn</div></div>
-      <div><div class="v">${c.wDone}<span class="muted" style="font-weight:500">/${c.wApp}</span></div><div class="l">WF hoàn thành</div></div>
-    </div></section>
+    <div class="h3-ms">${msH}</div>
+    <div class="h3-rows">
+      <div><span>Hiện tại</span><p>${noteTxt?esc(noteTxt):'<i class="muted">Chưa có</i>'}</p></div>
+    </div>
+    ${S.isAdmin?`<div class="hero-actions h3-act">${S.confirmDel?`<span class="confirm">Xoá vĩnh viễn “${esc(st.name||"chi nhánh này")}” và toàn bộ nhật ký? <button class="btn sm danger" type="button" id="delYes">${ic("trash")}Xoá</button><button class="btn sm" type="button" id="delNo">Huỷ</button></span>`:`<button class="btn sm" type="button" data-add-store="1">${ic("plus")}Thêm chi nhánh</button><button class="btn sm danger" type="button" id="delStore">${ic("trash")}Xoá</button>`}</div>`:""}
+    </section>
   ${infoSection(st,dis)}
   ${buildPanel(st,c)}
   <section class="panel note-box"><label class="lbl" for="f-note">Hiện trạng / Vướng mắc / Next step</label>${inp("f-note","note",st.note,"area",'placeholder="VD: Đang chờ chủ nhà chốt bản vẽ · Next step: …"')}</section>
@@ -1881,6 +2003,7 @@ app.addEventListener("change",e=>{
     const id=S.storeId,k=el.dataset.k;let v=el.value;
     if(k==="buildType"){const st=S.stores[id];saveStore(id,{buildType:v,biz:bizOf(st),type:typeLabel({buildType:v,biz:bizOf(st)}," – ")});return;}
     if((k==="handover"||k==="openDate")&&S.stores[id]){const old=S.stores[id][k]||"";if(old&&old!==v){el.value=old;askReason(id,k,old,v);return;}}
+    if(k==="track"){if(v==="hoan")saveStore(id,{hold:true,track:""});else saveStore(id,{track:v,hold:false});return;}
     if(k==="hold") v=!!v;
     if(/\.pDays$/.test(k)) v=v?Math.max(1,parseInt(v,10)||1):"";
     if(/^plan\.items\.\w+\.pct$/.test(k)){const pid=k.split(".")[2];const ex=(((S.stores[id].plan||{}).items||{})[pid])||{};
@@ -1940,7 +2063,7 @@ app.addEventListener("click",e=>{
   if(t.dataset.calm!=null){const n=Number(t.dataset.calm);if(!n)S.calM=today().slice(0,7);else{const [y,m]=(S.calM||today().slice(0,7)).split("-").map(Number);const d=new Date(Date.UTC(y,m-1+n,1));S.calM=d.getUTCFullYear()+"-"+p2(d.getUTCMonth()+1);}render();return;}
   if(t.id==="syncOne"||t.id==="syncTop"){syncStores([S.storeId]);return;}
   if(t.id==="syncAll"){syncStores([]);return;}
-  if(t.dataset&&t.dataset.clr&&S.view==="cn"){const id=S.storeId,k=t.dataset.clr,old=(S.stores[id]||{})[k]||"";if(old)askReason(id,k,old,"");return;}
+  if(t.dataset&&t.dataset.clr&&S.view==="cn"){const id=S.storeId,k=t.dataset.clr,old=(S.stores[id]||{})[k]||"";if(k==="buildStart"){saveStore(id,{buildStart:""});return;}if(old)askReason(id,k,old,"");return;}
   if(t.id==="delStore"){S.confirmDel=true;render();window.scrollTo({top:0});return;}
   if(t.dataset.addStore){addStore();return;}
   if(t.id==="delNo"){S.confirmDel=false;render();return;}
@@ -2196,12 +2319,14 @@ function calEvents(){
   const T=today(),ev=[];
   allCalc().forEach(c=>{const st=c.st,chg=!!(st.sched&&st.sched.at&&diff(T,String(st.sched.at).slice(0,10))<=7);
     const base={c,chg};
-    if(st.handover) ev.push({...base,d:st.handover,k:"ho",cls:st.hold?"hold":st.handover>T?"ho plan":(c.opened?"done":"ho")});
-    if(st.openDate) ev.push({...base,d:st.openDate,k:"kt",cls:st.hold?"hold":c.opened?"done":"kt"});});
+    const stOf=(k,d)=>isHoan(st)&&!c.opened?"vuong":d<T||(k==="kt"&&c.opened)?"da":d===T||(k==="kt"&&st.handover&&st.handover<=T)?"dang":"se";
+    if(st.handover){const s=stOf("ho",st.handover);ev.push({...base,d:st.handover,k:"ho",s,cls:"s-"+s});}
+    if(st.openDate){const s=stOf("kt",st.openDate);ev.push({...base,d:st.openDate,k:"kt",s,cls:"s-"+s});}});
   return ev.sort((a,b)=>(a.k===b.k?0:a.k==="kt"?-1:1)||String(a.c.st.name).localeCompare(String(b.c.st.name),"vi"));
 }
 function evTitle(e){const st=e.c.st;return [st.name,typeLabel(st),(e.k==="kt"?"Khai trương ":"Nhận nhà ")+fdy(e.d)+(e.k==="ho"&&e.d>today()?" (dự kiến)":""),st.openDate&&e.k==="ho"?"KT "+fd(st.openDate):"",st.hold?"Tạm hoãn":"",st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"")].filter(Boolean).join("\n");}
-function evChip(e){return `<button type="button" class="ev ${e.cls}${e.chg?" chg":""}" data-go="${esc(e.c.st.id)}" title="${esc(evTitle(e))}"><i>${e.k==="kt"?"KT":"NN"}</i><span>${esc(e.c.st.name||"(chưa đặt tên)")}</span></button>`;}
+const EVS={da:["✓","Đã xong"],dang:["●","Đang triển khai"],se:["○","Sắp tới"],vuong:["⚠","Còn vướng"]};
+function evChip(e){return `<button type="button" class="ev ${e.cls}${e.chg?" chg":""}" data-go="${esc(e.c.st.id)}" title="${esc(EVS[e.s][1]+"\n"+evTitle(e))}"><i>${EVS[e.s][0]} ${e.k==="kt"?"KT":"NN"}</i><span>${esc(e.c.st.name||"(chưa đặt tên)")}</span></button>`;}
 function viewCalendar(){
   const T=today();const m=S.calM||T.slice(0,7);const [y,mo]=m.split("-").map(Number);
   const first=new Date(Date.UTC(y,mo-1,1)),startDow=(first.getUTCDay()+6)%7;
@@ -2211,15 +2336,15 @@ function viewCalendar(){
   const title=["Tháng 1","Tháng 2","Tháng 3","Tháng 4","Tháng 5","Tháng 6","Tháng 7","Tháng 8","Tháng 9","Tháng 10","Tháng 11","Tháng 12"][mo-1]+" "+y;
   const inMonth=evs.filter(e=>e.d.slice(0,7)===m);
   let h=`<div class="cal-bar"><button class="btn icon" type="button" data-calm="-1" aria-label="Tháng trước">${ic("back")}</button><h2>${title}</h2><button class="btn icon" type="button" data-calm="1" aria-label="Tháng sau" style="transform:scaleX(-1)">${ic("back")}</button>
-    <div class="right"><span class="muted" style="font-size:13px">${inMonth.filter(e=>e.k==="kt").length} khai trương · ${inMonth.filter(e=>e.k==="ho").length} nhận nhà</span><button class="btn sm" type="button" data-calm="0">Hôm nay</button></div></div>`;
+    <div class="right"><span class="cal-cnt">${["da","dang","se","vuong"].map(k=>`<span class="ev s-${k}"><i>${EVS[k][0]}</i><span>${EVS[k][1]} ${evs.filter(e=>e.d>=start&&e.d<addDays(start,weeks*7)&&e.s===k).length}</span></span>`).join("")}</span><button class="btn sm" type="button" data-calm="0">Hôm nay</button></div></div>`;
   h+=`<div class="cal">${WDS.map(d=>`<div class="dow">${d}</div>`).join("")}`;
   for(let i=0;i<weeks*7;i++){const d=addDays(start,i),list=byDay[d]||[],key="cal-"+d,open=S.open.has(key),shown=open?list:list.slice(0,3);
     h+=`<div class="day ${d.slice(0,7)!==m?"out":""} ${d===T?"today":""} ${i%7>=5?"wk":""}"><div class="dn"><b>${Number(d.slice(8))}</b></div>${shown.map(evChip).join("")}${list.length>3?`<button class="more" type="button" data-toggle="${key}">${open?"Thu gọn":"+"+(list.length-3)+" nữa"}</button>`:""}</div>`;}
-  h+=`</div><div class="cal-legend"><span class="ev kt"><i>KT</i>Khai trương</span><span class="ev ho"><i>NN</i>Đã nhận nhà</span><span class="ev ho plan"><i>NN</i>Nhận nhà dự kiến</span><span class="ev done"><i>KT</i>Đã qua</span><span class="ev hold"><i>KT</i>Tạm hoãn</span><span class="ev kt chg"><i>KT</i>Đổi lịch trong 7 ngày</span></div>`;
+  h+=`</div><div class="cal-legend"><span class="ev s-da"><i>✓</i>Đã xong (đã qua ngày)</span><span class="ev s-dang"><i>●</i>Đang triển khai (đã nhận nhà, đang thi công)</span><span class="ev s-se"><i>○</i>Sắp tới (theo kế hoạch)</span><span class="ev s-vuong"><i>⚠</i>Còn vướng (căn đang tạm hoãn, kể cả mốc đã qua)</span><span class="muted">NN = nhận nhà · KT = khai trương</span><span class="ev s-se chg"><i>○</i>Chấm cam: đổi lịch trong 7 ngày</span></div>`;
   const days=[...new Set(inMonth.map(e=>e.d))].sort();
   h+=`<div class="sec agenda"><div class="sec-h"><h2>Chi tiết trong tháng</h2><span class="sub">bấm vào căn để mở trang chi tiết</span></div>`;
   h+=days.length?`<div class="panel">${days.map(d=>{const w=WDS[(new Date(toT(d)).getUTCDay()+6)%7];return `<div class="ag-day"><div class="ag-date ${d===T?"today":""}"><b>${fd(d)}</b><span>${w==="CN"?"Chủ nhật":"Thứ "+(Number(w.slice(1)))}${d===T?" · hôm nay":""}</span></div><div class="ag-list">${byDay[d].filter(e=>e.d.slice(0,7)===m).map(e=>{const st=e.c.st,info=st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"");
-      return `<button type="button" class="ag-it" data-go="${esc(st.id)}"><span class="ev ${e.cls}${e.chg?" chg":""}"><i>${e.k==="kt"?"KT":"NN"}</i><span>${e.k==="kt"?"Khai trương":(e.d>T?"Nhận nhà (dự kiến)":"Nhận nhà")}</span></span><div class="t"><b>${esc(st.name||"(chưa đặt tên)")}</b><div>${esc([typeLabel(st),e.k==="kt"?(st.handover?(st.handover<=T?"đã nhận nhà "+fd(st.handover):"dự kiến nhận nhà "+fd(st.handover)):"chưa có ngày nhận nhà"):(st.openDate?"khai trương "+fd(st.openDate):"chưa có ngày khai trương"),st.hold?"tạm hoãn":""].filter(Boolean).join(" · "))}</div>${info?`<div>${esc(info)}</div>`:""}</div></button>`;}).join("")}</div></div>`;}).join("")}</div>`
+      return `<button type="button" class="ag-it" data-go="${esc(st.id)}"><span class="ev ${e.cls}${e.chg?" chg":""}"><i>${EVS[e.s][0]} ${e.k==="kt"?"KT":"NN"}</i><span>${e.k==="kt"?"Khai trương":(e.d>T?"Nhận nhà (dự kiến)":"Nhận nhà")} · ${EVS[e.s][1].toLowerCase()}</span></span><div class="t"><b>${esc(st.name||"(chưa đặt tên)")}</b><div>${esc([typeLabel(st),e.k==="kt"?(st.handover?(st.handover<=T?"đã nhận nhà "+fd(st.handover):"dự kiến nhận nhà "+fd(st.handover)):"chưa có ngày nhận nhà"):(st.openDate?"khai trương "+fd(st.openDate):"chưa có ngày khai trương"),st.hold?"tạm hoãn":""].filter(Boolean).join(" · "))}</div>${info?`<div>${esc(info)}</div>`:""}</div></button>`;}).join("")}</div></div>`;}).join("")}</div>`
     :`<div class="panel empty"><b>Tháng này chưa có lịch nhận nhà / khai trương</b>Chuyển sang tháng khác bằng nút mũi tên.</div>`;
   return h+`</div>`;
 }
