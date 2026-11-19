@@ -1050,6 +1050,7 @@ body.locked #app,body.locked .shell{visibility:hidden}
 .lg-btn{height:46px!important;font-size:15px!important;justify-content:center;border-radius:12px!important}
 .lg-foot{margin:4px 0 0;font-size:12px;color:var(--muted);text-align:center}
 .who{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ov-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 /* ===== end executive */
 
 </style>
@@ -1407,8 +1408,6 @@ function viewOverview(){
   h+=`<div class="ov-kpis">
     <button type="button" class="ov-k" data-filter="dang"><span class="l">Đang triển khai</span><b>${act.length}</b><span class="s">căn · ${doingN} căn đã nhận nhà</span></button>
     <a class="ov-k ${near?"warn":""}" href="#cap-nhat-lich"><span class="l">Khai trương trong 14 ngày</span><b>${near}</b><span class="s">căn · xem lịch khai trương →</span></a>
-    <div class="ov-k ${late?"bad":"good"}" style="cursor:default"><span class="l">Việc trễ hạn</span><b>${late}</b><span class="s">${late?"hạng mục, vật tư, WF quá hạn":"không có việc trễ"}</span></div>
-    <div class="ov-k ${matLate?"bad":"good"}" style="cursor:default"><span class="l">Vật tư trễ cấp</span><b>${matLate}</b><span class="s">${matLate?"loại vật tư chưa cấp đúng hạn":"vật tư cấp đúng hạn"}</span></div>
   </div>`;
   const F=[["dang","Đang theo dõi",c=>!c.opened],["kt","Đã khai trương",c=>c.opened&&!c.st.hold],["hoan","Tạm hoãn",c=>!c.opened&&isHoan(c.st)],["all","Tất cả",()=>true]];
   const fx=F.find(f=>f[0]===S.filter)||F[0];
