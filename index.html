@@ -945,6 +945,10 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .side .add.btn,.side .add{background:#fff!important;color:#0E1726!important;border:0!important;box-shadow:0 8px 20px -10px rgba(0,0,0,.6)!important}
 .side .add svg.i{color:#0E7C5A}
 .mtop .btn,.mtop .btn.primary,.mtop .btn.ghost-dark{background:#fff!important;color:#0E1726!important;border-color:#fff!important}.mtop .btn svg.i{color:#0E7C5A}
+.hero .confirm{background:#fff;color:#0E1726;padding:10px 12px 10px 16px;border-radius:12px;font-weight:500;box-shadow:0 12px 28px -12px rgba(0,0,0,.6)}
+.hero .confirm .btn{background:#fff;color:#344054;border-color:#D6DAE2}
+.hero .confirm .btn.danger{background:#D92D20;color:#fff;border-color:#D92D20}.hero .confirm .btn.danger svg.i{color:#fff}
+.hero .confirm .btn:hover{filter:brightness(.96)}
 /* ===== end executive */
 
 </style>
@@ -1326,7 +1330,7 @@ function matrix(list){
   return `<section class="sec"><div class="sec-h"><h2>Hiện trạng hạng mục &amp; workflow</h2><span class="sub">Mã bước = bước WF hiện tại</span>
     <div class="right legend"><span><i style="background:var(--ok)"></i>Xong</span><span><i style="background:var(--run)"></i>Đang làm</span><span><i style="background:var(--soon)"></i>Sắp hạn</span><span><i style="background:var(--late)"></i>Trễ</span><span><i style="background:var(--hold)"></i>Chưa tạo task / dừng</span><span><i style="background:var(--track)"></i>Chưa cập nhật</span></div></div>
   <div class="panel tbl"><table><thead><tr><th>Chi nhánh</th><th>KT</th>${groups.map(g=>`<th>${esc(g)}</th>`).join("")}${c.workflows.map(w=>`<th>${esc(shortWf(w.name))}</th>`).join("")}<th>TB WF</th><th>Thi công</th><th>Vật tư</th></tr></thead>
-  <tbody>${list.map(x=>`<tr><td class="name"><a href="#cn-${esc(x.st.id)}">${esc(x.st.name)}</a></td><td>${x.st.openDate?fd(x.st.openDate):"—"}</td>${groups.map(g=>`<td>${grpCell(x.grp[g])}</td>`).join("")}${x.wfs.map(w=>`<td>${wfCell(w)}</td>`).join("")}<td>${pct(x.wAvg)}</td><td>${planCell(x,"i")}</td><td>${planCell(x,"m")}</td></tr>`).join("")}</tbody>
+  <tbody>${list.map(x=>`<tr><td class="name"><a href="#cn-${esc(x.st.id)}">${esc(x.st.name||"(Chưa đặt tên — bấm để sửa/xoá)")}</a></td><td>${x.st.openDate?fd(x.st.openDate):"—"}</td>${groups.map(g=>`<td>${grpCell(x.grp[g])}</td>`).join("")}${x.wfs.map(w=>`<td>${wfCell(w)}</td>`).join("")}<td>${pct(x.wAvg)}</td><td>${planCell(x,"i")}</td><td>${planCell(x,"m")}</td></tr>`).join("")}</tbody>
   <tfoot>${foot.map(f=>`<tr><td>Số MB ${f[0]}</td><td></td>${groups.map(g=>`<td>${list.filter(x=>x.grp[g]&&f[2](x.grp[g])).length}</td>`).join("")}${c.workflows.map((w,j)=>`<td>${list.filter(x=>f[1](x.wfs[j])).length}</td>`).join("")}<td></td><td></td><td></td></tr>`).join("")}</tfoot></table></div></section>`;
 }
 
@@ -1341,7 +1345,7 @@ function viewActions(){
   if(!list.length) return h+`<div class="panel empty"><b>Không còn việc nào trong nhóm này</b>Khi có hạng mục quá hạn, sắp đến hạn hoặc WF chưa tạo task, chúng sẽ xuất hiện ở đây.</div>`;
   return h+`<div class="panel act-list">${list.map(a=>`<div class="act">
     <div>${pill(a.w.k,a.w.t)}</div>
-    <div style="min-width:0"><button class="st" type="button" data-go="${esc(a.c.st.id)}">${esc(a.c.st.name)}</button><div class="s">${a.c.st.openDate?"Khai trương "+fdy(a.c.st.openDate):"Chưa có ngày KT"}</div></div>
+    <div style="min-width:0"><button class="st" type="button" data-go="${esc(a.c.st.id)}">${esc(a.c.st.name||"(Chưa đặt tên)")}</button><div class="s">${a.c.st.openDate?"Khai trương "+fdy(a.c.st.openDate):"Chưa có ngày KT"}</div></div>
     <div style="min-width:0"><div>${esc(a.what)}</div><div class="s">${esc(a.step||a.status||"")}</div></div>
     <div style="min-width:0"><div class="s">PIC</div><div>${esc(a.pic||"—")}</div></div>
     <div class="when"><div style="font-weight:600">${a.due?fdy(a.due):"—"}</div>${a.link?`<a class="lnk" href="${esc(a.link)}" target="_blank" rel="noopener">Mở task ${ic("ext")}</a>`:""}</div></div>`).join("")}</div>`;
@@ -1367,10 +1371,10 @@ function viewTimeline(){
     if(s.buildStart){const e=s.openDate&&s.openDate>s.buildStart?s.openDate:addDays(s.buildStart,1);const done=Math.max(0,Math.min(1,(diff(T,s.buildStart)+1)/((diff(e,s.buildStart)+1)||1)));
       bars+=`<div class="tl-bar build" style="left:${X(s.buildStart)}%;width:${Math.max(.6,X(e)-X(s.buildStart))}%" title="Thi công: ${fd(s.buildStart)} → ${fd(e)}"><i style="width:${Math.round(done*100)}%"></i></div>`;}
     if(s.openDate) bars+=`<div class="tl-kt" style="left:${X(s.openDate)}%" title="Khai trương ${fdy(s.openDate)}"></div>`;
-    return `<div class="tl-row"><button class="tl-label" type="button" data-go="${esc(s.id)}">${esc(s.name)}<span>${esc(c.phase)} · ${pct(c.prog)}</span></button><div class="tl-track">${ticks.map(x=>`<div class="tl-grid" style="left:${X(x)}%"></div>`).join("")}${bars}</div></div>`;
+    return `<div class="tl-row"><button class="tl-label" type="button" data-go="${esc(s.id)}">${esc(s.name||"(Chưa đặt tên)")}<span>${esc(c.phase)} · ${pct(c.prog)}</span></button><div class="tl-track">${ticks.map(x=>`<div class="tl-grid" style="left:${X(x)}%"></div>`).join("")}${bars}</div></div>`;
   }).join("");
   h+=`<div class="panel tl"><div class="tl-inner">${head}${rows}<div style="position:absolute;top:0;bottom:0;left:250px;right:0;pointer-events:none"><div class="tl-today" style="left:${X(T)}%"><b>Hôm nay ${fd(T)}</b></div></div></div></div>`;
-  if(undated.length) h+=`<p class="muted" style="margin-top:14px;font-size:13px">Chưa có ngày: ${undated.map(c=>`<a href="#cn-${esc(c.st.id)}">${esc(c.st.name)}</a>`).join(" · ")}</p>`;
+  if(undated.length) h+=`<p class="muted" style="margin-top:14px;font-size:13px">Chưa có ngày: ${undated.map(c=>`<a href="#cn-${esc(c.st.id)}">${esc(c.st.name||"(Chưa đặt tên)")}</a>`).join(" · ")}</p>`;
   return h;
 }
 
@@ -2249,7 +2253,7 @@ function schedText(){
     const parts=[st.name||"(chưa đặt tên)",b||(z.length?"":st.type||""),z.join(" / ")];
     const info=(st.sched&&st.sched.reason)||String(st.note||"").split(" · ")[0];
     parts.push(info);
-    parts.push(st.handover?(st.handover<=T?"Đã nhận nhà: ":"Dự kiến nhận nhà: ")+fdy(st.handover):"Chưa có ngày nhận nhà");
+    if(!(st.handover&&st.handover<=T))parts.push(st.handover?"Dự kiến nhận nhà: "+fdy(st.handover):"Chưa có ngày nhận nhà");
     return "- "+parts.filter(Boolean).join(" – ")+".";};
   let out="Cập nhật lịch khai trương/hoàn công:\n";
   keys.forEach(k=>{out+="\n🗓 "+(k?"Ngày khai trương "+fdy(k):"Chưa có ngày khai trương")+":\n"+grp[k].sort((a,b)=>String(a.st.name).localeCompare(String(b.st.name),"vi")).map(line).join("\n")+"\n";});
