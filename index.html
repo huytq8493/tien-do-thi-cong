@@ -1036,6 +1036,20 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .cal-cnt{display:flex;gap:6px;flex-wrap:wrap}.cal-cnt .ev{width:auto;cursor:default;font-weight:600}.cal-cnt .ev.s-da span{text-decoration:none}
 .cal-legend .ev{width:auto;cursor:default}.cal-legend .ev.s-da{text-decoration:none}.cal-legend .ev span,.cal-legend .ev.s-da{text-decoration:none}
 .sched-warn{display:flex;gap:8px;align-items:center;background:var(--soon-soft);color:#7A3E00;border:1px solid #F5D9A8;border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:13.5px}.sched-warn svg.i{width:16px;height:16px;flex:none}
+body.locked #app,body.locked .shell{visibility:hidden}
+#login{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:radial-gradient(70vw 420px at 70% -120px,rgba(14,124,90,.16),transparent 70%),radial-gradient(50vw 360px at 15% -140px,rgba(36,87,214,.10),transparent 70%),#F5F6F8;overflow:auto}
+.lg-card{width:min(400px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px 28px 24px;box-shadow:0 30px 70px -30px rgba(16,24,40,.35);display:flex;flex-direction:column;gap:12px;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.lg-brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}.lg-brand b{display:block;font-size:15px}.lg-brand small{color:var(--muted);font-size:12px}
+.lg-card h1{font-family:var(--serif);font-weight:600;font-size:30px;margin:4px 0 0;letter-spacing:-.01em}
+.lg-sub{margin:0 0 6px;color:var(--muted);font-size:13.5px}
+.lg-f{display:flex;flex-direction:column;gap:6px}.lg-f>span{font-size:13px;font-weight:600;color:var(--ink-2)}
+.lg-f .in{height:44px;font-size:15px;width:100%}
+.lg-pw{position:relative}.lg-pw .in{padding-right:44px}
+.lg-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;font-size:12px;font-weight:600;height:34px;border:0;background:none;color:var(--muted);border-radius:8px;cursor:pointer;display:grid;place-items:center}.lg-eye:hover{background:var(--sunk)}
+.lg-err{min-height:18px;color:var(--late);font-size:13px;font-weight:500}
+.lg-btn{height:46px!important;font-size:15px!important;justify-content:center;border-radius:12px!important}
+.lg-foot{margin:4px 0 0;font-size:12px;color:var(--muted);text-align:center}
+.who{display:flex;align-items:center;justify-content:space-between;gap:10px}
 /* ===== end executive */
 
 </style>
@@ -1388,7 +1402,7 @@ function viewOverview(){
   const matLate=act.reduce((a,c)=>a+(c.plan&&c.planOn?c.plan.mats.filter(m=>m.w.k==="late").length:0),0);
   const doingN=act.filter(c=>c.st.handover&&c.st.handover<=T).length;
   let h=`<div class="ph"><div><span class="eb">Tổng quan tiến độ</span><h1>${greet()}</h1><p>${longToday()} · bấm vào một căn để xem lịch và cập nhật</p></div>
-    <div class="right">${syncBtn("syncAll","Đồng bộ task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button>${window.TDTC_SHEET?`<a class="btn" href="${esc(window.TDTC_SHEET)}" target="_blank" rel="noopener">${ic("ext")}Google Sheet</a>`:""}</div></div>`;
+    <div class="right">${syncBtn("syncAll","Đồng bộ task")}<button class="btn" type="button" id="exportCsv">${ic("dl")}Xuất CSV</button>${window.TDTC_SHEET&&(!AUTH.token||AUTH.role==="Quản trị")?`<a class="btn" href="${esc(window.TDTC_SHEET)}" target="_blank" rel="noopener">${ic("ext")}Google Sheet</a>`:""}</div></div>`;
   if(false) h+=`<div class="ov-me">${ic("bulb")}<span>Nhập tên của bạn để ghi “ai đã cập nhật”:</span><input class="in" id="meIn" placeholder="VD: Nguyễn Văn A" value="${esc(S.me||"")}"><button class="btn primary sm" type="button" id="meSave">Lưu tên</button></div>`;
   h+=`<div class="ov-kpis">
     <button type="button" class="ov-k" data-filter="dang"><span class="l">Đang triển khai</span><b>${act.length}</b><span class="s">căn · ${doingN} căn đã nhận nhà</span></button>
@@ -1795,6 +1809,7 @@ function viewConfig(){
   let h=`<div class="ph"><div><h1>Cấu hình</h1><p>${ed?"Thay đổi áp dụng cho mọi chi nhánh sau khi bấm Lưu":"Chỉ Editor hoặc chủ trang được sửa cấu hình"}</p></div>
    ${ed?`<div class="right"><button class="btn" type="button" id="cfgReset">Bỏ thay đổi</button><button class="btn primary" type="button" id="cfgSave">Lưu cấu hình</button></div>`:""}</div>
    <div class="cfg-grid">
+   ${AUTH.token?`<div class="panel cfg-card"><h3>Tài khoản</h3><div class="who"><span style="font-size:13.5px">Đang đăng nhập: <b>${esc(AUTH.name||AUTH.user)}</b> (${esc(AUTH.user)}) · quyền <b>${esc(AUTH.role||"")}</b></span><button class="btn sm" type="button" id="logoutBtn">Đăng xuất</button></div><span class="muted" style="font-size:12.5px">Tài khoản do quản trị quản lý trong tab “users” của Google Sheet. Quyền: Quản trị (toàn quyền) · Sửa (cập nhật tiến độ) · Xem (chỉ xem).</span></div>`:""}
    ${false?`<div class="panel cfg-card"><h3>Đồng bộ task (chạy trên máy chủ Google)</h3>
      <span style="font-size:13.5px">Trạng thái: <b>${STORE.serverSync?esc(syncInfo()):"Chưa cài HSK_TOKEN trong Apps Script"}</b></span>
      <span class="muted" style="font-size:12.5px">Khi dùng Google Sheet, máy chủ Google gọi API wshr nên không bị CORS và token không nằm trên trình duyệt. Token cài ở Apps Script → Cài đặt dự án → Thuộc tính tập lệnh → HSK_TOKEN (token app="wshr", sub khác 0). Chạy hàm caiDatTuDongDongBo một lần để tự đồng bộ mỗi 30 phút.</span>
@@ -1855,8 +1870,39 @@ function saveSet(){try{localStorage.setItem(LS_SET,JSON.stringify(SET));}catch(e
 const STORE={mode:"local",handle:null,name:"",lastMod:0,queue:[],timer:null,busy:false,needPerm:false,rev:0,api:"",offerSeed:false,serverSync:false};
 // Địa chỉ máy chủ dữ liệu chung (Apps Script /exec): ưu tiên config.js (window.TDTC_API), sau đó ô nhập trong Cấu hình.
 function sheetApi(){return String((window.TDTC_API||SET.sheetUrl||"")).trim();}
-async function sheetGet(action){const r=await fetch(sheetApi()+(sheetApi().includes("?")?"&":"?")+"action="+action,{cache:"no-store",redirect:"follow"});if(!r.ok)throw new Error("Máy chủ Google trả lỗi "+r.status);const j=await r.json();if(j.error)throw new Error(j.error);return j;}
-async function sheetPost(body){const r=await fetch(sheetApi(),{method:"POST",body:JSON.stringify(body),redirect:"follow"});if(!r.ok)throw new Error("Máy chủ Google trả lỗi "+r.status);const j=await r.json();if(j.error)throw new Error(j.error);return j;}
+/* ---------- đăng nhập (chỉ khi dùng Google Sheet chung) ---------- */
+const LS_AUTH="tdtc-auth";
+let AUTH={};try{AUTH=JSON.parse(localStorage.getItem(LS_AUTH)||"{}")||{};}catch(e){AUTH={};}
+function needLogin(){return !!sheetApi();}
+function authFail(msg){try{localStorage.removeItem(LS_AUTH);localStorage.removeItem(LS_DATA);}catch(e){}AUTH={};showLogin(msg||"Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");throw new Error("Cần đăng nhập lại");}
+function logout(){try{localStorage.removeItem(LS_AUTH);localStorage.removeItem(LS_DATA);}catch(e){}location.hash="";location.reload();}
+function showLogin(msg){
+  if(document.getElementById("login"))return;
+  document.body.classList.add("locked");
+  const w=document.createElement("div");w.id="login";
+  w.innerHTML=`<form class="lg-card" novalidate autocomplete="on">
+    <div class="lg-brand"><span class="logo-mark">HSK</span><div><b>Thi công chi nhánh</b><small>Vận hành bảo trì · Hasaki</small></div></div>
+    <h1>Đăng nhập</h1><p class="lg-sub">Dùng tài khoản được quản trị cấp để xem và cập nhật tiến độ.</p>
+    <label class="lg-f"><span>Tên đăng nhập</span><input class="in" id="lgU" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+    <label class="lg-f"><span>Mật khẩu</span><div class="lg-pw"><input class="in" id="lgP" name="password" type="password" autocomplete="current-password" required><button type="button" class="lg-eye" id="lgEye" aria-label="Hiện mật khẩu">Hiện</button></div></label>
+    <div class="lg-err" id="lgE" role="alert">${msg?esc(msg):""}</div>
+    <button class="btn primary lg-btn" type="submit" id="lgB">Đăng nhập</button>
+    <p class="lg-foot">Quên mật khẩu hoặc chưa có tài khoản? Liên hệ quản trị (anh Huy) để được cấp.</p></form>`;
+  document.body.appendChild(w);
+  const f=w.querySelector("form"),u=w.querySelector("#lgU"),p=w.querySelector("#lgP"),e=w.querySelector("#lgE"),b=w.querySelector("#lgB");
+  w.querySelector("#lgEye").onclick=()=>{p.type=p.type==="password"?"text":"password";w.querySelector("#lgEye").textContent=p.type==="password"?"Hiện":"Ẩn";p.focus();};
+  setTimeout(()=>u.focus(),50);
+  f.onsubmit=async ev=>{ev.preventDefault();e.textContent="";
+    if(!u.value.trim()||!p.value){e.textContent="Nhập tên đăng nhập và mật khẩu.";return;}
+    b.disabled=true;b.textContent="Đang đăng nhập…";
+    try{const r=await fetch(sheetApi(),{method:"POST",body:JSON.stringify({action:"login",u:u.value.trim(),p:p.value}),redirect:"follow"});const j=await r.json();
+      if(j.error||!j.token)throw new Error(j.error||"Đăng nhập không thành công");
+      AUTH={token:j.token,user:j.user,name:j.name,role:j.role};localStorage.setItem(LS_AUTH,JSON.stringify(AUTH));location.reload();}
+    catch(err){e.textContent=/fetch|network/i.test(err.message)?"Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.":err.message;b.disabled=false;b.textContent="Đăng nhập";p.select();}};
+}
+
+async function sheetGet(action){const r=await fetch(sheetApi()+(sheetApi().includes("?")?"&":"?")+"action="+action+"&token="+encodeURIComponent(AUTH.token||""),{cache:"no-store",redirect:"follow"});if(!r.ok)throw new Error("Máy chủ Google trả lỗi "+r.status);const j=await r.json();if(j.error==="AUTH")authFail();if(j.error)throw new Error(j.error);return j;}
+async function sheetPost(body){const r=await fetch(sheetApi(),{method:"POST",body:JSON.stringify({...body,token:AUTH.token||""}),redirect:"follow"});if(!r.ok)throw new Error("Máy chủ Google trả lỗi "+r.status);const j=await r.json();if(j.error==="AUTH")authFail();if(j.error)throw new Error(j.error);return j;}
 function fromServer(j){const d=normData(j.data||{});d.rev=j.rev||0;STORE.rev=j.rev||0;if(typeof j.sync==="boolean")STORE.serverSync=j.sync;return d;}
 
 let DATA=null;
@@ -2067,6 +2113,7 @@ app.addEventListener("click",e=>{
   if(t.id==="syncOne"||t.id==="syncTop"){syncStores([S.storeId]);return;}
   if(t.id==="syncAll"){syncStores([]);return;}
   if(t.dataset&&t.dataset.clr&&S.view==="cn"){const id=S.storeId,k=t.dataset.clr,old=(S.stores[id]||{})[k]||"";if(k==="buildStart"){saveStore(id,{buildStart:""});return;}if(old)askReason(id,k,old,"");return;}
+  if(t.id==="logoutBtn"){if(confirm("Đăng xuất khỏi trang này?"))logout();return;}
   if(t.id==="delStore"){S.confirmDel=true;render();window.scrollTo({top:0});return;}
   if(t.dataset.addStore){addStore();return;}
   if(t.id==="delNo"){S.confirmDel=false;render();return;}
@@ -2440,11 +2487,15 @@ function schedule(){if(ptrDown){want=true;return;}if(pending)return;pending=true
 document.addEventListener("pointerdown",()=>{ptrDown=true;},true);
 function release(){if(!ptrDown)return;setTimeout(()=>{ptrDown=false;if(want){want=false;render();}},0);}
 document.addEventListener("pointerup",release,true);document.addEventListener("pointercancel",release,true);
-function renderMe(){const b=document.getElementById("meBtn");if(b)b.textContent=S.me?"Bạn: "+S.me+" · đổi":"Nhập tên của bạn";}
-document.getElementById("meBtn").addEventListener("click",()=>{S.askName=true;location.hash="tong-quan";render();setTimeout(()=>{const i=document.getElementById("meIn");if(i)i.focus();},50);});
+function renderMe(){const b=document.getElementById("meBtn");if(!b)return;if(AUTH.token){b.hidden=false;b.textContent="Đăng xuất · "+(AUTH.name||AUTH.user);}else b.hidden=true;}
+document.getElementById("meBtn").addEventListener("click",()=>{if(AUTH.token&&confirm("Đăng xuất khỏi trang này?"))logout();});
 async function boot(){
   try{S.me=localStorage.getItem("tdtc-me")||"";}catch(e){}
   S.isAdmin=true;S.canWrite=true;
+  if(needLogin()){
+    if(!AUTH.token){try{localStorage.removeItem(LS_DATA);}catch(e){}showLogin();return;}
+    S.canWrite=AUTH.role!=="Xem";S.isAdmin=AUTH.role==="Quản trị";S.me=AUTH.name||AUTH.user||"";
+  }
   let saved=null;try{saved=JSON.parse(localStorage.getItem(LS_DATA)||"null");}catch(e){}
   DATA=normData(saved||clone(SEED));if(!saved)persistLocal();
   toState();
