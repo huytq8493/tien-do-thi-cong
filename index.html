@@ -1123,7 +1123,7 @@ function fdy(s){if(!s)return "";const a=s.split("-");return a[2]+"/"+a[1]+"/"+a[
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function pct(x){return Math.round(x*100)+"%";}
 function stepCode(n){const m=/^B\.?\s*(\d+(?:\.\d+)*)/.exec(n||"");return m?"B"+m[1]:"";}
-function wfName(n){n=String(n||"");return /chi nhánh mới/i.test(n)?n:n.replace(/^WF\s+(thi công|lắp đặt)\s+/i,"Giám sát và nghiệm thu nhà thầu ");}
+function wfName(n){n=String(n||"");return /chi nhánh mới/i.test(n)?n:n.replace(/^WF\s+thi công\s+/i,"Giám sát và nghiệm thu nhà thầu ");}
 function shortWf(n){return n.replace(/^WF (thi công |lắp đặt )?/i,"").replace(/^./,c=>c.toUpperCase());}
 function firstUrl(s){const m=/https?:\/\/[^\s,]+/.exec(s||"");return m?m[0]:"";}
 function cfg(){return S.config||DEFAULT_CONFIG;}
