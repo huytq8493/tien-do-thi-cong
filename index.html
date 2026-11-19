@@ -1602,13 +1602,13 @@ function planSection(st,c){
   const P=c.plan,dis=S.canWrite?"":"disabled";
   const sel=(st.plan||{}).tpl||"";
   const tplSel=`<label class="lbl" for="pl-tpl">Mẫu tiến độ</label><select class="in" id="pl-tpl" data-k="plan.tpl" ${dis}><option value="" ${!sel?"selected":""}>Tự chọn theo loại hình${!sel&&P?" ("+esc(P.tpl.name)+")":""}</option>${tpls().map(t=>`<option value="${esc(t.id)}" ${sel===t.id?"selected":""}>${esc(t.name)}</option>`).join("")}<option value="none" ${sel==="none"?"selected":""}>Không áp dụng</option></select>`;
-  let h=`<section class="sec anchor" id="sec-c"><div class="sec-h"><h2>C. Tiến độ thi công &amp; cấp vật tư</h2><span class="sub">Kế hoạch theo mẫu, tính lùi từ ngày khai trương</span></div><div class="panel items">`;
+  let h=`<section class="sec anchor" id="sec-c"><details class="ov-more sec-c-d" id="secCd" ${S.secCOpen?"open":""}><summary>C. Tiến độ thi công &amp; cấp vật tư <span class="muted" style="font-weight:500">· kế hoạch theo mẫu, tính lùi từ ngày khai trương</span></summary><div class="panel items">`;
   h+=`<div class="plan-head">${tplSel}${P?`<div class="plan-sum">${pill(P.iDone===P.items.length?"ok":"run",`Thi công ${P.iDone}/${P.items.length}`)}${pill(P.mDone===P.mats.length?"ok":"run",`Vật tư ${P.mDone}/${P.mats.length}`)}${(S.planTab||"cal")!=="cal"?`${P.late?pill("late",P.late+" trễ"):""}${P.soon?pill("soon",P.soon+" sắp tới"):""}${P.lackN?pill("late",P.lackN+" việc thiếu vật tư"):""}`:""}</div>`:""}</div>`;
-  if(!P) return h+`<div class="empty" style="padding:22px">Chi nhánh này không áp dụng mẫu tiến độ. Chọn mẫu ở trên để bật.</div></div></section>`;
-  if(!st.openDate) return h+`<div class="empty" style="padding:22px">Nhập <b style="display:inline">ngày khai trương</b> ở phần mốc thi công để tool tự tính lịch thi công và lịch cấp vật tư.</div></div></section>`;
+  if(!P) return h+`<div class="empty" style="padding:22px">Chi nhánh này không áp dụng mẫu tiến độ. Chọn mẫu ở trên để bật.</div></div></details></section>`;
+  if(!st.openDate) return h+`<div class="empty" style="padding:22px">Nhập <b style="display:inline">ngày khai trương</b> ở phần mốc thi công để tool tự tính lịch thi công và lịch cấp vật tư.</div></div></details></section>`;
   const ptab=S.planTab||"cal";
   h+=`<div class="pc-tabs"><div class="seg-f" role="group" aria-label="Cách xem"><button type="button" data-ptab="cal" aria-pressed="${ptab==="cal"}">Lịch thi công &amp; cấp vật tư</button><button type="button" data-ptab="det" aria-pressed="${ptab==="det"}">Cập nhật chi tiết</button></div></div>`;
-  if(ptab==="cal") return h+planCalendar(st,P)+`</div></section>`;
+  if(ptab==="cal") return h+planCalendar(st,P)+`</div></details></section>`;
   // ---- bảng kê hạng mục: tên, ngày, thời gian, vật tư ----
   h+=`<div class="grp"><span>Danh sách hạng mục thi công</span><span><button class="btn sm" type="button" id="planCopy" data-txt="${esc(planListText(st,P))}">${ic("check")}Sao chép danh sách</button></span></div>
     <div class="tbl"><table class="plist"><thead><tr><th>#</th><th>Hạng mục thi công</th><th>Ngày thi công</th><th>Thời gian</th><th>Vật tư cần sử dụng</th></tr></thead><tbody>${P.items.map((x,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(x.d.name)}</td><td>${x.ps?(x.nd>1?fdy(x.ps)+" → "+fdy(x.pe):fdy(x.ps)):"—"}${x.e.pStart||x.e.pDays?' <span class="off">đã chỉnh</span>':""}</td><td>${x.nd} ngày</td><td class="wrap">${x.matList.length?esc(x.matList.join(", ")):'<span class="muted">Chưa khai báo — bấm mũi tên ở hạng mục bên dưới để nhập</span>'}</td></tr>`).join("")}</tbody></table></div>`;
@@ -1688,7 +1688,7 @@ function planSection(st,c){
         <div class="field wide" style="grid-column:1/-1"><label for="v-${id}-note">Ghi chú</label>${inp(`v-${id}-note`,`plan.mats.${id}.note`,e.note)}</div>
       </div>`:""}</div>`;
   });
-  return h+`</div></section>`;
+  return h+`</div></details></section>`;
 }
 function stIcon(k){return `<span class="st-ic ${k}">${k==="ok"?ic("check"):""}</span>`;}
 function infoSection(st,dis){
@@ -2048,6 +2048,7 @@ async function importJson(file){
 }
 
 /* ---------- events ---------- */
+app.addEventListener("toggle",e=>{if(e.target&&e.target.id==="secCd")S.secCOpen=e.target.open;},true);
 app.addEventListener("change",e=>{
   const el=e.target;
   if(el.dataset.biz!=null&&S.view==="cn"){const id=S.storeId,st=S.stores[id];const biz=[...app.querySelectorAll("[data-biz]")].filter(x=>x.checked).map(x=>x.dataset.biz);if(!biz.includes("Shop"))biz.unshift("Shop");saveStore(id,{biz,buildType:buildOf(st),type:typeLabel({buildType:buildOf(st),biz}," – ")});return;}
@@ -2089,7 +2090,7 @@ app.addEventListener("click",e=>{
   if(t.dataset.filter){S.filter=t.dataset.filter;render();return;}
   if(t.dataset.afilter){S.actFilter=t.dataset.afilter;render();return;}
   if(t.dataset.go){location.hash="cn-"+t.dataset.go;return;}
-  if(t.dataset.jump){const el=document.getElementById(t.dataset.jump);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});return;}
+  if(t.dataset.jump){if(t.dataset.jump==="sec-c"&&!S.secCOpen){S.secCOpen=true;render();}const el=document.getElementById(t.dataset.jump);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});return;}
   if(t.dataset.toggle){const k=t.dataset.toggle;S.open.has(k)?S.open.delete(k):S.open.add(k);render();return;}
   if(t.dataset.mstat){const id=t.dataset.mstat,v=t.dataset.v,st=S.stores[S.storeId],e0=((st.manual||{})[id])||{};
     const nv=e0.status===v?"":v;const p={status:nv};if(nv==="Đã xong"&&!e0.done)p.done=today();if(nv==="Đang làm"&&!e0.start)p.start=today();
@@ -2098,7 +2099,7 @@ app.addEventListener("click",e=>{
     const p={status:v==="Chưa bắt đầu"?"":v};if(v==="Đang thi công"&&!e0.start)p.start=today();if(v==="Đã xong"){if(!e0.start)p.start=today();if(!e0.done)p.done=today();p.pct=100;}if(v==="Chưa bắt đầu"){p.done="";p.pct="";}if(v==="Đang thi công"&&Number(e0.pct)>=100)p.pct="";
     saveStore(S.storeId,{plan:{items:{[id]:p}}});return;}
   if(t.id==="planCopy"){const v=t.dataset.txt||"";(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast("Đã sao chép danh sách hạng mục"),()=>{const ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("Đã sao chép danh sách hạng mục");});return;}
-  if(t.dataset.pitem){const id=t.dataset.pitem;S.planTab="det";S.open.add("p"+id);render();setTimeout(()=>{const el=document.querySelector(`[data-toggle="p${id}"]`);if(el)el.closest(".item").scrollIntoView({block:"center",behavior:"smooth"});},50);return;}
+  if(t.dataset.pitem){const id=t.dataset.pitem;S.planTab="det";S.secCOpen=true;S.open.add("p"+id);render();setTimeout(()=>{const el=document.querySelector(`[data-toggle="p${id}"]`);if(el)el.closest(".item").scrollIntoView({block:"center",behavior:"smooth"});},50);return;}
   if(t.dataset.ptab){S.planTab=t.dataset.ptab;render();return;}
   if(t.dataset.dstat){const id=t.dataset.dstat,st=S.stores[S.storeId],e0=(((st.plan||{}).daily||{})[id])||{};
     saveStore(S.storeId,{plan:{daily:{[id]:{done:e0.done?"":today()}}}});return;}
