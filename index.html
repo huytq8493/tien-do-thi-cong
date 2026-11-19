@@ -1383,14 +1383,14 @@ function ovLine(c,hide){hide=hide||{};
     ${hide.ho?"":`<div class="ol-d" data-l="Nhận nhà">${isTL(st)?`<b class="na">—</b>`:dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>`}
     ${hide.bs?"":`<div class="ol-d" data-l="Khởi công XD">${isTL(st)?`<b class="na">—</b>`:bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>`}
     ${hide.kt?"":`<div class="ol-d" data-l="${ktL(st)}">${st.openDate?`<b>${fdy(st.openDate)}</b>${isTL(st)?"<small>trả mặt bằng</small>":""}<em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>`}
-    <div class="ol-pg" data-l="Tiến độ"><div class="oc-bar"><i style="width:${Math.max(p,2)}%"></i></div><b>${p}%</b></div>
+    ${hide.pg?"":`<div class="ol-pg" data-l="Tiến độ"><div class="oc-bar"><i style="width:${Math.max(p,2)}%"></i></div><b>${p}%</b></div>`}
     <div class="ol-note">${note?`<span class="ol-tx">${esc(note)}</span>`:'<span class="muted">—</span>'}</div>
   </a>`;
 }
 function ovList(list,grouped){
-  const HIDE={thicong:{ho:1},hopdong:{bs:1,kt:1},hoan:{ho:1,bs:1,kt:1}};
-  const mk=(hide)=>{hide=hide||{};const cols=["minmax(220px,2.1fr)"].concat(hide.ho?[]:["120px"],hide.bs?[]:["140px"],hide.kt?[]:["150px"],["150px","minmax(200px,2.4fr)"]).join(" ");
-    return {style:`--olc:${cols}`,head:`<div class="ol-head"><span>Chi nhánh</span>${hide.ho?"":"<span>Nhận nhà</span>"}${hide.bs?"":"<span>Khởi công XD</span>"}${hide.kt?"":"<span>Khai trương</span>"}<span>Tiến độ</span><span>Ghi chú / vướng mắc</span></div>`};};
+  const HIDE={thicong:{ho:1},hopdong:{bs:1,kt:1,pg:1},hoan:{ho:1,bs:1,kt:1,pg:1}};
+  const mk=(hide)=>{hide=hide||{};const cols=["minmax(220px,2.1fr)"].concat(hide.ho?[]:["120px"],hide.bs?[]:["140px"],hide.kt?[]:["150px"],hide.pg?[]:["150px"],["minmax(200px,2.4fr)"]).join(" ");
+    return {style:`--olc:${cols}`,head:`<div class="ol-head"><span>Chi nhánh</span>${hide.ho?"":"<span>Nhận nhà</span>"}${hide.bs?"":"<span>Khởi công XD</span>"}${hide.kt?"":"<span>Khai trương</span>"}${hide.pg?"":"<span>Tiến độ</span>"}<span>Ghi chú / vướng mắc</span></div>`};};
   if(!grouped){const m=mk();return `<div class="panel ol" style="${m.style}">${m.head}${list.map(c=>ovLine(c)).join("")}</div>`;}
   return TRACK.concat([["hoan","Tạm hoãn","hold","Vướng pháp lý, giấy phép, chủ nhà… hoặc dừng triển khai"]]).map(t=>{const L=list.filter(c=>t[0]==="hoan"?isHoan(c.st):!isHoan(c.st)&&trackOf(c.st)===t[0]);
     const m=mk(HIDE[t[0]]);
