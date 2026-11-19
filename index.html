@@ -1035,6 +1035,7 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .ev.s-dang.chg::after{background:#FFD68A}
 .cal-cnt{display:flex;gap:6px;flex-wrap:wrap}.cal-cnt .ev{width:auto;cursor:default;font-weight:600}.cal-cnt .ev.s-da span{text-decoration:none}
 .cal-legend .ev{width:auto;cursor:default}.cal-legend .ev.s-da{text-decoration:none}.cal-legend .ev span,.cal-legend .ev.s-da{text-decoration:none}
+.sched-warn{display:flex;gap:8px;align-items:center;background:var(--soon-soft);color:#7A3E00;border:1px solid #F5D9A8;border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:13.5px}.sched-warn svg.i{width:16px;height:16px;flex:none}
 /* ===== end executive */
 
 </style>
@@ -1175,8 +1176,10 @@ function calc(st){
   return {st,man,wfs,plan,planOn,mApp:mApp.length,mDone,wApp:wApp.length,wDone:wfs.filter(x=>x.s==="Hoàn thành").length,wAvg:wApp.length?wSum/100/wApp.length:0,prog,late,soon,status,sk,opened,dKT,phase,grp};
 }
 function tpls(){const t=cfg().templates;return Array.isArray(t)&&t.length?t:DEFAULT_TEMPLATES;}
-const BUILD=["Relayout","Xây mới","Sửa chữa"],BIZ=["Shop","Fashion","Electronics","Mom&Baby","Homeappliances","Lifestyle","Clinic"];
-function buildOf(st){if(st.buildType!=null&&st.buildType!=="")return st.buildType;const t=String(st.type||"")+" "+String(st.name||"");if(/relayout/i.test(t))return "Relayout";if(/sửa chữa/i.test(t))return "Sửa chữa";if(/xây mới/i.test(t))return "Xây mới";return "";}
+const BUILD=["Relayout","Xây mới","Sửa chữa","Thanh lý"],BIZ=["Shop","Fashion","Electronics","Mom&Baby","Homeappliances","Lifestyle","Clinic"];
+const isTL=st=>buildOf(st)==="Thanh lý";
+const ktL=st=>isTL(st)?"Trả mặt bằng":"Khai trương";
+function buildOf(st){if(st.buildType!=null&&st.buildType!=="")return st.buildType;const t=String(st.type||"")+" "+String(st.name||"");if(/relayout/i.test(t))return "Relayout";if(/sửa chữa/i.test(t))return "Sửa chữa";if(/xây mới/i.test(t))return "Xây mới";if(/thanh lý/i.test(t))return "Thanh lý";return "";}
 function bizOf(st){const r=bizRaw(st);if(!r.includes("Shop"))r.unshift("Shop");return BIZ.filter(b=>r.includes(b)).concat(r.filter(b=>!BIZ.includes(b)));}
 function bizRaw(st){if(Array.isArray(st.biz))return st.biz.slice();const t=String(st.type||"")+" "+String(st.name||"");const o=[];if(/shop/i.test(t))o.push("Shop");if(/fashion|\bfsh\b/i.test(t))o.push("Fashion");if(/electronic/i.test(t))o.push("Electronics");if(/mom/i.test(t))o.push("Mom&Baby");if(/home ?appliance/i.test(t))o.push("Homeappliances");if(/lifestyle/i.test(t))o.push("Lifestyle");if(/clinic/i.test(t))o.push("Clinic");return o;}
 function typeLabel(st,sep){const b=buildOf(st),z=bizOf(st);if(!b&&!z.length)return st.type||"";return [b,z.join(" / ")].filter(Boolean).join(sep||" – ");}
@@ -1350,7 +1353,7 @@ function ovRow(c){
 }
 const TRACK=[["thicong","Đang thi công","run","Đã nhận nhà, đang triển khai thi công"],["hopdong","Đang làm hợp đồng","soon","Đàm phán, ký hợp đồng thuê, chờ bàn giao mặt bằng"]];
 const isHoan=st=>!!st.hold||st.track==="thutuc";
-function trackOf(st){if(st.track&&TRACK.some(t=>t[0]===st.track))return st.track;return st.handover&&st.handover<=today()?"thicong":"hopdong";}
+function trackOf(st){if(st.track&&TRACK.some(t=>t[0]===st.track))return st.track;if(isTL(st))return "thicong";return st.handover&&st.handover<=today()?"thicong":"hopdong";}
 function buildStartOf(c){const P=c.plan,st=c.st;if(st.buildStart)return{d:st.buildStart,real:st.buildStart<=today(),set:true};if(P&&P.items&&P.items.length){const xd=P.items.find(x=>/xây dựng/i.test(x.d.name))||P.items.filter(x=>x.ps).sort((a,b)=>a.ps.localeCompare(b.ps))[0];if(xd){if(xd.e&&xd.e.start)return{d:xd.e.start,real:true};if(xd.ps)return{d:xd.ps,real:false};}}return null;}
 function ovLine(c){
   const st=c.st,T=today(),P=c.plan;
@@ -1362,9 +1365,9 @@ function ovLine(c){
   const dt=(v,sub)=>v?`<b>${fdy(v)}</b>${sub?`<small>${sub}</small>`:""}`:`<b class="na">Chưa có</b>`;
   return `<a class="ol-row" href="#cn-${esc(st.id)}">
     <div class="ol-nm"><b>${esc(st.name||"(Chưa đặt tên — bấm để sửa/xoá)")}</b><span>${[buildOf(st),bizOf(st).join(" / ")].filter(Boolean).map(esc).join(" · ")}</span></div>
-    <div class="ol-d" data-l="Nhận nhà">${dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>
-    <div class="ol-d" data-l="Khởi công XD">${bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>
-    <div class="ol-d" data-l="Khai trương">${st.openDate?`<b>${fdy(st.openDate)}</b><em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>
+    <div class="ol-d" data-l="Nhận nhà">${isTL(st)?`<b class="na">—</b>`:dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>
+    <div class="ol-d" data-l="Khởi công XD">${isTL(st)?`<b class="na">—</b>`:bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>
+    <div class="ol-d" data-l="${ktL(st)}">${st.openDate?`<b>${fdy(st.openDate)}</b>${isTL(st)?"<small>trả mặt bằng</small>":""}<em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>
     <div class="ol-pg" data-l="Tiến độ"><div class="oc-bar"><i style="width:${Math.max(p,2)}%"></i></div><b>${p}%</b></div>
     <div class="ol-note">${note?`<span class="ol-tx">${esc(note)}</span>`:'<span class="muted">—</span>'}</div>
   </a>`;
@@ -1674,9 +1677,9 @@ function stIcon(k){return `<span class="st-ic ${k}">${k==="ok"?ic("check"):""}</
 function infoSection(st,dis){
   return `<section class="anchor" id="sec-info" style="margin-top:14px"><div class="sec-h"><h2>Thông tin mặt bằng</h2></div><div class="panel info-grid">
       <div class="field"><label for="f-build">Loại hình thi công</label><select class="in" id="f-build" data-k="buildType" ${dis}><option value="">— Chọn —</option>${BUILD.map(b=>`<option ${buildOf(st)===b?"selected":""}>${b}</option>`).join("")}</select></div>
-      <div class="field"><label for="f-handover">Ngày nhận nhà</label><div class="din"><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}>${st.handover&&!dis?`<button type="button" class="din-x" data-clr="handover" title="Xoá ngày nhận nhà" aria-label="Xoá ngày nhận nhà">${ic("x")}</button>`:""}</div></div>
-      <div class="field"><label for="f-buildStart">Ngày khởi công</label><div class="din"><input class="in" type="date" id="f-buildStart" data-k="buildStart" value="${esc(st.buildStart||"")}" ${dis}>${st.buildStart&&!dis?`<button type="button" class="din-x" data-clr="buildStart" title="Xoá ngày khởi công" aria-label="Xoá ngày khởi công">${ic("x")}</button>`:""}</div></div>
-      <div class="field"><label for="f-openDate">Ngày khai trương</label><div class="din"><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}>${st.openDate&&!dis?`<button type="button" class="din-x" data-clr="openDate" title="Xoá ngày khai trương" aria-label="Xoá ngày khai trương">${ic("x")}</button>`:""}</div></div>
+      ${isTL(st)?"":`<div class="field"><label for="f-handover">Ngày nhận nhà</label><div class="din"><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}>${st.handover&&!dis?`<button type="button" class="din-x" data-clr="handover" title="Xoá ngày nhận nhà" aria-label="Xoá ngày nhận nhà">${ic("x")}</button>`:""}</div></div>
+      <div class="field"><label for="f-buildStart">Ngày khởi công</label><div class="din"><input class="in" type="date" id="f-buildStart" data-k="buildStart" value="${esc(st.buildStart||"")}" ${dis}>${st.buildStart&&!dis?`<button type="button" class="din-x" data-clr="buildStart" title="Xoá ngày khởi công" aria-label="Xoá ngày khởi công">${ic("x")}</button>`:""}</div></div>`}
+      <div class="field"><label for="f-openDate">Ngày ${ktL(st).toLowerCase()}</label><div class="din"><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}>${st.openDate&&!dis?`<button type="button" class="din-x" data-clr="openDate" title="Xoá ngày ${ktL(st).toLowerCase()}" aria-label="Xoá ngày ${ktL(st).toLowerCase()}">${ic("x")}</button>`:""}</div></div>
       <div class="field wide"><span class="lbl">Hình thức kinh doanh (chọn nhiều)</span><div class="chk-row">${BIZ.map(b=>`<label class="chk"><input type="checkbox" data-biz="${b}" ${bizOf(st).includes(b)?"checked":""} ${S.canWrite&&b!=="Shop"?"":"disabled"}>${b}${b==="Shop"?" <small>(mặc định)</small>":""}</label>`).join("")}</div></div>
       <div class="field"><label for="f-code">Mã / số thứ tự</label>${inp("f-code","code",st.code)}</div>
       <div class="field"><label for="f-track">Nhóm theo dõi / giai đoạn</label><select class="in" id="f-track" data-k="track" ${dis}><option value="" ${!st.track&&!isHoan(st)?"selected":""}>Tự động (${esc((TRACK.find(t=>t[0]===trackOf({...st,track:""}))||[])[1])})</option>${TRACK.map(t=>`<option value="${t[0]}" ${!isHoan(st)&&st.track===t[0]?"selected":""}>${t[1]}</option>`).join("")}<option value="hoan" ${isHoan(st)?"selected":""}>Tạm hoãn</option></select></div>
@@ -1696,7 +1699,7 @@ function viewStore(){
   const doingI=P&&st.openDate&&!c.opened?P.items.filter(x=>!x.done&&x.ps&&x.ps<=T&&T<=x.pe).map(x=>x.d.name):[];
   const nextI=P&&st.openDate&&!c.opened?P.items.filter(x=>!x.done&&x.ps&&x.ps>T).sort((a,b)=>a.ps.localeCompare(b.ps))[0]:null;
   const lateN=(P&&c.planOn?P.mats.filter(m=>m.w.k==="late").length+P.items.filter(x=>x.w.k==="late").length:0)+c.late;
-  const ms=[["Nhận nhà",st.handover,""],["Khởi công",bs&&bs.d,bs&&!st.buildStart?"dự kiến":""],["Khai trương",st.openDate,""]];
+  const ms=isTL(st)?[["Trả mặt bằng",st.openDate,""]]:[["Nhận nhà",st.handover,""],["Khởi công",bs&&bs.d,bs&&!st.buildStart?"dự kiến":""],["Khai trương",st.openDate,""]];
   const msH=ms.map(([l,d,tag],i)=>{const k=!d?"na":d<T?"done":d===T?"now":"next";
     const sub=!d?"":d<T?"":d===T?"hôm nay":"còn "+diff(d,T)+" ngày";
     return `<span class="hm2 hm-${k}">${k==="done"?ic("check"):""}<span>${l}${tag?" ("+tag+")":""}</span><b>${d?fdy(d):"Chưa có"}</b>${sub?`<em>${sub}</em>`:""}</span>`;}).join('<span class="hm2-ar">›</span>');
@@ -1706,7 +1709,7 @@ function viewStore(){
     <div class="h3-top">
       <div class="h3-t"><div class="eyebrow">${c.st.code?`<span class="off">#${esc(c.st.code)}</span>`:""}<span class="h2-g"><span class="dot ${grpL[0]}"></span>${esc(grpL[1])}</span><span class="h3-ty">${esc(typeLabel(st)||"")}</span></div>
         <input class="title-in" id="f-name" data-k="name" value="${esc(st.name)}" ${S.canWrite?"":"readonly"} aria-label="Tên chi nhánh" placeholder="Nhập tên chi nhánh"></div>
-      <div class="h3-kpi"><div><b class="cd-${cd.k}">${cd.d}</b><span>khai trương</span></div><div><b>${pct(c.prog)}</b><span>tiến độ</span></div>${lateN&&!c.opened?`<div><b class="bad">${lateN}</b><span>việc trễ</span></div>`:""}</div>
+      <div class="h3-kpi"><div><b class="cd-${cd.k}">${cd.d}</b><span>${ktL(st).toLowerCase()}</span></div><div><b>${pct(c.prog)}</b><span>tiến độ</span></div>${lateN&&!c.opened?`<div><b class="bad">${lateN}</b><span>việc trễ</span></div>`:""}</div>
     </div>
     <div class="h3-ms">${msH}</div>
     <div class="h3-rows">
@@ -2320,13 +2323,13 @@ function calEvents(){
   allCalc().forEach(c=>{const st=c.st,chg=!!(st.sched&&st.sched.at&&diff(T,String(st.sched.at).slice(0,10))<=7);
     const base={c,chg};
     const stOf=(k,d)=>isHoan(st)&&!c.opened?"vuong":d<T||(k==="kt"&&c.opened)?"da":d===T||(k==="kt"&&st.handover&&st.handover<=T)?"dang":"se";
-    if(st.handover){const s=stOf("ho",st.handover);ev.push({...base,d:st.handover,k:"ho",s,cls:"s-"+s});}
+    if(st.handover&&!isTL(st)){const s=stOf("ho",st.handover);ev.push({...base,d:st.handover,k:"ho",s,cls:"s-"+s});}
     if(st.openDate){const s=stOf("kt",st.openDate);ev.push({...base,d:st.openDate,k:"kt",s,cls:"s-"+s});}});
   return ev.sort((a,b)=>(a.k===b.k?0:a.k==="kt"?-1:1)||String(a.c.st.name).localeCompare(String(b.c.st.name),"vi"));
 }
-function evTitle(e){const st=e.c.st;return [st.name,typeLabel(st),(e.k==="kt"?"Khai trương ":"Nhận nhà ")+fdy(e.d)+(e.k==="ho"&&e.d>today()?" (dự kiến)":""),st.openDate&&e.k==="ho"?"KT "+fd(st.openDate):"",st.hold?"Tạm hoãn":"",st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"")].filter(Boolean).join("\n");}
+function evTitle(e){const st=e.c.st;return [st.name,typeLabel(st),(e.k==="kt"?ktL(st)+" ":"Nhận nhà ")+fdy(e.d)+(e.k==="ho"&&e.d>today()?" (dự kiến)":""),st.openDate&&e.k==="ho"?"KT "+fd(st.openDate):"",st.hold?"Tạm hoãn":"",st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"")].filter(Boolean).join("\n");}
 const EVS={da:["✓","Đã xong"],dang:["●","Đang triển khai"],se:["○","Sắp tới"],vuong:["⚠","Còn vướng"]};
-function evChip(e){return `<button type="button" class="ev ${e.cls}${e.chg?" chg":""}" data-go="${esc(e.c.st.id)}" title="${esc(EVS[e.s][1]+"\n"+evTitle(e))}"><i>${EVS[e.s][0]} ${e.k==="kt"?"KT":"NN"}</i><span>${esc(e.c.st.name||"(chưa đặt tên)")}</span></button>`;}
+function evChip(e){return `<button type="button" class="ev ${e.cls}${e.chg?" chg":""}" data-go="${esc(e.c.st.id)}" title="${esc(EVS[e.s][1]+"\n"+evTitle(e))}"><i>${EVS[e.s][0]} ${e.k==="kt"?(isTL(e.c.st)?"TL":"KT"):"NN"}</i><span>${esc(e.c.st.name||"(chưa đặt tên)")}</span></button>`;}
 function viewCalendar(){
   const T=today();const m=S.calM||T.slice(0,7);const [y,mo]=m.split("-").map(Number);
   const first=new Date(Date.UTC(y,mo-1,1)),startDow=(first.getUTCDay()+6)%7;
@@ -2340,11 +2343,11 @@ function viewCalendar(){
   h+=`<div class="cal">${WDS.map(d=>`<div class="dow">${d}</div>`).join("")}`;
   for(let i=0;i<weeks*7;i++){const d=addDays(start,i),list=byDay[d]||[],key="cal-"+d,open=S.open.has(key),shown=open?list:list.slice(0,3);
     h+=`<div class="day ${d.slice(0,7)!==m?"out":""} ${d===T?"today":""} ${i%7>=5?"wk":""}"><div class="dn"><b>${Number(d.slice(8))}</b></div>${shown.map(evChip).join("")}${list.length>3?`<button class="more" type="button" data-toggle="${key}">${open?"Thu gọn":"+"+(list.length-3)+" nữa"}</button>`:""}</div>`;}
-  h+=`</div><div class="cal-legend"><span class="ev s-da"><i>✓</i>Đã xong (đã qua ngày)</span><span class="ev s-dang"><i>●</i>Đang triển khai (đã nhận nhà, đang thi công)</span><span class="ev s-se"><i>○</i>Sắp tới (theo kế hoạch)</span><span class="ev s-vuong"><i>⚠</i>Còn vướng (căn đang tạm hoãn, kể cả mốc đã qua)</span><span class="muted">NN = nhận nhà · KT = khai trương</span><span class="ev s-se chg"><i>○</i>Chấm cam: đổi lịch trong 7 ngày</span></div>`;
+  h+=`</div><div class="cal-legend"><span class="ev s-da"><i>✓</i>Đã xong (đã qua ngày)</span><span class="ev s-dang"><i>●</i>Đang triển khai (đã nhận nhà, đang thi công)</span><span class="ev s-se"><i>○</i>Sắp tới (theo kế hoạch)</span><span class="ev s-vuong"><i>⚠</i>Còn vướng (căn đang tạm hoãn, kể cả mốc đã qua)</span><span class="muted">NN = nhận nhà · KT = khai trương · TL = trả mặt bằng (thanh lý)</span><span class="ev s-se chg"><i>○</i>Chấm cam: đổi lịch trong 7 ngày</span></div>`;
   const days=[...new Set(inMonth.map(e=>e.d))].sort();
   h+=`<div class="sec agenda"><div class="sec-h"><h2>Chi tiết trong tháng</h2><span class="sub">bấm vào căn để mở trang chi tiết</span></div>`;
   h+=days.length?`<div class="panel">${days.map(d=>{const w=WDS[(new Date(toT(d)).getUTCDay()+6)%7];return `<div class="ag-day"><div class="ag-date ${d===T?"today":""}"><b>${fd(d)}</b><span>${w==="CN"?"Chủ nhật":"Thứ "+(Number(w.slice(1)))}${d===T?" · hôm nay":""}</span></div><div class="ag-list">${byDay[d].filter(e=>e.d.slice(0,7)===m).map(e=>{const st=e.c.st,info=st.sched&&st.sched.reason?"Đổi lịch: "+st.sched.reason:(st.note?String(st.note).split(" · ")[0]:"");
-      return `<button type="button" class="ag-it" data-go="${esc(st.id)}"><span class="ev ${e.cls}${e.chg?" chg":""}"><i>${EVS[e.s][0]} ${e.k==="kt"?"KT":"NN"}</i><span>${e.k==="kt"?"Khai trương":(e.d>T?"Nhận nhà (dự kiến)":"Nhận nhà")} · ${EVS[e.s][1].toLowerCase()}</span></span><div class="t"><b>${esc(st.name||"(chưa đặt tên)")}</b><div>${esc([typeLabel(st),e.k==="kt"?(st.handover?(st.handover<=T?"đã nhận nhà "+fd(st.handover):"dự kiến nhận nhà "+fd(st.handover)):"chưa có ngày nhận nhà"):(st.openDate?"khai trương "+fd(st.openDate):"chưa có ngày khai trương"),st.hold?"tạm hoãn":""].filter(Boolean).join(" · "))}</div>${info?`<div>${esc(info)}</div>`:""}</div></button>`;}).join("")}</div></div>`;}).join("")}</div>`
+      return `<button type="button" class="ag-it" data-go="${esc(st.id)}"><span class="ev ${e.cls}${e.chg?" chg":""}"><i>${EVS[e.s][0]} ${e.k==="kt"?(isTL(e.c.st)?"TL":"KT"):"NN"}</i><span>${e.k==="kt"?ktL(e.c.st):(e.d>T?"Nhận nhà (dự kiến)":"Nhận nhà")} · ${EVS[e.s][1].toLowerCase()}</span></span><div class="t"><b>${esc(st.name||"(chưa đặt tên)")}</b><div>${esc([typeLabel(st),e.k==="kt"?(st.handover?(st.handover<=T?"đã nhận nhà "+fd(st.handover):"dự kiến nhận nhà "+fd(st.handover)):"chưa có ngày nhận nhà"):(st.openDate?"khai trương "+fd(st.openDate):"chưa có ngày khai trương"),st.hold?"tạm hoãn":""].filter(Boolean).join(" · "))}</div>${info?`<div>${esc(info)}</div>`:""}</div></button>`;}).join("")}</div></div>`;}).join("")}</div>`
     :`<div class="panel empty"><b>Tháng này chưa có lịch nhận nhà / khai trương</b>Chuyển sang tháng khác bằng nút mũi tên.</div>`;
   return h+`</div>`;
 }
@@ -2354,8 +2357,8 @@ const DLBL={handover:"Nhận nhà",openDate:"Khai trương"};
 function askReason(id,k,old,v){
   const st=S.stores[id];if(!st)return;
   const bg=document.createElement("div");bg.className="mdl-bg";
-  bg.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlT"><h3 id="mdlT">Lý do ${v?"đổi":"xoá"} ngày ${esc(DLBL[k].toLowerCase())}</h3>
-    <div class="chg"><b>${esc(st.name||"Chi nhánh")}</b><br>${esc(DLBL[k])}: <b>${old?fdy(old):"—"}</b> → <b>${v?fdy(v):"(bỏ trống)"}</b></div>
+  bg.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlT"><h3 id="mdlT">Lý do ${v?"đổi":"xoá"} ngày ${esc((k==="openDate"?ktL(st):DLBL[k]).toLowerCase())}</h3>
+    <div class="chg"><b>${esc(st.name||"Chi nhánh")}</b><br>${esc(k==="openDate"?ktL(st):DLBL[k])}: <b>${old?fdy(old):"—"}</b> → <b>${v?fdy(v):"(bỏ trống)"}</b></div>
     <div class="field"><label for="mdlR">Nguyên nhân chỉnh sửa (bắt buộc)</label><textarea class="in" id="mdlR" rows="3" placeholder="VD: Chủ nhà dự kiến bàn giao mặt bằng tuần 3 do bên thuê cũ chưa dọn đi"></textarea></div>
     <div class="err" id="mdlE"></div>
     <div class="row"><button class="btn" type="button" id="mdlNo">Huỷ, giữ ngày cũ</button><button class="btn primary" type="button" id="mdlOk">${v?"Lưu thay đổi":"Xoá ngày"}</button></div></div>`;
@@ -2366,7 +2369,7 @@ function askReason(id,k,old,v){
     const at=now(),by=S.me||"";
     const sched={at,by,reason:r,field:k,from:old,to:v};
     saveStore(id,{[k]:v,sched});
-    commit({t:"log",log:{id:uid("l"),storeId:id,date:today(),cat:"Đổi lịch",text:`${DLBL[k]}: ${old?fdy(old):"—"} → ${v?fdy(v):"(bỏ trống)"}. Lý do: ${r}`,link:"",by,ts:at}});
+    commit({t:"log",log:{id:uid("l"),storeId:id,date:today(),cat:"Đổi lịch",text:`${k==="openDate"?ktL(st):DLBL[k]}: ${old?fdy(old):"—"} → ${v?fdy(v):"(bỏ trống)"}. Lý do: ${r}`,link:"",by,ts:at}});
     close();toast((v?"Đã đổi ngày ":"Đã xoá ngày ")+DLBL[k].toLowerCase()+" và ghi lý do");};
   const onKey=e=>{if(e.key==="Escape"){e.preventDefault();close();}else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();ok();}};
   document.addEventListener("keydown",onKey,true);
@@ -2375,17 +2378,19 @@ function askReason(id,k,old,v){
 }
 /* ---------- tổng hợp cập nhật lịch khai trương ---------- */
 function schedText(){
-  const T=today(),all=allCalc().filter(c=>!c.opened&&!c.st.hold);
+  const T=today(),all=allCalc().filter(c=>!c.opened&&!c.st.hold&&!isTL(c.st));
   const grp={};all.forEach(c=>{const k=c.st.openDate||"";(grp[k]=grp[k]||[]).push(c);});
   const keys=Object.keys(grp).sort((a,b)=>(a||"9999").localeCompare(b||"9999"));
   const line=c=>{const st=c.st,b=buildOf(st),z=bizOf(st);
     const parts=[st.name||"(chưa đặt tên)",b||(z.length?"":st.type||""),z.join(" / ")];
     const info=(st.sched&&st.sched.reason)||String(st.note||"").split(" · ")[0];
     parts.push(info);
-    if(!(st.handover&&st.handover<=T))parts.push(st.handover?"Dự kiến nhận nhà: "+fdy(st.handover):"Chưa có ngày nhận nhà");
+    if(!(st.handover&&st.handover<=T)&&!/nhận nhà/i.test(String(info||"")))parts.push(st.handover?"Dự kiến nhận nhà: "+fdy(st.handover):"Chưa có ngày nhận nhà");
     return "- "+parts.filter(Boolean).join(" – ")+".";};
   let out="Cập nhật lịch khai trương/hoàn công:\n";
   keys.forEach(k=>{out+="\n🗓 "+(k?"Ngày khai trương "+fdy(k):"Chưa có ngày khai trương")+":\n"+grp[k].sort((a,b)=>String(a.st.name).localeCompare(String(b.st.name),"vi")).map(line).join("\n")+"\n";});
+  const tl=allCalc().filter(c=>!c.opened&&!c.st.hold&&isTL(c.st)).sort((a,b)=>String(a.st.openDate||"9999").localeCompare(b.st.openDate||"9999"));
+  if(tl.length) out+="\n📦 Thanh lý / trả mặt bằng:\n"+tl.map(c=>{const st=c.st,info=(st.sched&&st.sched.reason)||String(st.note||"").split(" · ")[0];return "- "+[st.name||"(chưa đặt tên)",info,st.openDate?"Trả mặt bằng: "+fdy(st.openDate):"Chưa có ngày trả mặt bằng"].filter(Boolean).join(" – ")+".";}).join("\n")+"\n";
   const hold=allCalc().filter(c=>c.st.hold);
   if(hold.length) out+="\n⏸ Tạm hoãn:\n"+hold.map(c=>"- "+(c.st.name||"")+((c.st.sched&&c.st.sched.reason)?": "+c.st.sched.reason:"")).join("\n")+"\n";
   return out.trim();
@@ -2398,7 +2403,7 @@ function viewSchedule(){
     <div class="right"><div class="seg-f" role="group" aria-label="Chế độ xem"><button type="button" data-stab="cal" aria-pressed="${tab==="cal"}">Lịch tháng</button><button type="button" data-stab="txt" aria-pressed="${tab==="txt"}">Nội dung gửi Zalo</button></div>
     ${tab==="txt"?`<button class="btn" type="button" id="schedReset">Làm mới</button><button class="btn primary" type="button" id="schedCopy">${ic("check")}Sao chép</button>`:""}</div></div>`;
   if(tab==="cal") h+=viewCalendar();
-  else h+=`<div class="panel" style="padding:14px"><textarea class="in sched-txt" id="schedTxt" aria-label="Nội dung cập nhật lịch">${esc(S.schedEdit!=null?S.schedEdit:txt)}</textarea></div>`;
+  else h+=`${S.schedEdit!=null&&S.schedEdit!==txt?`<div class="sched-warn">${ic("alert")}<span>Nội dung bên dưới là <b>bản đã sửa tay</b>, không tự cập nhật theo dữ liệu mới. Bấm <b>Làm mới</b> để tạo lại từ dữ liệu.</span></div>`:""}<div class="panel" style="padding:14px"><textarea class="in sched-txt" id="schedTxt" aria-label="Nội dung cập nhật lịch">${esc(S.schedEdit!=null?S.schedEdit:txt)}</textarea></div>`;
   h+=`<div class="sec"><div class="sec-h"><h2>Lần đổi lịch gần nhất của từng căn</h2><span class="sub">${rows.length} chi nhánh · lịch sử đầy đủ nằm trong Nhật ký mục “Đổi lịch”</span></div>`;
   h+=rows.length?`<div class="panel tbl"><table class="sched-tbl"><thead><tr><th>Chi nhánh</th><th>Đổi lúc</th><th>Thay đổi</th><th>Nguyên nhân</th></tr></thead><tbody>${rows.map(c=>{const s=c.st.sched;return `<tr><td class="name"><a href="#cn-${esc(c.st.id)}">${esc(c.st.name||"—")}</a></td><td>${esc(fd(String(s.at).slice(0,10))+" "+String(s.at).slice(11,16))}</td><td>${esc((DLBL[s.field]||s.field||"")+": "+(s.from?fd(s.from):"—")+" → "+(s.to?fd(s.to):"—"))}</td><td class="wrap">${esc(s.reason||"")}</td></tr>`;}).join("")}</tbody></table></div>`
     :`<div class="panel empty"><b>Chưa có lần đổi lịch nào</b>Khi ai đó đổi ngày nhận nhà hoặc khai trương, trang sẽ hỏi lý do và ghi vào đây.</div>`;
