@@ -1123,6 +1123,7 @@ function fdy(s){if(!s)return "";const a=s.split("-");return a[2]+"/"+a[1]+"/"+a[
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function pct(x){return Math.round(x*100)+"%";}
 function stepCode(n){const m=/^B\.?\s*(\d+(?:\.\d+)*)/.exec(n||"");return m?"B"+m[1]:"";}
+function wfName(n){n=String(n||"");return /chi nhánh mới/i.test(n)?n:n.replace(/^WF\s+(thi công|lắp đặt)\s+/i,"Giám sát và nghiệm thu nhà thầu ");}
 function shortWf(n){return n.replace(/^WF (thi công |lắp đặt )?/i,"").replace(/^./,c=>c.toUpperCase());}
 function firstUrl(s){const m=/https?:\/\/[^\s,]+/.exec(s||"");return m?m[0]:"";}
 function cfg(){return S.config||DEFAULT_CONFIG;}
@@ -1337,7 +1338,7 @@ function renderNav(){
 function pill(k,t,cls){return `<span class="pill ${k} ${cls||""}">${esc(t)}</span>`;}
 function dots(c){
   const m=c.man.map(x=>`<i class="${x.w.k}" title="${esc(x.it.name+": "+x.w.t)}"></i>`).join("");
-  const w=c.wfs.map(x=>`<i class="${x.w.k}" title="${esc(x.wf.name+": "+(x.code?x.code+" · ":"")+x.w.t)}"></i>`).join("");
+  const w=c.wfs.map(x=>`<i class="${x.w.k}" title="${esc(wfName(x.wf.name)+": "+(x.code?x.code+" · ":"")+x.w.t)}"></i>`).join("");
   return `<div class="dots" aria-label="Trạng thái hạng mục và workflow"><span class="g">A</span>${m}<span class="gap"></span><span class="g">B</span>${w}</div>`;
 }
 function stepper(st,big){
@@ -1448,7 +1449,7 @@ function wfCell(x){
   let t;
   if(x.w.k==="ok") t="Xong"; else if(x.w.k==="na") t="Không AD"; else if(x.w.k==="notask") t="Chưa tạo task"; else if(x.w.k==="blank") t="Chưa cập nhật";
   else t=(x.code||"—")+(x.w.k==="late"?" · trễ "+x.w.d+"N":x.w.k==="hold"?" · dừng":x.e.deadline?" · "+fd(x.e.deadline):"");
-  return `<span title="${esc(x.wf.name+(x.e.step?": "+x.e.step:""))}">${pill(x.w.k,t)}</span>`;
+  return `<span title="${esc(wfName(x.wf.name)+(x.e.step?": "+x.e.step:""))}">${pill(x.w.k,t)}</span>`;
 }
 function planCell(x,kind){
   const P=x.plan;if(!P) return pill("na","–","nodot");
@@ -1531,7 +1532,7 @@ function buildPanel(st,c){
     const name=shortWf(x.wf.name);
     const stepTxt=x.s==="Không áp dụng"?"Không áp dụng":x.e.taskStep&&x.fromTask?x.e.taskStep:(x.e.step||x.w.t);
     const col=x.w.k==="ok"?"var(--ok)":x.w.k==="late"?"var(--late)":x.w.k==="hold"||x.w.k==="notask"?"var(--hold)":"var(--run)";
-    return `<button type="button" class="cp-wf ${x.app?"":"na"}" data-jump="sec-b" title="${esc(x.wf.name)} · ${esc(stepTxt)} · ${esc(x.w.t)}">
+    return `<button type="button" class="cp-wf ${x.app?"":"na"}" data-jump="sec-b" title="${esc(wfName(x.wf.name))} · ${esc(stepTxt)} · ${esc(x.w.t)}">
       ${stIcon(x.w.k)}<span class="nm3"><b>${esc(name)}</b><small>${x.code&&!/^B\.?\s*\d/i.test(stepTxt)?`<span class="code">${esc(x.code)}</span>`:""}${esc(stepTxt)}</small></span>
       <span class="mb"><i style="width:${x.app?x.p:0}%;background:${col}"></i></span>
       <b class="pv">${x.app?x.p+"%":"–"}${x.fromTask?`<span class="src">TASK</span>`:""}</b></button>`;
@@ -1771,7 +1772,7 @@ function viewStore(){
   c.wfs.forEach(x=>{
     const id=x.wf.id,open=S.open.has("w"+id),e=x.e,u=firstUrl(e.link);
     h+=`<div class="item"><div class="item-main wf">${stIcon(x.w.k)}
-      <div class="item-name"><b>${esc(x.wf.name)}</b><div class="sub"><span class="wf-pct"><span class="bar"><i style="width:${x.p}%"></i></span>${x.p}%${x.fromTask?` <span class="src" title="% tính từ các bước trên hệ thống task">TASK</span>`:""}</span>${e.syncedAt&&e.taskTotal?`<span>${e.taskDone||0}/${e.taskTotal} bước xong</span>`:""}${e.taskStep&&e.taskStep!==e.step?`<span title="Bước đang mở trên hệ thống task">Hệ thống: ${esc(e.taskStep)}</span>`:""}${e.deadline?`<span>Hạn bước ${fd(e.deadline)}</span>`:""}${e.pic?`<span>${esc(e.pic)}</span>`:""}${u?`<a class="lnk" href="${esc(u)}" target="_blank" rel="noopener">Mở task ${ic("ext")}</a>`:""}</div></div>
+      <div class="item-name"><b>${esc(wfName(x.wf.name))}</b><div class="sub"><span class="wf-pct"><span class="bar"><i style="width:${x.p}%"></i></span>${x.p}%${x.fromTask?` <span class="src" title="% tính từ các bước trên hệ thống task">TASK</span>`:""}</span>${e.syncedAt&&e.taskTotal?`<span>${e.taskDone||0}/${e.taskTotal} bước xong</span>`:""}${e.taskStep&&e.taskStep!==e.step?`<span title="Bước đang mở trên hệ thống task">Hệ thống: ${esc(e.taskStep)}</span>`:""}${e.deadline?`<span>Hạn bước ${fd(e.deadline)}</span>`:""}${e.pic?`<span>${esc(e.pic)}</span>`:""}${u?`<a class="lnk" href="${esc(u)}" target="_blank" rel="noopener">Mở task ${ic("ext")}</a>`:""}</div></div>
       <div class="wfsel"><select class="in" id="w-${id}-step" data-k="wf.${id}.step" ${dis} aria-label="Bước hiện tại"><option value="">— Chọn bước hiện tại —</option>${x.wf.steps.map(s=>`<option value="${esc(s.n)}" ${s.n===e.step?"selected":""}>${esc(s.n)} · ${s.p}%</option>`).join("")}${e.step&&!x.step?`<option selected value="${esc(e.step)}">${esc(e.step)}</option>`:""}</select>
         <select class="in" id="w-${id}-status" data-k="wf.${id}.status" ${dis} aria-label="Trạng thái WF">${WSTAT.map(s=>`<option value="${s}" ${(e.status||"")===s?"selected":""}>${s||"Chưa cập nhật"}</option>`).join("")}</select></div>
       <div class="warn">${pill(x.w.k,x.w.t)}</div>
@@ -1858,7 +1859,7 @@ function viewConfig(){
    <div class="cfg-row hdr"><span>Nhóm</span><span>Hạng mục</span><span>KT−N</span><span></span></div>
    ${d.manual.map((m,i)=>`<div class="cfg-row"><input class="in" id="cm-g-${i}" data-cm="${i}" data-f="group" value="${esc(m.group)}" ${ro} aria-label="Nhóm"><input class="in" id="cm-n-${i}" data-cm="${i}" data-f="name" value="${esc(m.name)}" ${ro} aria-label="Tên hạng mục"><input class="in" id="cm-o-${i}" type="number" min="0" data-cm="${i}" data-f="offset" value="${esc(m.offset)}" ${ro} aria-label="Số ngày trước KT">${ed?`<button class="x" type="button" data-cmdel="${i}" aria-label="Bỏ hạng mục">${ic("x")}</button>`:"<span></span>"}</div>`).join("")}
    ${ed?`<div><button class="btn sm" type="button" id="cmAdd">${ic("cog")}Thêm hạng mục</button></div>`:""}</div>
-   ${d.workflows.map((w,i)=>`<div class="panel cfg-card"><h3>${esc(w.name)}</h3><label class="muted" style="font-size:12.5px" for="cw-${i}">Mỗi dòng một bước: Tên bước | % tiến độ khi WF đang ở bước đó</label>
+   ${d.workflows.map((w,i)=>`<div class="panel cfg-card"><h3>${esc(wfName(w.name))}</h3><label class="muted" style="font-size:12.5px" for="cw-${i}">Mỗi dòng một bước: Tên bước | % tiến độ khi WF đang ở bước đó</label>
      <textarea class="in steps-in" id="cw-${i}" data-cw="${i}" ${ro}>${esc(w.steps.map(s=>s.n+" | "+s.p).join("\n"))}</textarea></div>`).join("")}
    </div>`;
   return h;
