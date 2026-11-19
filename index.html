@@ -957,7 +957,7 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .ol-gh b{font-size:15.5px;font-weight:700}.ol-gh .muted{font-size:12.5px}
 .ol-gh .ol-n{min-width:24px;height:22px;padding:0 7px;border-radius:999px;background:var(--sunk);font-size:12px;font-weight:700;display:grid;place-items:center}
 .ol-g-run{border-top:3px solid var(--run)!important}.ol-g-soon{border-top:3px solid #E8A33D!important}.ol-g-late{border-top:3px solid var(--late)!important}.ol-g-hold{border-top:3px solid var(--hold)!important}.ol-g-hold .ol-row{opacity:.8}
-.ol-head,.ol-row{display:grid;grid-template-columns:minmax(220px,2.1fr) 120px 140px 150px 150px minmax(200px,2.2fr);gap:16px;align-items:center;padding:0 20px}
+.ol-head,.ol-row{display:grid;grid-template-columns:var(--olc,minmax(220px,2.1fr) 120px 140px 150px 150px minmax(200px,2.2fr));gap:16px;align-items:center;padding:0 20px}
 .ol-head{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--sunk);padding-top:9px;padding-bottom:9px;border-bottom:1px solid var(--line)}
 .ol-row{padding-top:13px;padding-bottom:13px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background .15s}
 .ol-row:last-child{border-bottom:0}
@@ -1370,7 +1370,7 @@ const TRACK=[["thicong","Đang thi công","run","Đã nhận nhà, đang triển
 const isHoan=st=>!!st.hold||st.track==="thutuc";
 function trackOf(st){if(st.track&&TRACK.some(t=>t[0]===st.track))return st.track;if(isTL(st))return "thicong";return st.handover&&st.handover<=today()?"thicong":"hopdong";}
 function buildStartOf(c){const P=c.plan,st=c.st;if(st.buildStart)return{d:st.buildStart,real:st.buildStart<=today(),set:true};if(P&&P.items&&P.items.length){const xd=P.items.find(x=>/xây dựng/i.test(x.d.name))||P.items.filter(x=>x.ps).sort((a,b)=>a.ps.localeCompare(b.ps))[0];if(xd){if(xd.e&&xd.e.start)return{d:xd.e.start,real:true};if(xd.ps)return{d:xd.ps,real:false};}}return null;}
-function ovLine(c){
+function ovLine(c,hide){hide=hide||{};
   const st=c.st,T=today(),P=c.plan;
   const usePlan=P&&st.openDate&&!c.opened,p=usePlan?P.actPct:Math.round(c.prog*100);
   const lg=latestLog(st.id),note=st.note||(st.sched&&st.sched.reason)||(lg?fd(lg.date)+": "+lg.text:"");
@@ -1380,19 +1380,22 @@ function ovLine(c){
   const dt=(v,sub)=>v?`<b>${fdy(v)}</b>${sub?`<small>${sub}</small>`:""}`:`<b class="na">Chưa có</b>`;
   return `<a class="ol-row" href="#cn-${esc(st.id)}">
     <div class="ol-nm"><b>${esc(st.name||"(Chưa đặt tên — bấm để sửa/xoá)")}</b><span>${[buildOf(st),bizOf(st).join(" / ")].filter(Boolean).map(esc).join(" · ")}</span></div>
-    <div class="ol-d" data-l="Nhận nhà">${isTL(st)?`<b class="na">—</b>`:dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>
-    <div class="ol-d" data-l="Khởi công XD">${isTL(st)?`<b class="na">—</b>`:bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>
-    <div class="ol-d" data-l="${ktL(st)}">${st.openDate?`<b>${fdy(st.openDate)}</b>${isTL(st)?"<small>trả mặt bằng</small>":""}<em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>
+    ${hide.ho?"":`<div class="ol-d" data-l="Nhận nhà">${isTL(st)?`<b class="na">—</b>`:dt(st.handover,st.handover?(recv?"đã nhận":"còn "+diff(st.handover,T)+" ngày"):"")}</div>`}
+    ${hide.bs?"":`<div class="ol-d" data-l="Khởi công XD">${isTL(st)?`<b class="na">—</b>`:bs?dt(bs.d,bs.real?"đã khởi công":"dự kiến"):`<b class="na">Chưa có</b>`}</div>`}
+    ${hide.kt?"":`<div class="ol-d" data-l="${ktL(st)}">${st.openDate?`<b>${fdy(st.openDate)}</b>${isTL(st)?"<small>trả mặt bằng</small>":""}<em class="u-${urg}">${c.opened?"Đã KT":c.dKT===0?"Hôm nay":"D-"+c.dKT}</em>`:`<b class="na">Chưa có</b>`}</div>`}
     <div class="ol-pg" data-l="Tiến độ"><div class="oc-bar"><i style="width:${Math.max(p,2)}%"></i></div><b>${p}%</b></div>
     <div class="ol-note">${note?`<span class="ol-tx">${esc(note)}</span>`:'<span class="muted">—</span>'}</div>
   </a>`;
 }
 function ovList(list,grouped){
-  const head=`<div class="ol-head"><span>Chi nhánh</span><span>Nhận nhà</span><span>Khởi công XD</span><span>Khai trương</span><span>Tiến độ</span><span>Ghi chú / vướng mắc</span></div>`;
-  if(!grouped) return `<div class="panel ol">${head}${list.map(ovLine).join("")}</div>`;
+  const HIDE={thicong:{ho:1},hopdong:{bs:1,kt:1},hoan:{ho:1,bs:1,kt:1}};
+  const mk=(hide)=>{hide=hide||{};const cols=["minmax(220px,2.1fr)"].concat(hide.ho?[]:["120px"],hide.bs?[]:["140px"],hide.kt?[]:["150px"],["150px","minmax(200px,2.4fr)"]).join(" ");
+    return {style:`--olc:${cols}`,head:`<div class="ol-head"><span>Chi nhánh</span>${hide.ho?"":"<span>Nhận nhà</span>"}${hide.bs?"":"<span>Khởi công XD</span>"}${hide.kt?"":"<span>Khai trương</span>"}<span>Tiến độ</span><span>Ghi chú / vướng mắc</span></div>`};};
+  if(!grouped){const m=mk();return `<div class="panel ol" style="${m.style}">${m.head}${list.map(c=>ovLine(c)).join("")}</div>`;}
   return TRACK.concat([["hoan","Tạm hoãn","hold","Vướng pháp lý, giấy phép, chủ nhà… hoặc dừng triển khai"]]).map(t=>{const L=list.filter(c=>t[0]==="hoan"?isHoan(c.st):!isHoan(c.st)&&trackOf(c.st)===t[0]);
-    return `<div class="panel ol ol-g-${t[2]}"><div class="ol-gh"><span class="dot ${t[2]}"></span><b>${t[1]}</b><span class="ol-n">${L.length}</span><span class="muted">${t[3]}</span></div>
-      ${L.length?head+L.map(ovLine).join(""):`<div class="ol-empty">Không có căn nào</div>`}</div>`;}).join("");
+    const m=mk(HIDE[t[0]]);
+    return `<div class="panel ol ol-g-${t[2]}" style="${m.style}"><div class="ol-gh"><span class="dot ${t[2]}"></span><b>${t[1]}</b><span class="ol-n">${L.length}</span><span class="muted">${t[3]}</span></div>
+      ${L.length?m.head+L.map(c=>ovLine(c,HIDE[t[0]])).join(""):`<div class="ol-empty">Không có căn nào</div>`}</div>`;}).join("");
 }
 function viewOverview(){
   const all=allCalc(),T=today();
