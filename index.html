@@ -949,6 +949,9 @@ th:first-child,td:first-child,.g-lab{background:#fff}
 .hero .confirm .btn{background:#fff;color:#344054;border-color:#D6DAE2}
 .hero .confirm .btn.danger{background:#D92D20;color:#fff;border-color:#D92D20}.hero .confirm .btn.danger svg.i{color:#fff}
 .hero .confirm .btn:hover{filter:brightness(.96)}
+.din{position:relative;display:flex;align-items:center}.din .in{width:100%}
+.din-x{position:absolute;right:38px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:8px;border:0;background:var(--sunk);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.din-x:hover{background:var(--late-soft);color:var(--late)}.din-x svg.i{width:14px;height:14px}
 /* ===== end executive */
 
 </style>
@@ -1560,8 +1563,8 @@ function stIcon(k){return `<span class="st-ic ${k}">${k==="ok"?ic("check"):""}</
 function infoSection(st,dis){
   return `<section class="anchor" id="sec-info" style="margin-top:14px"><div class="sec-h"><h2>Thông tin mặt bằng</h2></div><div class="panel info-grid">
       <div class="field"><label for="f-build">Loại hình thi công</label><select class="in" id="f-build" data-k="buildType" ${dis}><option value="">— Chọn —</option>${BUILD.map(b=>`<option ${buildOf(st)===b?"selected":""}>${b}</option>`).join("")}</select></div>
-      <div class="field"><label for="f-handover">Ngày nhận nhà</label><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}></div>
-      <div class="field"><label for="f-openDate">Ngày khai trương</label><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}></div>
+      <div class="field"><label for="f-handover">Ngày nhận nhà</label><div class="din"><input class="in" type="date" id="f-handover" data-k="handover" value="${esc(st.handover||"")}" ${dis}>${st.handover&&!dis?`<button type="button" class="din-x" data-clr="handover" title="Xoá ngày nhận nhà" aria-label="Xoá ngày nhận nhà">${ic("x")}</button>`:""}</div></div>
+      <div class="field"><label for="f-openDate">Ngày khai trương</label><div class="din"><input class="in" type="date" id="f-openDate" data-k="openDate" value="${esc(st.openDate||"")}" ${dis}>${st.openDate&&!dis?`<button type="button" class="din-x" data-clr="openDate" title="Xoá ngày khai trương" aria-label="Xoá ngày khai trương">${ic("x")}</button>`:""}</div></div>
       <div class="field wide"><span class="lbl">Hình thức kinh doanh (chọn nhiều)</span><div class="chk-row">${BIZ.map(b=>`<label class="chk"><input type="checkbox" data-biz="${b}" ${bizOf(st).includes(b)?"checked":""} ${S.canWrite&&b!=="Shop"?"":"disabled"}>${b}${b==="Shop"?" <small>(mặc định)</small>":""}</label>`).join("")}</div></div>
       <div class="field"><label for="f-code">Mã / số thứ tự</label>${inp("f-code","code",st.code)}</div>
       <div class="field"><label for="f-hold">Tình trạng</label><select class="in" id="f-hold" data-k="hold" ${dis}><option value="">Theo lịch (tự tính)</option><option value="1" ${st.hold?"selected":""}>Tạm hoãn</option></select></div>
@@ -1937,6 +1940,7 @@ app.addEventListener("click",e=>{
   if(t.dataset.calm!=null){const n=Number(t.dataset.calm);if(!n)S.calM=today().slice(0,7);else{const [y,m]=(S.calM||today().slice(0,7)).split("-").map(Number);const d=new Date(Date.UTC(y,m-1+n,1));S.calM=d.getUTCFullYear()+"-"+p2(d.getUTCMonth()+1);}render();return;}
   if(t.id==="syncOne"||t.id==="syncTop"){syncStores([S.storeId]);return;}
   if(t.id==="syncAll"){syncStores([]);return;}
+  if(t.dataset&&t.dataset.clr&&S.view==="cn"){const id=S.storeId,k=t.dataset.clr,old=(S.stores[id]||{})[k]||"";if(old)askReason(id,k,old,"");return;}
   if(t.id==="delStore"){S.confirmDel=true;render();window.scrollTo({top:0});return;}
   if(t.dataset.addStore){addStore();return;}
   if(t.id==="delNo"){S.confirmDel=false;render();return;}
@@ -2225,11 +2229,11 @@ const DLBL={handover:"Nhận nhà",openDate:"Khai trương"};
 function askReason(id,k,old,v){
   const st=S.stores[id];if(!st)return;
   const bg=document.createElement("div");bg.className="mdl-bg";
-  bg.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlT"><h3 id="mdlT">Lý do đổi ngày ${esc(DLBL[k].toLowerCase())}</h3>
+  bg.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlT"><h3 id="mdlT">Lý do ${v?"đổi":"xoá"} ngày ${esc(DLBL[k].toLowerCase())}</h3>
     <div class="chg"><b>${esc(st.name||"Chi nhánh")}</b><br>${esc(DLBL[k])}: <b>${old?fdy(old):"—"}</b> → <b>${v?fdy(v):"(bỏ trống)"}</b></div>
     <div class="field"><label for="mdlR">Nguyên nhân chỉnh sửa (bắt buộc)</label><textarea class="in" id="mdlR" rows="3" placeholder="VD: Chủ nhà dự kiến bàn giao mặt bằng tuần 3 do bên thuê cũ chưa dọn đi"></textarea></div>
     <div class="err" id="mdlE"></div>
-    <div class="row"><button class="btn" type="button" id="mdlNo">Huỷ, giữ ngày cũ</button><button class="btn primary" type="button" id="mdlOk">Lưu thay đổi</button></div></div>`;
+    <div class="row"><button class="btn" type="button" id="mdlNo">Huỷ, giữ ngày cũ</button><button class="btn primary" type="button" id="mdlOk">${v?"Lưu thay đổi":"Xoá ngày"}</button></div></div>`;
   document.body.appendChild(bg);
   const ta=bg.querySelector("#mdlR");setTimeout(()=>ta.focus(),30);
   const close=()=>{bg.remove();document.removeEventListener("keydown",onKey,true);};
@@ -2238,7 +2242,7 @@ function askReason(id,k,old,v){
     const sched={at,by,reason:r,field:k,from:old,to:v};
     saveStore(id,{[k]:v,sched});
     commit({t:"log",log:{id:uid("l"),storeId:id,date:today(),cat:"Đổi lịch",text:`${DLBL[k]}: ${old?fdy(old):"—"} → ${v?fdy(v):"(bỏ trống)"}. Lý do: ${r}`,link:"",by,ts:at}});
-    close();toast("Đã đổi ngày "+DLBL[k].toLowerCase()+" và ghi lý do");};
+    close();toast((v?"Đã đổi ngày ":"Đã xoá ngày ")+DLBL[k].toLowerCase()+" và ghi lý do");};
   const onKey=e=>{if(e.key==="Escape"){e.preventDefault();close();}else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();ok();}};
   document.addEventListener("keydown",onKey,true);
   bg.querySelector("#mdlNo").onclick=close;bg.querySelector("#mdlOk").onclick=ok;
